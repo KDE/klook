@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/images">
+        <file alias="pla-empty-box.png">resources/pla-empty-box.png</file>
+        <file alias="play-empty.png">resources/play-empty.png</file>
+    </qresource>
+</RCC>
