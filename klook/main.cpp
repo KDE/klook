@@ -19,32 +19,25 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-
 #include <QApplication>
-#include <QDeclarativeContext>
 #include <QLibraryInfo>
 #include <QFileInfo>
-#include <QObject>
-#include <QGraphicsObject>
-#include <QGraphicsScene>
-#include <QGraphicsView>
-#include <QGraphicsProxyWidget>
 #include <QTranslator>
 
-#include <QLibraryInfo>
-#include <QDebug>
+#include <QtPlugin>
 
 #include <qtsingleapplication/qtsingleapplication.h>
 
+#include <kaboutdata.h>
+#include <kcmdlineargs.h>
+#include <klocale.h>
+
 #include "declarativeviewer.h"
 #include "video.h"
-//#include "file.h"
 #include "workerthread.h"
-
 #include "previewgenerator.h"
 
 #define QT_SINGLE_APP
-
 
 int main(int argc, char *argv[])
 {
@@ -59,7 +52,6 @@ int main(int argc, char *argv[])
         if ( a < argc - 1 )
             message += ";";
     }
-    //    qDebug() << message;
 
     if ( app.sendMessage( message ) )
     {
@@ -85,16 +77,13 @@ int main(int argc, char *argv[])
     QString qmlPath = QLibraryInfo::location( QLibraryInfo::LibrariesPath ) + "/" + fi.baseName();
 
     view.setSource( QUrl::fromLocalFile( qmlPath + "/main.qml" ) );
-//    view.setSource( QUrl::fromLocalFile( "/home/julia/work/klook/src/klook/qml/klook/main.qml" ) );
 
     QObject* rootObject = dynamic_cast<QObject*>( view.rootObject() );
 
-    //QObject::connect( &view, SIGNAL( fileData( QVariant,QVariant ) ), rootObject, SLOT( updateData( QVariant, QVariant ) ) );
     QObject::connect( &view, SIGNAL( setFullScreenState() ), rootObject, SLOT( setFullScreenState() ) );
     QObject::connect( &view, SIGNAL( setEmbeddedState() ), rootObject, SLOT( setEmbeddedState() ) );
     QObject::connect( rootObject, SIGNAL( setGalleryView( bool ) ), &view, SLOT( onSetGallery( bool ) ) );
 
-    //view.show();
     view.setAttribute( Qt::WA_QuitOnClose );
 
     QObject::connect( &app, SIGNAL( messageReceived( const QString& ) ), &view, SLOT( handleMessage( const QString& ) ) );
@@ -102,8 +91,6 @@ int main(int argc, char *argv[])
     app.setActivationWindow( &view, false );
 
     QObject::connect( &view, SIGNAL( needToShow() ), &app, SLOT( activateWindow() ) );
-
-    //app.setQuitOnLastWindowClosed(true);
 
     return app.exec();
 }

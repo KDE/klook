@@ -21,24 +21,20 @@
 
 #include "workerthread.h"
 
-#include <QtCore/QStringList>
-#include <QtCore/QMetaType>
-#include <QtCore/QDir>
-#include <QtCore/QDebug>
-#include <QtGui/QImageReader>
+#include <QMetaType>
+#include <QDir>
+#include <QImageReader>
 #include <KDE/Phonon/BackendCapabilities>
-
 
 #include <kmimetype.h>
 
 WorkerThread::WorkerThread( const QStringList& urls, QObject *parent )
     : QThread( parent )
     , isFound( false )
-    , urls(urls)
-    , supportedImageFormats(QImageReader::supportedImageFormats())
+    , urls( urls )
+    , supportedImageFormats( QImageReader::supportedImageFormats() )
 {
     m_mimeTypes = Phonon::BackendCapabilities::availableMimeTypes();
-//    qDebug() << "m_mimeTypes:  " << m_mimeTypes;
 }
 
 void WorkerThread::run()
@@ -55,7 +51,6 @@ void WorkerThread::processUrl( const QStringList &urls )
     foreach ( const QString& str, urls )
     {
         if ( !QDir::isAbsolutePath( str ) )
-            //            path = QCoreApplication::applicationDirPath() + "/" + str;
             path = QDir::currentPath() + "/" + str;
         else
             path = str;
@@ -87,28 +82,26 @@ QString WorkerThread::getMime( const QString& st ) const
 
 File::FileType WorkerThread::getType( const QString& mime ) const
 {
-    qDebug() << "DeclarativeViewer::getType(): " << mime;
-
-    int delimiter = mime.indexOf('/');
+    int delimiter = mime.indexOf( '/' );
 
     File::FileType type = File::Undefined;
-    if(delimiter != -1)
+    if ( delimiter != -1 )
     {
-        QString left = mime.left(delimiter);
+        QString left = mime.left( delimiter );
 
-        if(left == QLatin1String("image"))
+        if ( left == QLatin1String( "image" ) )
         {
             QString right = mime.mid(delimiter + 1);
-            if(supportedImageFormats.contains(right.toLatin1()) || right == "x-xpixmap")
+            if(supportedImageFormats.contains( right.toLatin1()) || right == "x-xpixmap" )
                 type = File::Image;
-            else if(supportedImageFormats.contains("svg") && (right == ("svg+xml") || right == ("svg+xml-compressed")))
+            else if ( supportedImageFormats.contains( "svg" ) && ( right == ( "svg+xml" ) || right == ( "svg+xml-compressed" ) ) )
                 type = File::Image;
         }
-        else if(left == QLatin1String("video"))
+        else if ( left == QLatin1String( "video" ) )
         {
             QString right = mime.mid( delimiter + 1 );
 #if 1
-            if(m_mimeTypes.contains(mime))
+            if ( m_mimeTypes.contains( mime ) )
                 type = File::Video;
 
             if ( type == File::Undefined )
@@ -127,7 +120,9 @@ File::FileType WorkerThread::getType( const QString& mime ) const
                 type = File::Video;
 #endif
         }
-        else if(left == QLatin1String("text"))
+        else if ( left == QLatin1String( "text" ) ||
+                  mime == QLatin1String( "application/x-zerosize" ) ||
+                  mime == QLatin1String( "application/x-shellscript" ) )
             type = File::Txt;
     }
 

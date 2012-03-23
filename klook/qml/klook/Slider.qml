@@ -25,7 +25,6 @@ import QtQuick 1.0
 Item {
     id: slider; width: 50; height: 10
     smooth: true
-    //anchors.verticalCenter: parent.verticalCenter
 
     signal posChanged( real pos )
 
@@ -56,27 +55,23 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        //border.color: "white"; border.width: 0; radius: 8
         smooth: true
-        //color:"#234463"
-        //#183d60
 
         gradient: Gradient {
             GradientStop { position: 0.0; color: "#183d60" }
             GradientStop { position: 0.5; color: "#234463" }
         }
-
-
     }
 
     MouseArea {
         id: mouseClick
-        anchors.fill: parent;
+        anchors.fill: parent
+
         onClicked:
-        {            
+        {
             handle.x = mouseX - handle.width / 2
-            value = ( maximum - minimum ) * ( handle.x - 2 ) / slider.xMax + minimum;
-            posChanged( value );
+            value = ( maximum - minimum ) * ( handle.x - 2 ) / slider.xMax + minimum
+            posChanged( value )
         }
     }
 
@@ -90,15 +85,17 @@ Item {
             anchors.fill: parent
             source: "images/slider.png"
         }
+
         MouseArea {
             id: mouse
             anchors.fill: parent; drag.target: parent
             drag.axis: Drag.XAxis; drag.minimumX: 2; drag.maximumX: slider.xMax + 2
+
             onPositionChanged:
             {
                 value = ( maximum - minimum ) * ( handle.x - 2 ) / slider.xMax + minimum;
                 posChanged( value );
-            }            
+            }
         }
     }
 }

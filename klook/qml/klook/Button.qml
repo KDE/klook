@@ -32,34 +32,17 @@ Rectangle {
     
     // attaches to the Text element's text content
     property string label
-    property color textColor: buttonLabel.color
-
     property string st: "normal"
-
     property string name
 
     property string  imageUrl: "images/buttons/" + st + "/"+ name + "_" + st + ".png"; clip: true
-
-    // the color highlight when the mouse hovers on the rectangle
-    property color onHoverColor: Qt.darker( borderColor, 1.3 )
-    property color borderColor: "#7A8182"
-
-    // buttonColor is set to the button's main color
-    property color buttonColor: "#61BDCACD"
-
-    property real labelSize: 12
 
     //set appearance properties
     smooth: true
     width: buttonWidth;
     height: buttonHeight
     color: "#00000000"
-    /*
-    gradient: Gradient {
-        GradientStop { position: 0.0; color: Qt.lighter( buttonColor, 1.25 ) }
-        GradientStop { position: 0.67; color: Qt.darker( buttonColor, 1.3 ) }
-    }
-  */
+
     Text{
         id: buttonLabel
         anchors.fill: parent
@@ -71,7 +54,6 @@ Rectangle {
         horizontalAlignment:  Text.AlignHCenter
         verticalAlignment:  Text.AlignVCenter
         z:1
-        //   visible: label != ""
     }
 
     Image{
@@ -92,22 +74,17 @@ Rectangle {
         anchors.fill: parent    //stretch the area to the parent's dimension
         onClicked: buttonClick()
         hoverEnabled: true
+
         onEntered:
         {
-            //console.log(button.state)
             if ((button.state != 'disabled' ) && (button.state != 'checked' ))
-            {
                 button.state = "hover"
-                //   console.log('hover')
-            }
         }
+
         onExited:
         {
-            if ((button.state != 'disabled' ) && (button.state != 'checked' ))
-            {
+            if ( ( button.state != 'disabled' ) && (button.state != 'checked' ) )
                 button.state = "normal"
-                // console.log('normal')
-            }
         }
     }
 
@@ -136,15 +113,6 @@ Rectangle {
         }
     ]
 
-    //change the color of the button when pressed
-    //  color: buttonMouseArea.pressed ? Qt.darker(buttonColor, 1.5) : buttonColor
-
-    //animate the color whenever the color property changes
-    //  Behavior on color { ColorAnimation{ duration: 55} }
-
     //scale the button when pressed
     scale: buttonMouseArea.pressed ? 1.05 : 1.00
-
-    //Animate the scale property change
-    //    Behavior on scale { NumberAnimation{ duration: 50} }
 }

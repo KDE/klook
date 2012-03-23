@@ -24,11 +24,7 @@
 
 #include "file.h"
 
-#include <QtCore/QThread>
-#include <QtCore/QVariant>
-
-
-//class QStringList;
+#include <QThread>
 #include <QStringList>
 
 class WorkerThread : public QThread

@@ -21,12 +21,10 @@
 
 #include "filemodel.h"
 
-#include <QtCore/QtDebug>
-
-FileModel::FileModel(ListItem *prototype, QObject *parent)
-    : QAbstractListModel(parent)
+FileModel::FileModel( ListItem *prototype, QObject *parent )
+    : QAbstractListModel( parent )
 {
-    setRoleNames(prototype->roleNames());
+    setRoleNames( prototype->roleNames()) ;
 }
 
 FileModel::~FileModel()
@@ -36,59 +34,59 @@ FileModel::~FileModel()
 
 int FileModel::rowCount(const QModelIndex &parent) const
 {
-    Q_UNUSED(parent)
+    Q_UNUSED( parent )
     return m_list.count();
 }
 
-QVariant FileModel::data(const QModelIndex &index, int role) const
+QVariant FileModel::data( const QModelIndex &index, int role ) const
 {
-    if(index.row() < 0 || index.row() >= m_list.size())
+    if ( index.row() < 0 || index.row() >= m_list.size() )
         return QVariant();
     return m_list.at(index.row())->data(role);
 }
 
-bool FileModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool FileModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-    if(!index.isValid())
+    if ( !index.isValid() )
         return false;
 
-    if(role == ListItem::FilePathRole)
-        m_list[index.row()]->setPath(value.toString());
-    else if(role == ListItem::MimeTypeRole)
-        m_list[index.row()]->setType(value.toString());
+    if ( role == ListItem::FilePathRole )
+        m_list[ index.row() ]->setPath( value.toString() );
+    else if ( role == ListItem::MimeTypeRole )
+        m_list[ index.row() ]->setType( value.toString() );
 
-    emit dataChanged(index, index);
+    emit dataChanged( index, index );
 
     return true;
 }
 
-void FileModel::appendRow(ListItem *item)
+void FileModel::appendRow( ListItem *item )
 {
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    m_list.append(item);
+    beginInsertRows( QModelIndex(), rowCount(), rowCount() );
+    m_list.append( item );
     endInsertRows();
 }
 
-void FileModel::refreshRow(const QModelIndex & index)
+void FileModel::refreshRow( const QModelIndex & index )
 {
-    emit dataChanged(index, index);
+    emit dataChanged( index, index );
 }
 
-QModelIndex FileModel::indexFromRowNumber(int row)
+QModelIndex FileModel::indexFromRowNumber( int row )
 {
-    return index(row);
+    return index( row );
 }
 
 void FileModel::reset()
 {
-    beginRemoveRows(QModelIndex(), 0, rowCount() - 1 );
+    beginRemoveRows( QModelIndex(), 0, rowCount() - 1 );
     m_list.clear();
     endRemoveRows();
 }
 
-void FileModel::append(QVariant path, QVariant type)
+void FileModel::append( QVariant path, QVariant type )
 {
-    appendRow(new ListItem(path.toString(), type.toString(), this));
+    appendRow( new ListItem(path.toString(), type.toString(), this ) );
 }
 
 QString ListItem::path() const
@@ -101,9 +99,9 @@ QString ListItem::type() const
     return m_type;
 }
 
-QVariant ListItem::data(int role)
+QVariant ListItem::data( int role )
 {
-    switch(role)
+    switch ( role )
     {
         case FilePathRole:
             return path();
@@ -120,8 +118,8 @@ QVariant ListItem::data(int role)
 QHash<int, QByteArray> ListItem::roleNames() const
 {
     QHash<int, QByteArray> names;
-    names[FilePathRole] = "filePath";
-    names[MimeTypeRole] = "mimeType";
+    names[ FilePathRole ] = "filePath";
+    names[ MimeTypeRole ] = "mimeType";
     return names;
 }
 
@@ -130,7 +128,7 @@ bool ListItem::loaded()
     return m_isLoaded;
 }
 
-void ListItem::setLoaded(bool b)
+void ListItem::setLoaded( bool b )
 {
     m_isLoaded = b;
     emit imageChanged();

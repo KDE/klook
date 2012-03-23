@@ -26,17 +26,12 @@ Rectangle {
     //identifier of the item
     id: playButton
 
-    // attaches to the Image element's image content
-    property string imageUrl
-
     // the color highlight when the mouse hovers on the rectangle
     property color onHoverColor: Qt.darker( borderColor, 1.3 )
     property color borderColor: "#7A8182"
 
     // buttonColor is set to the button's main color
     property color buttonColor: "#61BDCACD"
-
-    property real labelSize: 12
 
     //set appearance properties
     radius: 6

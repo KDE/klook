@@ -20,57 +20,25 @@
  */
 
 #include "declarativeviewer.h"
-#include "workerthread.h"
-
-#include <QDebug>
-#include <QFile>
-#include <QDir>
-#include <QFileInfo>
-#include <QPixmap>
-#include <QApplication>
-#include <QDesktopWidget>
-#include <QGraphicsScene>
-#include <QProcess>
-#include <QObject>
-#include <QCursor>
-#include <QAction>
-#include <QFile>
-#include <QTextStream>
-#include <QTextDocument>
-#include <QRegion>
-#include <QRect>
-
-#include <QGLWidget>
-
-
-#include <QDeclarativeEngine>
-#include <QDeclarativeContext>
-#include <QtDeclarative>
-#include <QtDeclarative/qdeclarative.h>
 
 #include <QtDBus/QDBusInterface>
 #include <QtDBus/QDBusReply>
 
-#include <plasma/theme.h>
 #include <kmimetypetrader.h>
-#include <kservice.h>
-#include <ksharedptr.h>
-#include <kmimetype.h>
 
 #include "video.h"
 #include "text.h"
-//#include "myserver.h"
 #include "previewgenerator.h"
 #include "previewprovider.h"
 #include "filemodel.h"
+#include "workerthread.h"
 
 #include <QX11Info>
 
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
-#include <X11/Xutil.h>
-#include <X11/Xdefs.h>
 
+//#include <klocalizedstring.h>
 
 static int header_height = 27;
 static int border_width = 2;
@@ -86,28 +54,19 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     , m_isEmbedded( false )
     , m_isGallery( false )
     , m_currentFile( 0 )
-    //, m_isActualSize( false )
     , m_region( FRAME_REGION )
     , m_mediaObject( 0 )
     , m_videoWidget( 0 )
     , m_width( 600 )
     , m_height( 427 )
-    , m_server( 0 )
     , m_thread( 0 )
 {
     setOptimizationFlags( QGraphicsView::DontSavePainterState );
     setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate);
 
-    //setItemIndexMethod(QGraphicsScene::NoIndex);
-
     setAttribute( Qt::WA_TranslucentBackground );
-    //setAttribute(Qt::WA_OpaquePaintEvent);
-    //setAttribute(Qt::WA_NoSystemBackground);
-    //viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
-    //viewport()->setAttribute(Qt::WA_NoSystemBackground);
     setStyleSheet( "background:transparent;" );
 
-    //setAutoFillBackground( true );
     setMouseTracking( true );
 
     connect( engine(), SIGNAL( quit() ), SLOT( close() ) );
@@ -133,28 +92,22 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
 
     setRegisterTypes();
 
-    // QColor color1(Plasma::Theme::defaultTheme()->color(Plasma::Theme::ViewBackgroundColor  ));
-    //setBackgroundBrush(color1);
-
     //Check whether the KDE effects are included
     QDBusInterface remoteApp( "org.kde.kwin", "/KWin", "org.kde.KWin" );
     QDBusReply<bool> reply = remoteApp.call( "compositingActive" );
     if ( reply.isValid() )
     {
         if (reply.value())
-        {
             rootContext()->setContextProperty( "effects", "on" );
-        }
         else
-        {
             rootContext()->setContextProperty( "effects", "off" );
-        }
     }
     else
     {
         rootContext()->setContextProperty( "effects", "off" );
         qDebug() << "DBus reply is not valid";
     }
+
     //Remove standart KDE title
     setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
 
@@ -173,26 +126,25 @@ DeclarativeViewer::~DeclarativeViewer()
 {
     qDeleteAll( m_files );
 
-    delete m_server;
     delete m_thread;
 }
 
 void DeclarativeViewer::setRegisterTypes()
 {
-
     qmlRegisterType<MyVideo>( "Widgets", 1, 0, "Video" );
     qmlRegisterType<MyText>( "Widgets", 1, 0, "PlainText" );
 
     QDesktopWidget dw;
     QRect r = dw.screenGeometry(this);
-    rootContext()->setContextProperty( "DWigth",r.width());
-    rootContext()->setContextProperty( "DHeight",r.height());
-    rootContext()->setContextProperty( "fileModel", m_fileModel);
-    rootContext()->setContextProperty("previewGenerator", PreviewGenerator::createInstance());
+    rootContext()->setContextProperty( "DWigth", r.width() );
+    rootContext()->setContextProperty( "DHeight", r.height() );
+    rootContext()->setContextProperty( "fileModel", m_fileModel );
+    rootContext()->setContextProperty("previewGenerator", PreviewGenerator::createInstance() );
     rootContext()->setContextProperty( "cppObject",  this );
     rootContext()->setContextProperty( "effects", "on" );
     rootContext()->setContextProperty( "actualSize", "off" );
     rootContext()->setContextProperty( "openText",  tr( "Open in..." ) );
+//    rootContext()->setContextProperty( "openText",  i18n( "Open in..." ) );
     rootContext()->setContextProperty( "fileName", "" );
     rootContext()->setContextProperty( "fileUrl", "" );
     rootContext()->setContextProperty( "fileType", "Undefined" );
@@ -203,20 +155,12 @@ void DeclarativeViewer::setRegisterTypes()
 void DeclarativeViewer::startWorkingThread()
 {
     delete m_thread;
-    qDebug("DeclarativeViewer::startWorkingThread(): ***");
+    m_thread = new WorkerThread( m_urls );
 
-    m_thread = 0;
-    if (!m_thread)
-    {
-        qDebug("DeclarativeViewer::startWorkingThread()");
+    connect( m_thread, SIGNAL( fileProcessed( const File* ) ), SLOT( newFileProcessed( const File* ) ) );
+    connect( m_thread, SIGNAL( fail() ), SLOT( showNoFilesNotification() ) );
 
-        m_thread = new WorkerThread(m_urls);
-
-        connect( m_thread, SIGNAL( fileProcessed(const File*)), SLOT(newFileProcessed(const File*)));
-        connect( m_thread, SIGNAL( fail()), SLOT(showNoFilesNotification()));
-
-        m_thread->start();
-    }
+    m_thread->start();
 }
 
 void DeclarativeViewer::createVideoObject( const QString& filePath )
@@ -229,7 +173,7 @@ void DeclarativeViewer::createVideoObject( const QString& filePath )
     m_videoWidget = new Phonon::VideoWidget();
     m_videoWidget->hide();
 
-    Phonon::createPath( m_mediaObject, m_videoWidget);
+    Phonon::createPath( m_mediaObject, m_videoWidget );
     QObject::connect( m_mediaObject, SIGNAL( metaDataChanged() ), this, SLOT( onMetaDataChanged() ) );
 }
 
@@ -256,6 +200,7 @@ void DeclarativeViewer::onMetaDataChanged()
             centerWidget( sz );
         }
     }
+
     m_startFullScreen = false;
     if ( m_mediaObject )
     {
@@ -271,10 +216,9 @@ void DeclarativeViewer::setActualSize()
     updateSize( m_currentFile );
 }
 
-void DeclarativeViewer::setActualSizeParam(bool value)
+void DeclarativeViewer::setActualSizeParam( bool value )
 {
-    //m_isActualSize = value;
-    //rootContext()->setContextProperty( "actualSize", (value) ? "true" : "false");
+    Q_UNUSED( value )
 }
 
 void DeclarativeViewer::setFullScreen()
@@ -302,7 +246,7 @@ QSize DeclarativeViewer::getActualSize()
     {
         return QSize();
     }
-    if (m_currentFile->type() == File::Video)
+    if ( m_currentFile->type() == File::Video )
     {
         return QSize();
     }
@@ -320,23 +264,24 @@ QSize DeclarativeViewer::getActualSize()
         QSize size = getTextWindowSize(m_currentFile->name());
         return size;
     }
+
     return QSize();
 }
 
 QSize DeclarativeViewer::calculateViewSize( const QSize& sz )
 {
-    QSize szItem =  sz;
+    QSize szItem = sz;
     QDesktopWidget dw;
-    QRect rectDesktop = dw.screenGeometry(this);
+    QRect rectDesktop = dw.screenGeometry( this );
 
     int wDesktop = rectDesktop.width() * 8 / 10;
     int hDesktop = rectDesktop.height() * 8 / 10;
-
 
     szItem = inscribedRectToRect( sz, QSize( wDesktop, hDesktop ) );
 
     szItem.setWidth( ( szItem.width() < minimumWidth() ) ? minimumWidth() : szItem.width() ) ;
     szItem.setHeight( (szItem.height() < minimumHeight() ) ? minimumHeight() : szItem.height() );
+
     return szItem;
 }
 
@@ -344,10 +289,12 @@ QSize DeclarativeViewer::calculateViewSize( const QSize& sz )
 QSize DeclarativeViewer::inscribedRectToRect( const QSize& sz1, const QSize& sz2 )
 {
     QSize sz = sz1;
+
     if ( ( sz.height() > sz2.height() ) || ( sz.width() > sz2.width() ) )
     {
         sz.scale( sz2, Qt::KeepAspectRatio );
     }
+
     return sz;
 }
 
@@ -358,6 +305,7 @@ void DeclarativeViewer::updateSize( const File* file )
         m_startFullScreen = false;
         return;
     }
+
     if ( file->type() == File::Video )
     {
         createVideoObject( file->name() );
@@ -419,16 +367,18 @@ void DeclarativeViewer::changeContent()
 {
     if ( !m_currentFile  ) return;
 
-    ViewMode mode = (m_files.size() == 1) ? Single : Multi;
-    setViewMode(mode);
+    ViewMode mode = ( m_files.size() == 1 ) ? Single : Multi;
+    setViewMode( mode );
 
-    KService::Ptr ptr = KMimeTypeTrader::self()->preferredService(m_currentFile->mime());
-    if (ptr.isNull())
-        rootContext()->setContextProperty( "openText", tr( "Open" ));
+    KService::Ptr ptr = KMimeTypeTrader::self()->preferredService( m_currentFile->mime() );
+    if ( ptr.isNull() )
+//        rootContext()->setContextProperty( "openText", i18n( "Open" ) );
+    rootContext()->setContextProperty( "openText", tr( "Open" ) );
     else
     {
         KService *serv = ptr.data();
-        rootContext()->setContextProperty( "openText",  (tr( "Open in " ) + serv->name() ) );
+//        rootContext()->setContextProperty( "openText",  ( i18n( "Open in " ) + serv->name() ) );
+        rootContext()->setContextProperty( "openText",  ( tr( "Open in " ) + serv->name() ) );
     }
 
     QFileInfo fi( m_currentFile->name() );
@@ -439,13 +389,12 @@ void DeclarativeViewer::changeContent()
 
 void DeclarativeViewer::updateContent( int index )
 {
-
     if (index == -1)
     {
         rootContext()->setContextProperty( "openText",  tr( "Open in..." ) );
+//        rootContext()->setContextProperty( "openText",  i18n( "Open in..." ) );
         rootContext()->setContextProperty( "fileName",  tr( "Elements: " ) + QString::number( m_files.count() ) );
-        //   if (!isFullScreen())
-        //setActualSizeParam(true);
+//        rootContext()->setContextProperty( "fileName",  i18n( "Elements: " ) + QString::number( m_files.count() ) );
     }
     else
     {
@@ -454,35 +403,34 @@ void DeclarativeViewer::updateContent( int index )
     }
 }
 
-WidgetRegion DeclarativeViewer::calculateWindowRegion(QPoint mousePos)
+WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )
 {
     QPointF pos;
     pos = mousePos;
     QRectF r = rect();
     QRectF headerTitle;
-    //gallery button
-    //QRectF header1(6+42*2,border_widht+1,12,header_height- border_widht+1);
-    QRectF header1(6+42*2,border_width+1,60,header_height- border_width+1);
-    QRectF header2(r.width()-42*2-12-6,border_width+1,12,header_height- border_width+1);
+    QRectF header1( 6 + 42 * 2, border_width + 1, 60, header_height - border_width + 1 );
+    QRectF header2( r.width() - 42 * 2 - 12 - 6, border_width + 1, 12, header_height- border_width + 1 );
     QRegion headerR;
-    if (m_isSingleMode)
+
+    if ( m_isSingleMode )
     {
-        headerTitle.setRect(border_width+1,
-                            border_width+1,
-                            r.width() - border_width - 270,
-                            header_height - border_width+1);
-        headerR = headerR.united(headerTitle.toRect());
-        headerR = headerR.united(header2.toRect());
+        headerTitle.setRect( border_width + 1,
+                             border_width + 1,
+                             r.width() - border_width - 270,
+                            header_height - border_width + 1 );
+        headerR = headerR.united( headerTitle.toRect() );
+        headerR = headerR.united( header2.toRect() );
     }
     else
     {
-        headerTitle.setRect(6+42*3+12,
-                            border_width+1,
-                            r.width()-414,
-                            header_height- border_width+1);
-        headerR = headerR.united(headerTitle.toRect());
-        headerR = headerR.united(header1.toRect());
-        headerR = headerR.united(header2.toRect());
+        headerTitle.setRect( 6 + 42 * 3 + 12,
+                            border_width + 1,
+                            r.width() - 414,
+                            header_height- border_width + 1 );
+        headerR = headerR.united( headerTitle.toRect() );
+        headerR = headerR.united( header1.toRect() );
+        headerR = headerR.united( header2.toRect() );
     }
 
     QRectF topBorder( 0, 0, r.width(), border_width );
@@ -490,17 +438,17 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion(QPoint mousePos)
     QRectF rightBorder( r.width()-border_width, 0, border_width, r.height() );
     QRectF bottomBorder( 0, r.height()-border_width, r.width(), border_width );
 
-    if (headerR.contains(pos.toPoint()))
+    if ( headerR.contains( pos.toPoint() ) )
     {
         return HEADER_REGION;
     }
-    else if (topBorder.contains(pos))
+    else if ( topBorder.contains( pos ) )
     {
-        if (leftBorder.contains(pos))
+        if ( leftBorder.contains( pos ) )
         {
             return TOP_LEFT_CORNER_REGION;
         }
-        else if (rightBorder.contains(pos))
+        else if ( rightBorder.contains( pos ) )
         {
             return TOP_RIGHT_CORNER_REGION;
         }
@@ -509,13 +457,13 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion(QPoint mousePos)
             return TOP_BORDER_REGION;
         }
     }
-    else if (bottomBorder.contains(pos))
+    else if ( bottomBorder.contains( pos ) )
     {
-        if (leftBorder.contains(pos))
+        if ( leftBorder.contains( pos ) )
         {
             return BOTTOM_LEFT_CORNER_REGION;
         }
-        else if (rightBorder.contains(pos))
+        else if ( rightBorder.contains( pos ) )
         {
             return BOTTOM_RIGHT_CORNER_REGION;
         }
@@ -524,11 +472,11 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion(QPoint mousePos)
             return BOTTOM_BORDER_REGION;
         }
     }
-    else if (leftBorder.contains(pos))
+    else if ( leftBorder.contains( pos ) )
     {
         return LEFT_BORDER_REGION;
     }
-    else if (rightBorder.contains(pos))
+    else if ( rightBorder.contains( pos ) )
     {
         return RIGHT_BORDER_REGION;
     }
@@ -536,19 +484,18 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion(QPoint mousePos)
     return FRAME_REGION;
 }
 
-void DeclarativeViewer::mousePressEvent(QMouseEvent* event)
+void DeclarativeViewer::mousePressEvent( QMouseEvent* event )
 {
-    if (!isFullScreen())
+    if ( !isFullScreen() )
     {
-        m_region = calculateWindowRegion(event->pos());
+        m_region = calculateWindowRegion( event->pos() );
         if ( event->button() == Qt::LeftButton )
         {
             if ( m_region == HEADER_REGION )
             {
                 m_moving = true;
                 m_lastMousePosition = event->globalPos();
-                setCursor(QCursor(Qt::SizeAllCursor));
-                //QApplication::overrideCursor()->setShape(Qt::SizeAllCursor);
+                setCursor( QCursor( Qt::SizeAllCursor ) );
             }
             else if ( m_region != FRAME_REGION )
             {
@@ -563,7 +510,7 @@ void DeclarativeViewer::mousePressEvent(QMouseEvent* event)
 
 void DeclarativeViewer::mouseMoveEvent( QMouseEvent* event )
 {
-    QDeclarativeView::mouseMoveEvent(event);
+    QDeclarativeView::mouseMoveEvent( event );
     if ( isFullScreen() )
     {
         return;
@@ -576,23 +523,22 @@ void DeclarativeViewer::mouseMoveEvent( QMouseEvent* event )
 
     if ( event->buttons().testFlag( Qt::LeftButton ) && m_moving )
     {
-        if (viewport()->cursor().shape() != (Qt::SizeAllCursor))
-            viewport()->setCursor(QCursor(Qt::SizeAllCursor));
-        window()->move(window()->pos() + (event->globalPos() - m_lastMousePosition));
+        if ( viewport()->cursor().shape() != ( Qt::SizeAllCursor ) )
+            viewport()->setCursor( QCursor( Qt::SizeAllCursor ) );
+        window()->move( window()->pos() + ( event->globalPos() - m_lastMousePosition ) );
         m_lastMousePosition = event->globalPos();
-        //setActualSizeParam(false);
     }
-    else if ( event->buttons().testFlag(Qt::LeftButton) && m_resize)
+    else if ( event->buttons().testFlag( Qt::LeftButton ) && m_resize )
     {
-        QPoint p = mapToGlobal(event->pos()) - geometry().topLeft();
+        QPoint p = mapToGlobal( event->pos()) - geometry().topLeft();
         QPoint offset = event->globalPos() - m_lastMousePosition;
-        switch(m_region)
+        switch ( m_region )
         {
         case LEFT_BORDER_REGION:
-            if (offset.x()*(-1) + width() > minimumWidth())
+            if ( offset.x() * ( -1 ) + width() > minimumWidth() )
             {
-                window()->move((window()->pos() + offset).x(), y());
-                resize(offset.x()*(-1) + width(), height());
+                window()->move( ( window()->pos() + offset ).x(), y() );
+                resize( offset.x() * ( -1 ) + width(), height() );
                 m_lastMousePosition = event->globalPos();
             }
             break;
@@ -600,82 +546,81 @@ void DeclarativeViewer::mouseMoveEvent( QMouseEvent* event )
             if (offset.y()*(-1) + height() > minimumHeight())
             {
                 window()->move( x(), (window()->pos() + offset).y() );
-                resize( width(), offset.y()*(-1) + height() );
+                resize( width(), offset.y() * ( -1 ) + height() );
                 m_lastMousePosition = event->globalPos();
             }
             break;
         case TOP_LEFT_CORNER_REGION:
-            if (offset.x()*(-1) + width() > minimumWidth())
+            if ( offset.x() * ( -1 ) + width() > minimumWidth() )
             {
-                window()->move((window()->pos() + offset).x(), y());
-                resize(offset.x()*(-1) + width(), height());
-                m_lastMousePosition.setX(event->globalPos().x());
+                window()->move( ( window()->pos() + offset).x(), y() );
+                resize( offset.x() * ( -1 ) + width(), height() );
+                m_lastMousePosition.setX( event->globalPos().x() );
             }
-            if (offset.y()*(-1) + height() > minimumHeight())
+            if ( offset.y() * ( -1 ) + height() > minimumHeight() )
             {
-                window()->move( x(), (window()->pos() + offset).y() );
-                resize( width(), offset.y()*(-1) + height() );
-                m_lastMousePosition.setY(event->globalPos().y());
+                window()->move( x(), ( window()->pos() + offset ).y() );
+                resize( width(), offset.y() * ( -1 ) + height() );
+                m_lastMousePosition.setY( event->globalPos().y() );
             }
             break;
         case TOP_RIGHT_CORNER_REGION:
-            resize(p.x(), height());
-            if (offset.y()*(-1) + height() > minimumHeight())
+            resize( p.x(), height() );
+            if ( offset.y() * ( -1 ) + height() > minimumHeight() )
             {
-                window()->move( x(), (window()->pos() + offset).y() );
-                resize( width(), offset.y()*(-1) + height() );
-                m_lastMousePosition.setY(event->globalPos().y());
+                window()->move( x(), ( window()->pos() + offset ).y() );
+                resize( width(), offset.y() * ( -1 ) + height() );
+                m_lastMousePosition.setY( event->globalPos().y() );
             }
             break;
         case BOTTOM_LEFT_CORNER_REGION:
-            resize(width() , p.y());
-            if (offset.x()*(-1) + width() > minimumWidth())
+            resize( width() , p.y() );
+            if ( offset.x() * ( -1 ) + width() > minimumWidth() )
             {
-                window()->move((window()->pos() + offset).x(), y());
-                resize(offset.x()*(-1) + width(), height());
-                m_lastMousePosition.setX(event->globalPos().x());
+                window()->move( ( window()->pos() + offset ).x(), y() );
+                resize( offset.x() * ( -1 ) + width(), height() );
+                m_lastMousePosition.setX( event->globalPos().x() );
             }
             break;
         case RIGHT_BORDER_REGION:
-            resize(p.x(), height());
+            resize( p.x(), height() );
             break;
         case BOTTOM_BORDER_REGION:
-            resize(width() , p.y());
+            resize( width() , p.y() );
             break;
         default:
-            resize(p.x(), p.y());
+            resize( p.x(), p.y() );
         }
-        //setActualSizeParam(false);
     }
     else
     {
-        m_region = calculateWindowRegion(event->pos());
+        m_region = calculateWindowRegion( event->pos() );
         if ( ( m_region == TOP_BORDER_REGION ) || ( m_region == BOTTOM_BORDER_REGION ) )
         {
-            if (viewport()->cursor().shape() != (Qt::SizeVerCursor))
+            if ( viewport()->cursor().shape() != ( Qt::SizeVerCursor ) )
             {
-                viewport()->setCursor(QCursor(Qt::SizeVerCursor));
+                viewport()->setCursor( QCursor(Qt::SizeVerCursor) );
             }
         }
-        else if ((m_region == LEFT_BORDER_REGION) || (m_region == RIGHT_BORDER_REGION))
+        else if ( ( m_region == LEFT_BORDER_REGION ) || ( m_region == RIGHT_BORDER_REGION ) )
         {
-            if (viewport()->cursor().shape() != (Qt::SizeHorCursor))
+            if ( viewport()->cursor().shape() != ( Qt::SizeHorCursor ) )
             {
-                viewport()->setCursor(QCursor(Qt::SizeHorCursor));
+                viewport()->setCursor( QCursor(Qt::SizeHorCursor ) );
             }
         }
-        else if ((m_region == TOP_LEFT_CORNER_REGION) || (m_region == BOTTOM_RIGHT_CORNER_REGION))
+        else if ( ( m_region == TOP_LEFT_CORNER_REGION ) || ( m_region == BOTTOM_RIGHT_CORNER_REGION ) )
         {
-            if (viewport()->cursor().shape() != ( Qt::SizeFDiagCursor ))
+            if ( viewport()->cursor().shape() != ( Qt::SizeFDiagCursor ) )
             {
-                viewport()->setCursor(QCursor(  Qt::SizeFDiagCursor ));
+                viewport()->setCursor( QCursor( Qt::SizeFDiagCursor ) );
             }
         }
-        else if ((m_region == TOP_RIGHT_CORNER_REGION) || (m_region == BOTTOM_LEFT_CORNER_REGION))
+        else if ( ( m_region == TOP_RIGHT_CORNER_REGION ) || ( m_region == BOTTOM_LEFT_CORNER_REGION ) )
         {
-            if (viewport()->cursor().shape() != ( Qt::SizeBDiagCursor ))
+            if ( viewport()->cursor().shape() != ( Qt::SizeBDiagCursor ) )
             {
-                viewport()->setCursor(QCursor(  Qt::SizeBDiagCursor ));
+                viewport()->setCursor( QCursor( Qt::SizeBDiagCursor ) );
             }
         }
         else if ( viewport()->cursor().shape() != ( Qt::ArrowCursor ) )
@@ -687,7 +632,7 @@ void DeclarativeViewer::mouseMoveEvent( QMouseEvent* event )
 
 void DeclarativeViewer::mouseReleaseEvent( QMouseEvent* event )
 {
-    if (!isFullScreen())
+    if ( !isFullScreen() )
     {
         if ( m_moving )
         {
@@ -705,27 +650,25 @@ void DeclarativeViewer::mouseReleaseEvent( QMouseEvent* event )
     QDeclarativeView::mouseReleaseEvent( event );
 }
 
-void DeclarativeViewer::newFileProcessed(const File *file)
+void DeclarativeViewer::newFileProcessed( const File *file )
 {
-    qDebug() << "DeclarativeViewer::newFileProcessed():   " << file->name();
-    if(m_files.empty())
+    if ( m_files.empty() )
     {
-        m_currentFile = const_cast<File *>(file);
+        m_currentFile = const_cast<File *>( file );
         changeContent();
         setActualSize();
         show();
     }
     else {
-        setViewMode(Multi);
+        setViewMode( Multi );
     }
-    m_files.append(file);
-    //updateSize(file);
+
+    m_files.append( file );
     emit fileData( QVariant( file->name() ), QVariant( file->type() ) );
 }
 
 void DeclarativeViewer::showNoFilesNotification()
 {
-//    QMessageBox::information( 0, tr ( "Warning" ), tr( "Sorry no suitable files were found" ) );
     close();
 }
 
@@ -747,14 +690,9 @@ void DeclarativeViewer::setViewMode( DeclarativeViewer::ViewMode mode )
 
 void DeclarativeViewer::handleMessage( const QString& message )
 {
-    qDebug() << "DeclarativeViewer::handleMessage():   message is " << message;
-
     QStringList params = message.split( ";", QString::SkipEmptyParts );
     processArgs( params );
 
-    qDebug() << "DeclarativeViewer::handleMessage():   m_urls is " << m_urls;
-
-//    qDeleteAll( m_files );
     m_files.clear();
 
     startWorkingThread();
@@ -766,15 +704,8 @@ void DeclarativeViewer::handleMessage( const QString& message )
     emit needToShow();
 }
 
-
 int DeclarativeViewer::processArgs( const QStringList& args )
 {
-    qDebug( "DeclarativeViewer::processArgs: arguments:   %d", args.count() );
-    for ( int n = 0; n < args.count(); n++ )
-    {
-        qDebug( "DeclarativeViewer::processArgs:   %d = %s", n, args[ n ].toLocal8Bit().data() );
-    }
-
     m_isEmbedded = false;
     m_urls.clear();
 
@@ -791,15 +722,12 @@ int DeclarativeViewer::processArgs( const QStringList& args )
                 {
                     bool ok_x, ok_y, ok_width, ok_height;
 
-                    qDebug() << "DeclarativeViewer::processArgs:   it is embedded regime; url is " << args[ n ];
-
                     m_isEmbedded = true;
                     m_urls << args[ n ];
                     n++;
 
                     if ( args[ n ] != "-c" )
                     {
-                        qDebug() << "Error: expected parameter for -c";
                         printf("Error: expected parameter for -c\r\n");
                         return ( -1 );
                     }
@@ -813,10 +741,6 @@ int DeclarativeViewer::processArgs( const QStringList& args )
                     n++;
                     m_rcIcon.setHeight( args[ n ].toInt( &ok_height ) );
 
-                    qDebug() << "rect is " << m_rcIcon;
-
-//                    rootContext()->setContextProperty( "embedded", "true" );
-
                     emit setEmbeddedState();
                 }
                 else
@@ -827,7 +751,6 @@ int DeclarativeViewer::processArgs( const QStringList& args )
             }
             else
             {
-                qDebug() << "Error: expected parameters for -embedded";
                 printf("Error: expected parameters for -embedded\r\n");
                 return ( -1 );
             }
@@ -836,9 +759,7 @@ int DeclarativeViewer::processArgs( const QStringList& args )
 
     if ( !m_isEmbedded )
     {
-        qDebug( "DeclarativeViewer::processArgs:   it is simple regime (not embedded)" );
         m_urls << args;
-        qDebug() << "DeclarativeViewer::processArgs:   m_urls are " << m_urls;
     }
 
     return 0;
@@ -846,7 +767,9 @@ int DeclarativeViewer::processArgs( const QStringList& args )
 
 void DeclarativeViewer::init( const QStringList& urls, bool embedded, const QRect& rc )
 {
-
+    Q_UNUSED( urls )
+    Q_UNUSED( embedded )
+    Q_UNUSED( rc )
 }
 
 void DeclarativeViewer::onSetGallery( bool isGallery )
@@ -859,34 +782,31 @@ QSize DeclarativeViewer::getTextWindowSize(QString url)
     QFile f( url );
     if ( !f.open(QIODevice::ReadOnly | QIODevice::Text) )
         return QSize();
+
     QString text = f.readAll();
-    QTextDocument* doc = new QTextDocument(text);
+    QTextDocument* doc = new QTextDocument( text );
     QSize size =  doc->documentLayout()->documentSize().toSize();
     delete doc;
-    size.setWidth(size.width()+34); //+scroolBar width + content margins of QPlainTextEdit
-    size.setHeight(size.height()+10);
+    size.setWidth( size.width() + 34 );
+    size.setHeight( size.height() + 10 );
 
     QDesktopWidget dw;
-    QRect rectDesktop = dw.screenGeometry(this);
+    QRect rectDesktop = dw.screenGeometry( this );
     m_width = rectDesktop.width();
     m_height = rectDesktop.height();
 
-    if (size.width() > m_width*0.8)
+    if ( size.width() > m_width * 0.8 )
     {
-        size.setWidth(m_width*0.8);
+        size.setWidth( m_width * 0.8 );
     }
-    if (size.height() > m_height*0.8)
+    if ( size.height() > m_height * 0.8 )
     {
-        size.setHeight(m_height*0.8);
+        size.setHeight( m_height * 0.8 );
     }
 
-//    size.setHeight( size.height() + height_offset );
     size.setHeight( size.height() + ( m_isEmbedded ? 0 : height_offset ) );
-
     size.setWidth( ( size.width() < minimumWidth() ) ? minimumWidth() : size.width() ) ;
     size.setHeight( (size.height() < minimumHeight() ) ? minimumHeight() : size.height() );
-
-
 
     return size;
 }

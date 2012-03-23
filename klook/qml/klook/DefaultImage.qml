@@ -26,8 +26,7 @@ Image {
     source: "images/pla-empty-box.png"
     width:  photosGridView.cellWidth - 20
     height: photosGridView.cellHeight - 20
-    fillMode: Image.PreserveAspectFit
+    fillMode: Image.Stretch
     smooth: true
-
     visible: albumWrapper.state === "inGrid"
 }

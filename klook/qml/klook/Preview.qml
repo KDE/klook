@@ -27,23 +27,21 @@ import QtQuick 1.0
 // update
 
 Image {
+    source: "image://preview/" + filePath + "%" + Math.random( 10 )
+    width: Math.min( sourceSize.width, parent.width )
+    height: Math.min( sourceSize.height, parent.height )
+    fillMode: Image.PreserveAspectFit
+    anchors.centerIn: parent
+    smooth: true
+    asynchronous: true
+    visible: albumWrapper.state === "inGrid"
 
-        source: "image://preview/" + filePath + "%" + Math.random(10)
-        width: Math.min(sourceSize.width, parent.width)
-        height: Math.min(sourceSize.height, parent.height)
-        fillMode: Image.PreserveAspectFit
-        anchors.centerIn: parent
-        smooth: true
-        asynchronous: true
-        //z: 0
-        visible: albumWrapper.state === "inGrid"
-
-        Connections
+    Connections
+    {
+        target: fileModel
+        onDataChanged:
         {
-            target: fileModel
-            onDataChanged:
-            {
-                source = "image://preview/" + filePath + "%" + Math.random(10)                
-            }
+            source = "image://preview/" + filePath + "%" + Math.random( 10 )
         }
+    }
 }

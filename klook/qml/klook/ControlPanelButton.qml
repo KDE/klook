@@ -23,8 +23,6 @@
 import QtQuick 1.0
 
 Rectangle {
-
-    //identifier of the item
     id: controlPanelButton
 
     property string name
@@ -65,5 +63,4 @@ Rectangle {
 
     //scale the button when pressed
     scale: buttonMouseArea.pressed ? 1.05 : 1.00
-
 }

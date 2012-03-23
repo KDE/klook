@@ -38,11 +38,7 @@ Rectangle {
 
     signal appendItem( string path, int type )
     signal setGalleryView( bool isGallery )
-    /*
-    function updateData( text, type ) {
-       myModel.append( { filePath: text, fileType: type } )
-    }
-*/
+
     function setFullScreen()
     {
         if ( mainWindow.state === 'fullscreen' )
@@ -57,7 +53,6 @@ Rectangle {
 
     function setEmbeddedState()
     {
-        console.log("set to embedded")
         mainWindow.state = 'embedded'
     }
 
@@ -79,9 +74,10 @@ Rectangle {
     }
 
     function updatePanel()
-    {        
+    {
         controlPanelTimer.stop()
         panel.opacity = 1
+
         if ( ( mainWindow.state === "windowed" ) || ( mainWindow.state === "embedded" ) )
         {
             if ( ( albumWrapper.state === 'fullscreen' ) && ( currentFileType === 2 ) )
@@ -96,12 +92,14 @@ Rectangle {
             else
                 panel.visible = true
         }
+
         if ( !mouseControl.containsMouse )
         {
             controlPanelTimer.start()
         }
     }
 
+    // calculates size of grid item
     function getCellSize( countItems )
     {
         var w = ( countItems > 20 ) ? ( photosGridView.width - scrollBar.width * 2 ) : ( photosGridView.width - 2 )
@@ -137,13 +135,13 @@ Rectangle {
         setGalleryView( albumWrapper.state === 'inGrid' )
     }
 
-    Component.onCompleted:{        
+    Component.onCompleted:
+    {
         cppObject.startWorkingThread()
         if ( embedded )
             mainWindow.state = 'embedded'
         else
             mainWindow.state = 'windowed'
-        console.log("onCompleted (state is " + mainWindow.state + ")" )
     }
 
     function setGallery()
@@ -155,7 +153,6 @@ Rectangle {
         {
             albumWrapper.state = 'inGrid'
             photosGridView.currentIndex = photosListView.currentIndex
-
         }
         else
         {
@@ -180,10 +177,7 @@ Rectangle {
         anchors.left: parent.left; anchors.leftMargin: 1
         anchors.top: parent.top; anchors.topMargin: 1
         transformOrigin: Item.Center
-        //spacing: 60
         z: 10
-
-        property color buttonColor: "#dadada"
 
         gradient: Gradient {
             GradientStop { position: 0.0; color: Qt.lighter( "#dadada", 1.1 ) }
@@ -203,6 +197,7 @@ Rectangle {
                 photosListView.decrementCurrentIndex()
             }
         }
+
         Button {
             id: nextButton
             buttonWidth: 42
@@ -210,6 +205,7 @@ Rectangle {
             anchors.left: prevButton.right; anchors.leftMargin: 0; anchors.verticalCenter: parent.verticalCenter
             name: 'next'
             visible: viewMode === "multi"
+
             onButtonClick:
             {
                 if ( photosListView.currentIndex === -1 )
@@ -217,6 +213,7 @@ Rectangle {
                 photosListView.incrementCurrentIndex()
             }
         }
+
         Button {
             id: galleryButton
             buttonWidth: 42
@@ -237,11 +234,9 @@ Rectangle {
             anchors.verticalCenter: nextButton.verticalCenter
             text: fileName
             anchors.left: ( viewMode === "multi" ) ? galleryButton.right : parent.left
-            //anchors.left: (viewMode == "multi") ? nextButton.right : parent.left
             anchors.leftMargin: 6
             anchors.right: openButton.left
             anchors.rightMargin: 6
-            //bind the text to the parent's text
             color: "#000000"
             font.pointSize: 8
             elide: Text.ElideMiddle
@@ -255,20 +250,23 @@ Rectangle {
             buttonHeight: 22
             anchors.right: quitButton.left; anchors.rightMargin: 0; anchors.verticalCenter: parent.verticalCenter
             name: 'fullscreen'
-            //state: 'disabled
+
             onButtonClick:{
                 setFullScreen()
             }
 
         }
+
         Button {
             id: quitButton
             buttonWidth: 42
             buttonHeight: 22
             anchors.right: parent.right; anchors.rightMargin: 6; anchors.verticalCenter: parent.verticalCenter
             name: 'close'
+
             onButtonClick: Qt.quit()
         }
+
         Button {
             id: openButton
             buttonWidth: 168
@@ -279,6 +277,7 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             name: 'open_in'
             label: openText
+
             onButtonClick: {
                 Qt.openUrlExternally( fileUrl )
                 Qt.quit()
@@ -302,7 +301,6 @@ Rectangle {
 
         Rectangle {
             id: drawer
-            //border.color: "#b5b5b5"
             anchors.rightMargin: 2
             anchors.leftMargin: 2
             anchors.bottomMargin: 2
@@ -320,17 +318,7 @@ Rectangle {
                 id: albumWrapper;
                 anchors.fill: parent
                 state: 'fullscreen'
-                /*
-                ListModel {
-                    id: myModel
-                }
 
-                VisualDataModel {
-                    id: visualModel; delegate: Delegate { }
-                    //model: fileModel
-                    model: myModel
-                }
-*/
                 Component {
                     id: highlight
                     Rectangle {
@@ -354,23 +342,20 @@ Rectangle {
                     onCurrentIndexChanged:
                     {
                         cppObject.updateContent ( currentIndex )
-                        //photosListView.positionViewAtIndex( currentIndex, ListView.Contain )
                     }
-                    highlight:  highlight
 
+                    highlight:  highlight
                     highlightFollowsCurrentItem: false
                     snapMode: GridView.SnapToRow
-                    //highlightRangeMode : GridView.StrictlyEnforceRange
-
                     clip: true
 
                     MouseArea {
                         id: mouseAreaGrid
                         anchors.fill: parent
                         anchors.rightMargin: 20
-
                         hoverEnabled: true
                         z: 20
+
                         onMousePositionChanged:
                         {
                             var mouseIndex = photosGridView.indexAt(mouseX + photosGridView.contentX, mouseY + photosGridView.contentY)
@@ -390,7 +375,7 @@ Rectangle {
                         }
 
                         onClicked: {
-                            if ((albumWrapper.state == 'inGrid') && (photosGridView.currentIndex !== -1)) {
+                            if ( ( albumWrapper.state == 'inGrid' ) && ( photosGridView.currentIndex !== -1 ) ) {
                                 albumWrapper.state = 'fullscreen'
                             }
                             setGalleryView( albumWrapper.state === 'inGrid' )
@@ -414,47 +399,41 @@ Rectangle {
                     }
                 }
 
-                //Rectangle { anchors.fill: parent; id: photosShade;  color: (effects === 'on') ? "#c8000000" :  "#333333"; width: parent.width; height: parent.height; opacity: 0; visible: opacity != 0.0 }
-
                 ListView {
                     id: photosListView;
-                    //model: visualModel.parts.list;
                     model: fileModel
                     delegate: SingleDelegate{}
                     orientation: Qt.Horizontal
-                    //width: drawer.width; height: drawer.height; //interactive: false
-
                     anchors.fill: parent
                     anchors.margins: 0
-                    highlightFollowsCurrentItem: true
                     spacing: 200
-                    onCurrentIndexChanged:
-                    {
-                        cppObject.updateContent ( currentIndex )                        
-                    }
-                    highlightRangeMode: ListView.StrictlyEnforceRange;
-                    //snapMode: ListView.SnapOneItem
                     clip: true
                     interactive: false
                     focus: true
+                    highlightFollowsCurrentItem: true
+                    highlightRangeMode: ListView.StrictlyEnforceRange;
                     highlightMoveSpeed: 5000
-                    //cacheBuffer: width
                     preferredHighlightBegin: 0; preferredHighlightEnd: 0  //this line means that the currently highlighted item will be central in the view
 
+                    onCurrentIndexChanged:
+                    {
+                        cppObject.updateContent ( currentIndex )
+                    }
                 }
+
                 Keys.onLeftPressed:
                 {
-                    if (photosListView.focus === true)
+                    if ( photosListView.focus === true )
                         photosListView.decrementCurrentIndex()
                 }
+
                 Keys.onRightPressed:
                 {
-                    if (photosListView.focus === true)
-                        if (photosListView.currentIndex === -1)
+                    if ( photosListView.focus === true )
+                        if ( photosListView.currentIndex === -1 )
                             photosListView.currentIndex = 0
                     photosListView.incrementCurrentIndex()
                 }
-
 
                 states: [
                     State {
@@ -466,9 +445,6 @@ Rectangle {
                         PropertyChanges { target: photosListView; focus: false  }
                         PropertyChanges { target: prevButton; state: 'disabled' }
                         PropertyChanges { target: nextButton; state: 'disabled' }
-//                        PropertyChanges { target: galleryButton; state: 'checked' }
-//                        PropertyChanges { target: fullscreenButton; state: 'disabled' }
-
                     },
                     State {
                         name: 'fullscreen';
@@ -479,8 +455,6 @@ Rectangle {
                         PropertyChanges { target: photosListView; focus: true  }
                         PropertyChanges { target: prevButton; state: 'normal' }
                         PropertyChanges { target: nextButton; state: 'normal' }
-//                        PropertyChanges { target: galleryButton; state: 'normal' }
-//                        PropertyChanges { target: fullscreenButton; state: 'normal' }
                     }
                 ]
 
@@ -493,28 +467,29 @@ Rectangle {
 
                 onStateChanged:
                 {
-                    if(albumWrapper.state === 'inGrid')
+                    if ( albumWrapper.state === 'inGrid' )
                         previewGenerator.start()
                     else
                     {
                         previewGenerator.stop()
                         photosListView.positionViewAtIndex( photosGridView.currentIndex, ListView.Contain )
                     }
-
                 }
             }
 
             ControlPanel {
-                id: panel;
+                id: panel
                 z: 1;
-                y: albumWrapper.height - 85                
+                y: albumWrapper.height - 85
+
                 Connections{
                     target: mainWindow
                     onStateChanged: { updatePanel() }
                 }
+
                 Connections{
                     target: albumWrapper
-                    onStateChanged: { updatePanel()}
+                    onStateChanged: { updatePanel() }
                 }
             }
 
@@ -522,22 +497,22 @@ Rectangle {
                 id : controlPanelTimer
                 interval: 2000; running: false;
                 repeat: false
+
                 onTriggered: panel.opacity = 0
             }
-
 
             MouseArea {
                 id: mouseControl
                 z: 0
-
                 anchors.fill: panel
                 hoverEnabled: true
+
                 onEntered:
                 {
                     controlPanelTimer.stop()
                     panel.opacity = 1
-                    //updatePanel()
                 }
+
                 onExited: controlPanelTimer.start()
             }
 
@@ -567,7 +542,6 @@ Rectangle {
 
             PropertyChanges { target: drawerBorder; color: "#dadada" }
             PropertyChanges { target: drawerBorder; visible: true }
-
         },
         State {
             name: "fullscreen"
@@ -577,7 +551,6 @@ Rectangle {
             PropertyChanges { target: row; visible: false }
 
             ParentChange { target: drawer; parent: mainWindow }
-//            PropertyChanges { target: drawer; anchors.margins: 0 }
             PropertyChanges { target: drawer; anchors.rightMargin: 0 }
             PropertyChanges { target: drawer; anchors.leftMargin: 0 }
             PropertyChanges { target: drawer; anchors.bottomMargin: 0 }
@@ -585,7 +558,6 @@ Rectangle {
 
             PropertyChanges { target: drawerBorder; color: "#3feaeaea" }
             PropertyChanges { target: drawerBorder; visible: false }
-
         },
         State {
             name: "embedded"
@@ -604,8 +576,6 @@ Rectangle {
 
             PropertyChanges { target: drawerBorder; color: "#dadada" }
             PropertyChanges { target: drawerBorder; visible: true }
-
         }
-
     ]
 }

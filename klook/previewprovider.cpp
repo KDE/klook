@@ -22,21 +22,19 @@
 #include "previewprovider.h"
 #include "previewgenerator.h"
 
-#include <QtCore/QAbstractItemModel>
-
-PreviewProvider::PreviewProvider() :
-    QDeclarativeImageProvider(Pixmap), previewGenerator(PreviewGenerator::createInstance())
+PreviewProvider::PreviewProvider()
+    : QDeclarativeImageProvider( Pixmap )
+    , previewGenerator( PreviewGenerator::createInstance() )
 {
-
 }
 
-QPixmap PreviewProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
+QPixmap PreviewProvider::requestPixmap( const QString& id, QSize* size, const QSize &requestedSize )
 {
-    QString str = id.left(id.lastIndexOf('%'));
-    QPixmap pixmap = previewGenerator->getPreviewPixmap(str);
+    QString str = id.left( id.lastIndexOf( '%' ) );
+    QPixmap pixmap = previewGenerator->getPreviewPixmap( str );
 
-    if(requestedSize.isValid())
-        pixmap = pixmap.scaled(requestedSize);
+    if ( requestedSize.isValid() )
+        pixmap = pixmap.scaled( requestedSize, Qt::KeepAspectRatio );
     *size = pixmap.size();
 
     return pixmap;

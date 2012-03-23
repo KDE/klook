@@ -3,7 +3,7 @@
 Summary:	Klook is a quick preview feature
 Name:		klook
 Version:	0.1
-Release:	39
+Release:	42
 License:	GPL v.3
 Group:		Graphical desktop
 Source:		%{name}-%{version}.tar.bz2
@@ -28,6 +28,8 @@ make
 %install
 cd klook-%{version}
 make INSTALL_ROOT=$RPM_BUILD_ROOT install
+#%__mkdir -p %{buildroot}/usr/share/locale/ru/LC_MESSAGES/
+#cp locale/ru/LC_MESSAGES/klook.mo %{buildroot}/usr/share/locale/ru/LC_MESSAGES/
 
 %files
 %{_libdir}/klook/main.qml
@@ -53,7 +55,6 @@ make INSTALL_ROOT=$RPM_BUILD_ROOT install
 %{_libdir}/klook/images/play-empty.png
 %{_libdir}/klook/images/close.png
 %{_libdir}/klook/images/slider.png
-%{_libdir}/klook/images/fullscreen.png
 %{_libdir}/klook/images/buttons/normal/prev_normal.png
 %{_libdir}/klook/images/buttons/normal/next_normal.png
 %{_libdir}/klook/images/buttons/normal/gallery_normal.png
@@ -80,6 +81,7 @@ make INSTALL_ROOT=$RPM_BUILD_ROOT install
 %{_libdir}/klook/images/buttons/press/close_press.png
 %{_libdir}/klook/translations/klook_ru.qm
 /usr/bin/klook
+#/usr/share/locale
 
 %changelog
 * Tue Feb 21 2012 abf

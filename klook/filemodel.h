@@ -33,16 +33,16 @@ class FileModel : public QAbstractListModel
   Q_OBJECT
 
 public:
-    explicit FileModel(ListItem* prototype, QObject* parent = 0);
+    explicit FileModel( ListItem* prototype, QObject* parent = 0 );
     ~FileModel();
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
     bool setData ( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
     const QHash<int, QByteArray> & roleNames () const;
-    void appendRow(ListItem* item);
-    void refreshRow(const QModelIndex &index);
-    QModelIndex indexFromRowNumber(int row);
+    void appendRow( ListItem* item );
+    void refreshRow( const QModelIndex &index );
+    QModelIndex indexFromRowNumber( int row );
     void reset();
 
 public slots:
@@ -53,23 +53,19 @@ private:
     QList<ListItem*> m_list;
 };
 
-class ListItem: public QObject {
-
+class ListItem: public QObject
+{
     Q_OBJECT
 
-    //Q_PROPERTY(bool loaded READ loaded WRITE setLoaded NOTIFY)
-
 public:
-
     enum
     {
         FilePathRole = Qt::UserRole + 1,
         MimeTypeRole
-
     };
 
     ListItem(QString filePath, QString fileType, QObject* parent = 0)
-        : QObject(parent), m_path(filePath), m_type(fileType) {}
+        : QObject( parent ), m_path( filePath ), m_type( fileType ) {}
     ListItem(QObject *parent = 0)
         : QObject(parent) {}
     virtual ~ListItem() {}
@@ -77,8 +73,8 @@ public:
     QHash<int, QByteArray> roleNames() const;
 public slots:
     bool loaded();
-    void setLoaded(bool b);
-    virtual QVariant data(int role);
+    void setLoaded( bool b );
+    virtual QVariant data( int role );
     virtual QString path() const;
     virtual QString type() const;
 

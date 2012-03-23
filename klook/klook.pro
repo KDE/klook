@@ -1,7 +1,7 @@
 TEMPLATE += app
 QT += gui declarative phonon dbus opengl
 
-DEFINES += QT_NO_DEBUG_OUTPUT
+#DEFINES += QT_NO_DEBUG_OUTPUT
 
 CONFIG += qt
 
@@ -77,7 +77,9 @@ OTHER_FILES += \
     translations/klook_ru.ts \
     qml/klook/images/play-empty.png \
     qml/klook/SingleDelegate.qml \
-    qtsingleapplication/qtsinglecoreapplication.pri
+    qtsingleapplication/qtsinglecoreapplication.pri \
+    resources/pla-empty-box.png \
+    resources/play-empty.png
 
 TRANSLATIONS = translations/klook_ru.ts
 

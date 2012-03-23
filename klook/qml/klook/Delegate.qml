@@ -30,11 +30,12 @@ Item {
 
     Component {
         id: imgVideoDelegate
+
         Item {
             id: imageItem
             anchors.centerIn: parent
-            Preview {
 
+            Preview {
                 id: emptyBox
             }
         }
@@ -64,11 +65,7 @@ Item {
 
     // function for getting delegate of loader element
     function bestDelegate( t ) {
-
-        //if ( t == 1  || t == 2)
             return imgVideoDelegate;
-        //else
-            //return txtDelegate;
     }
 
     Loader {
@@ -77,8 +74,5 @@ Item {
         width: gridDelegate.width - 20
         height: gridDelegate.height - 20
         sourceComponent: bestDelegate( mimeType )
-        //onLoaded: {
-            //                console.log( "onLoaded(): w = " + item.width );
-       // }
     }
 }

@@ -23,13 +23,11 @@
 #ifndef VIDEO_H
 #define VIDEO_H
 
-#include <QtGui/QGraphicsProxyWidget>
+#include <QGraphicsProxyWidget>
 #include <KDE/Phonon/VideoPlayer>
-#include <QDebug>
-
 
 class QHBoxLayout;
-class Phonon::MediaObject;
+//class Phonon::MediaObject;
 
 class MyVideo : public QGraphicsProxyWidget
 {
@@ -101,13 +99,13 @@ Q_SIGNALS:
 
 private:
     static Phonon::VideoPlayer* m_player;
+    Phonon::MediaObject* mediaObject;
+
+    QWidget*        m_wid;
+    QHBoxLayout*    m_layout;
+
     int m_videoWidth;
     int m_videoHeight;
-    QWidget* m_wid;
-    QHBoxLayout* m_layout;
-
-
-    Phonon::MediaObject *mediaObject;
 
     bool m_isPreview;
     bool m_isReady;

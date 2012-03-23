@@ -25,7 +25,6 @@
 #include <QtCore/QObject>
 #include <QtCore/QHash>
 
-
 #include <kio/previewjob.h>
 #include <kfileitem.h>
 #include <QDeclarativeEngine>
@@ -40,36 +39,36 @@ class PreviewGenerator : public QObject
 
 public:
     static PreviewGenerator *createInstance();
-    void setFiles(const QStringList& list);
+    void setFiles( const QStringList& list );
 
-    QPixmap getPreviewPixmap(QString filePath);
-    void setModel(FileModel *model);
+    QPixmap getPreviewPixmap( QString filePath );
+    void setModel( FileModel *model );
 
 public slots:
     void start();
     void stop();
 
 private slots:
-    void setPreview(const KFileItem&, const QPixmap&);
-    void previewFailed(KFileItem);
+    void setPreview( const KFileItem&, const QPixmap& );
+    void previewFailed( KFileItem );
     void deleteJob();
 
 private:
-    explicit PreviewGenerator(QObject *parent = 0);
+    explicit PreviewGenerator( QObject *parent = 0 );
 
-    void notifyModel(const QString& filePath);
+    void notifyModel( const QString& filePath );
 
-    QHash<QString, QPixmap> previews;    
-    QPixmap defaultPreview;
-    FileModel *m_model;
+    static PreviewGenerator*    instance;
 
-    static PreviewGenerator *instance;
-    QPixmap videoPixmap;
+    QHash<QString, QPixmap> previews;
 
+    QPixmap             defaultPreview;
+    QPixmap             videoPixmap;
 
-    KIO::PreviewJob *m_job;
-    QStringList m_plugins;
-    KFileItemList m_fileList;
+    FileModel*          m_model;
+    KIO::PreviewJob*    m_job;
+    QStringList         m_plugins;
+    KFileItemList       m_fileList;
 };
 
 #endif // PREVIEWGENERATOR_H

@@ -35,11 +35,6 @@ Rectangle{
 
     anchors.leftMargin: 20
     anchors.rightMargin: 20
-
-    //state: "videoPanel"
-
-    //anchors.bottom: parent.bottom;
-    //anchors.bottomMargin: 20
     anchors.horizontalCenter: parent.horizontalCenter
 
     property alias videoSlider: slider
@@ -53,39 +48,30 @@ Rectangle{
         GradientStop { position: 0.5; color: "#042443"}
     }
 
-
     Rectangle {
         id: controlPanelSmall
-        //x:0
-        //y:0
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.rightMargin: 1
 
-         clip: true
-
+        clip: true
         height: 49
-        //swidth: 200
-        //color: "#000000"
         color: "transparent"
         smooth: true
-        //opacity: 1
         radius: 5
         border.width: 1
         border.color: "#3378b9"
-        //border.color: "#ffffff"
 
         ControlPanelButton
         {
             id: prevItemButton
             name: 'go-previous'
+
             onButtonClick:
             {
                 photosListView.decrementCurrentIndex()
-                //console.log( "Go previuous was clicked..." )
                 controlPanel.state = mainWindow.updatePanelState()
-                //mainWindow.updatePanel()
             }
             Behavior on x { NumberAnimation { duration: 100 } }
         }
@@ -96,31 +82,28 @@ Rectangle{
         {
             id: nextItemButton
             name: 'go-next'
+
             onButtonClick:
             {
                 if ( photosListView.currentIndex === -1 )
                     photosListView.currentIndex = 0
                 photosListView.incrementCurrentIndex()
 
-                //console.log( "Go-next was clicked..." )
                 controlPanel.state = mainWindow.updatePanelState()
-                //mainWindow.updatePanel()
             }
-            //Behavior on x { NumberAnimation { duration: 100 } }
         }
 
         ControlPanelButton
         {
             id: galleryItemButton
             name: 'gallery'
+
             onButtonClick:
             {
                 setGallery()
-                //console.log( "Gallery was clicked..." )
                 controlPanel.state = mainWindow.updatePanelState()
                 mainWindow.updatePanel()
             }
-            //Behavior on x { NumberAnimation { duration: 100 } }
         }
 
         Image
@@ -129,28 +112,25 @@ Rectangle{
             source: "images/separator.png"
             height: parent.height - 10
             anchors.verticalCenter: parent.verticalCenter
-            //anchors.right: resumeScreenButton.left
-            //Behavior on x { NumberAnimation { duration: 100 } }
         }
 
         ControlPanelButton
         {
             id: resumeScreenButton
             name: 'resume'
+
             onButtonClick:
             {
                 setFullScreen()
-                //console.log( "resumeScreenButton was clicked..." )
             }
-            //Behavior on x { NumberAnimation { duration: 100 } }
         }
 
         ControlPanelButton
         {
             id: closeButton
             name: 'close'
+
             onButtonClick: Qt.quit()
-            //Behavior on x { NumberAnimation { duration: 100 } }
         }
     }
 
@@ -158,10 +138,9 @@ Rectangle{
         id: slider
         x: 20
         y: 54
-
-        //anchors.bottom: parent.bottom
-        width: controlPanel.width - 4 * margin //- playItemButton.width
+        width: controlPanel.width - 4 * margin
         height: 6
+
         Behavior on y
         {
             NumberAnimation{duration: 400}
@@ -182,7 +161,7 @@ Rectangle{
             PropertyChanges { target: playItemButton; x: (controlPanel.width/2 - (playItemButton.width/2)) }
             PropertyChanges { target: slider; visible: true }
             PropertyChanges { target: slider; y: 54 }
-            PropertyChanges { target: controlPanel; width: 200/*controlPanel.parent.width - 2 * margin*/ }
+            PropertyChanges { target: controlPanel; width: 200 }
             PropertyChanges { target: separator; visible: false }
         },
         State {
@@ -204,7 +183,7 @@ Rectangle{
         },
         State {
             name: "fullscreenPanelMulti"; extend: "fullscreenPanelSingle"
-            PropertyChanges { target: prevItemButton; visible: true }            
+            PropertyChanges { target: prevItemButton; visible: true }
             PropertyChanges { target: nextItemButton; visible: true }
             PropertyChanges { target: galleryItemButton; visible: true }
             PropertyChanges { target: prevItemButton; x: margin }
@@ -255,9 +234,8 @@ Rectangle{
         }
     ]
 
-    // Вставляем задержку на изменение прозрачности
+    // Insert delay for opacity changing
     Behavior on opacity { NumberAnimation { duration: 500 } }
     Behavior on height { NumberAnimation { duration: 300 } }
-    //Behavior on width { NumberAnimation { duration: 300 } }
 
 }

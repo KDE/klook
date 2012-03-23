@@ -1,4 +1,23 @@
-import QtQuick 1.1
+/* KLook
+ * Copyright (c) 2011-2012 ROSA  <support@rosalab.ru>
+ * Authors: Julia Mineeva, Evgeniy Auzhin, Sergey Borovkov.
+ * License: GPLv3
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as
+ *   published by the Free Software Foundation; either version 3,
+ *   or (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details
+ *
+ *   You should have received a copy of the GNU General Public
+ *   License along with this program; if not, write to the
+ *   Free Software Foundation, Inc.,
+ *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
 
 import QtQuick 1.1
 import Widgets 1.0
@@ -15,26 +34,21 @@ Item {
 
             Image {
                 id: img
-                opacity:0
+                opacity: 0
                 anchors.centerIn: parent
                 source: filePath
                 fillMode: Image.PreserveAspectFit
                 asynchronous: true
                 smooth: true;
                 visible: albumWrapper.state === "fullscreen"
-                signal ready()
-                //signal loading()
-                //sourceSize.width: albumWrapper.width
-                //sourceSize.width: 1920
                 width: ( sourceSize.width > parent.width ) ? parent.width : sourceSize.width
                 height: ( sourceSize.height > parent.height ) ? parent.height : sourceSize.height
-                onStatusChanged: if (img.status === Image.Ready){ ready(); opacity = 1; } //console.log("ready" + Math.random(100) +" " +source)}
-                                 //else if (img.status === Image.Loading) {
-                                   //  loading()
-                                 //}
 
-                //sourceSize.height: albumWrapper.height
-                Behavior on opacity { NumberAnimation { duration: 500} }
+                signal ready()
+
+                onStatusChanged: if ( img.status === Image.Ready ){ ready(); opacity = 1; }
+
+                Behavior on opacity { NumberAnimation { duration: 500 } }
             }
 
             Connections{
@@ -45,14 +59,13 @@ Item {
                         mainWindow.currentFileType = 1;
                         img.opacity = 1
                         mainWindow.updatePanel()
-                    }else
+                    } else
                     {
                         img.opacity = 0
                     }
                 }
             }
         }
-
     }
 
     Component {
@@ -66,7 +79,7 @@ Item {
 
             Video {
                 id: video
-                opacity: 0                
+                opacity: 0
                 anchors.fill: parent
                 visible: albumWrapper.state === 'fullscreen' && video.ready
 
@@ -80,7 +93,6 @@ Item {
 
                 onPlayFinished:
                 {
-                    //                    console.log( "video onPlayFinished slot" );
                     panel.playButtonState = 'Play'
                     panel.videoSlider.value = 0
                 }
@@ -108,20 +120,12 @@ Item {
                 target: albumWrapper;
                 onStateChanged:
                 {
-
-                    if (albumWrapper.state === "inGrid")
-                    {
-
+                    if ( albumWrapper.state === "inGrid" )
                         video.pause()
-                    }
                     else
-                    {
-
                         video.play()
-                    }
                 }
             }
-            //Connections{ target: mouseAreaGrid; onClicked: updateVideoItemState( video ) }
 
             Connections{
                 target: photosListView;
@@ -133,15 +137,11 @@ Item {
                         video.source = filePath
                         mainWindow.currentFileType = 2;
                         mainWindow.updatePanel()
-                        if (albumWrapper.state === "fullscreen" )
-                        {
-
+                        if ( albumWrapper.state === "fullscreen" )
                             video.play()
-                        }
+
                         if ( video.playing )
-                        {
                             panel.playButtonState = 'Play'
-                        }
                         else
                             panel.playButtonState = 'Pause'
                     }
@@ -149,12 +149,12 @@ Item {
                         video.opacity = 0
                 }
             }
-
         }
     }
 
     Component {
         id: txtDelegate
+
         Item {
             id: txtItem
             PlainText {
@@ -163,6 +163,7 @@ Item {
                 anchors.fill: parent
                 preview: false
             }
+
             Connections{
                 target: photosListView;
                 onCurrentIndexChanged: {
@@ -194,11 +195,6 @@ Item {
         id: componentLoader
         anchors.fill: parent;
         sourceComponent: bestDelegate( mimeType )
-        /*
-        onLoaded: {
-            console.log( "onLoaded(): w = " + item.width );
-        }
-        */
     }
 }
 

@@ -22,9 +22,8 @@
 #include "text.h"
 
 #include <QPlainTextEdit>
-#include <QTextStream>
 #include <QFile>
-#include <QDebug>
+
 
 MyText::MyText( QGraphicsItem* parent )
     : QGraphicsProxyWidget( parent )
@@ -34,7 +33,6 @@ MyText::MyText( QGraphicsItem* parent )
     m_viewer = new QPlainTextEdit();
     m_viewer->setReadOnly( true );
     m_viewer->viewport()->setCursor( Qt::ArrowCursor );
-
     m_viewer->setSizePolicy ( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     setWidget( m_viewer );
@@ -42,7 +40,6 @@ MyText::MyText( QGraphicsItem* parent )
 
 MyText::~MyText()
 {
-//    if ( m_viewer ) delete m_viewer;
 }
 
 QString MyText::source() const
@@ -54,12 +51,16 @@ void MyText::setSource( const QString& source )
 {
     if ( m_source == source )
         return;
+
     m_source = source;
+
     QFile f( m_source );
-    if ( !f.open(QIODevice::ReadOnly | QIODevice::Text) )
+    if ( !f.open( QIODevice::ReadOnly | QIODevice::Text) )
         return;
-    QString str = f.readAll();
+
+    QString str = QString::fromUtf8( f.readAll().data() );
     m_viewer->setPlainText( str );
+
     emit sourceChanged();
     emit ready();
 }
@@ -83,11 +84,4 @@ void MyText::setPreview( bool preview )
         m_viewer->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
         m_viewer->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
     }
-}
-
-void MyText::slot1()
-{
-    qDebug() << "ideal 2" << m_viewer->sizeHint();
-    qDebug() << "ideal 3" << m_viewer->document()->documentLayout()->documentSize().toSize() << m_viewer->sizePolicy();
-    m_viewer->resize(m_viewer->document()->documentLayout()->documentSize().toSize());
 }

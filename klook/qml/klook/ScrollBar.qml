@@ -45,43 +45,36 @@ Item {
     y: vertical ? 0 : parent.height - height
 
     Rectangle {
-           id: background
-           anchors.fill: parent
-           radius: vertical ? (width/2 - 1) : (height/2 - 1)
-           color: "black"
-           opacity: 0.3
-       }
+        id: background
+        anchors.fill: parent
+        radius: vertical ? (width/2 - 1) : (height/2 - 1)
+        color: "black"
+        opacity: 0.3
+    }
 
     MouseArea{
         id: scrollMouseArea
         anchors.fill: parent
         hoverEnabled: true
-        onEntered:
-        {
-            //console.log("scrollMouseArea.onEntered:")
-            //scrollBarHandle.opacity = 0.5
-        }
-        onExited:
-        {
-            //console.log("scrollMouseArea.onExited:")
-            //scrollBarHandle.opacity = 0
-        }
+
+        onEntered: {}
+        onExited: {}
         onClicked:
-        {            
-            if (vertical)
-            {                
-                var cY = (flickable.contentHeight * mouseY/height)
-                var pagePsize = flickable.contentHeight*flickable.visibleArea.heightRatio
-                if (cY > (flickable.contentHeight - pagePsize))
+        {
+            if ( vertical )
+            {
+                var cY = ( flickable.contentHeight * mouseY / height )
+                var pagePsize = flickable.contentHeight * flickable.visibleArea.heightRatio
+                if ( cY > ( flickable.contentHeight - pagePsize ) )
                 {
                     cY = flickable.contentHeight - pagePsize
                 }
-                var rowPsize = Math.round(flickable.contentHeight*flickable.visibleArea.heightRatio)/4
-                var numRow = Math.round(cY / rowPsize)
-                var curNumRow = Math.round(flickable.contentY / rowPsize)
-                if (numRow === curNumRow)
+                var rowPsize = Math.round( flickable.contentHeight*flickable.visibleArea.heightRatio ) / 4
+                var numRow = Math.round( cY / rowPsize )
+                var curNumRow = Math.round( flickable.contentY / rowPsize )
+                if ( numRow === curNumRow )
                 {
-                    if (mouseY > scrollBarHandle.Y)
+                    if ( mouseY > scrollBarHandle.Y )
                         numRow++
                     else
                         numRow--
@@ -94,18 +87,21 @@ Item {
             }
         }
     }
+
     Rectangle {
         id: scrollBarHandle
         color: "white"
-        radius: vertical ? (width/2 - 1) : (height/2 - 1)
+        radius: vertical ? (width/2 - 1) : (height / 2 - 1)
+
         function sbOpacity()
         {
-            if (!hideScrollBarsWhenStopped) {
+            if ( !hideScrollBarsWhenStopped ) {
                 return 0.5;
             }
 
-            return (flickable.flicking || flickable.moving) ? (vertical ? (height >= parent.height ? 0 : 0.5) : (width >= parent.width ? 0 : 0.5)) : 0;
+            return ( flickable.flicking || flickable.moving ) ? ( vertical ? ( height >= parent.height ? 0 : 0.5 ) : ( width >= parent.width ? 0 : 0.5 ) ) : 0;
         }
+
         function returnX()
         {
             //Stop calculating x while handle is dragged
@@ -117,7 +113,7 @@ Item {
             {
                 x = 0
             }
-            else if (!vertical && ((x + scrollBarHandle.width) > flickable.widht))
+            else if ( !vertical && ( ( x + scrollBarHandle.width ) > flickable.widht ) )
             {
                 x = flickable.widht - scrollBarHandle.width
             }
@@ -128,13 +124,13 @@ Item {
         function returnY()
         {
             //Stop calculating y while handle is dragged
-            if( scrollHandleMouseArea.drag.active )
+            if ( scrollHandleMouseArea.drag.active )
                 return scrollHandleMouseArea.drag.target.y
             var y
             y = vertical ? flickable.visibleArea.yPosition * parent.height : parent.height - height
             if ( y < 0 )
                 y = 0
-            else if (vertical && ((y + scrollBarHandle.height) > flickable.height))
+            else if ( vertical && ( ( y + scrollBarHandle.height ) > flickable.height ) )
             {
                 y = flickable.height - scrollBarHandle.height
             }
@@ -153,16 +149,19 @@ Item {
         y: returnY()
 
         // Animate scrollbar appearing/disappearing
-        Behavior on opacity { NumberAnimation { duration: 500 }}
+        Behavior on opacity { NumberAnimation { duration: 500 } }
+
         MouseArea{
             id: scrollHandleMouseArea
+
             function snapToRow()
             {
-                var y = flickable.contentY                
-                var numRow = y / ((flickable.contentHeight*flickable.visibleArea.heightRatio)/4)                
-                numRow = Math.round(numRow)
-                return numRow * Math.round((flickable.contentHeight*flickable.visibleArea.heightRatio)/4)
+                var y = flickable.contentY
+                var numRow = y / ( ( flickable.contentHeight*flickable.visibleArea.heightRatio ) / 4 )
+                numRow = Math.round( numRow )
+                return numRow * Math.round( ( flickable.contentHeight*flickable.visibleArea.heightRatio ) / 4 )
             }
+
             anchors.fill: parent
             hoverEnabled: true
             drag.filterChildren: true
@@ -170,17 +169,18 @@ Item {
             drag.axis: vertical ? Drag.YAxis : Drag.XAxis
             drag.minimumY: 0
             drag.maximumY: flickable.height - scrollBarHandle.height
+
             onMousePositionChanged:
             {
-                if (drag.active)
-                {        
-                    flickable.contentY = flickable.contentHeight * scrollBarHandle.y/scrollBar.height
+                if ( drag.active )
+                {
+                    flickable.contentY = flickable.contentHeight * scrollBarHandle.y / scrollBar.height
                 }
             }
+
             onReleased:{
                 flickable.contentY = snapToRow()
             }
         }
     }
-
 }

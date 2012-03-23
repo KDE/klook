@@ -24,21 +24,19 @@
 
 #include <QtDeclarative>
 #include <QtCore>
-#include <QtCore/QObject>
-#include <QtGui/QPixmap>
-#include <QMap>
-
 
 class PreviewGenerator;
 
-class PreviewProvider : public QObject, public QDeclarativeImageProvider
+class PreviewProvider
+        : public QObject
+        , public QDeclarativeImageProvider
 {
 public:
     PreviewProvider();
-    QPixmap requestPixmap(const QString& id, QSize* size, const QSize& requestedSize);
+    QPixmap requestPixmap( const QString& id, QSize* size, const QSize& requestedSize );
 
 private:
-    PreviewGenerator *previewGenerator;
+    PreviewGenerator* previewGenerator;
 };
 
 #endif // PREVIEWIMAGEPROVIDER_H

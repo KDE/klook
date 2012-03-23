@@ -19,11 +19,10 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-
 #ifndef MYTEXT_H
 #define MYTEXT_H
 
-#include <QtGui/QGraphicsProxyWidget>
+#include <QGraphicsProxyWidget>
 
 class QPlainTextEdit;
 
@@ -40,7 +39,6 @@ public:
 public slots:
     QString source() const;
     void setSource( const QString& source );
-    void slot1();
 
     bool isPreview() const;
     void setPreview( bool preview );
