@@ -22,14 +22,13 @@ Klook is a quick preview feature based on Qt and Qt Quick, allows users to look 
 %build
 cd klook-%{version}
 qmake klook.pro
-lrelease -compress klook.pro
 make
 
 %install
 cd klook-%{version}
 make INSTALL_ROOT=$RPM_BUILD_ROOT install
-#%__mkdir -p %{buildroot}/usr/share/locale/ru/LC_MESSAGES/
-#cp locale/ru/LC_MESSAGES/klook.mo %{buildroot}/usr/share/locale/ru/LC_MESSAGES/
+%__mkdir -p %{buildroot}/usr/share/locale/ru/LC_MESSAGES/
+cp locale/ru/LC_MESSAGES/KLook.mo %{buildroot}/usr/share/locale/ru/LC_MESSAGES/
 
 %files
 %{_libdir}/klook/main.qml
@@ -79,9 +78,8 @@ make INSTALL_ROOT=$RPM_BUILD_ROOT install
 %{_libdir}/klook/images/buttons/press/open_in_press.png
 %{_libdir}/klook/images/buttons/press/fullscreen_press.png
 %{_libdir}/klook/images/buttons/press/close_press.png
-%{_libdir}/klook/translations/klook_ru.qm
 /usr/bin/klook
-#/usr/share/locale
+/usr/share/locale
 
 %changelog
 * Tue Feb 21 2012 abf

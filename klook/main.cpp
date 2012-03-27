@@ -28,10 +28,6 @@
 
 #include <qtsingleapplication/qtsingleapplication.h>
 
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
-#include <klocale.h>
-
 #include "declarativeviewer.h"
 #include "video.h"
 #include "workerthread.h"
@@ -39,7 +35,7 @@
 
 #define QT_SINGLE_APP
 
-int main(int argc, char *argv[])
+int main( int argc, char *argv[] )
 {
     QApplication::setGraphicsSystem( "raster" );
 
@@ -48,7 +44,7 @@ int main(int argc, char *argv[])
     QString message;
     for ( int a = 1; a < argc; ++a )
     {
-        message += QString::fromUtf8(argv[ a ]);
+        message += QString::fromUtf8( argv[ a ] );
         if ( a < argc - 1 )
             message += ";";
     }

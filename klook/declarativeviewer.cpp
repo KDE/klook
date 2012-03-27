@@ -38,8 +38,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-//#include <klocalizedstring.h>
-
 static int header_height = 27;
 static int border_width = 2;
 static int height_offset = 27;
@@ -143,8 +141,7 @@ void DeclarativeViewer::setRegisterTypes()
     rootContext()->setContextProperty( "cppObject",  this );
     rootContext()->setContextProperty( "effects", "on" );
     rootContext()->setContextProperty( "actualSize", "off" );
-    rootContext()->setContextProperty( "openText",  tr( "Open in..." ) );
-//    rootContext()->setContextProperty( "openText",  i18n( "Open in..." ) );
+    rootContext()->setContextProperty( "openText",  i18n( "Open in..." ) );
     rootContext()->setContextProperty( "fileName", "" );
     rootContext()->setContextProperty( "fileUrl", "" );
     rootContext()->setContextProperty( "fileType", "Undefined" );
@@ -372,13 +369,11 @@ void DeclarativeViewer::changeContent()
 
     KService::Ptr ptr = KMimeTypeTrader::self()->preferredService( m_currentFile->mime() );
     if ( ptr.isNull() )
-//        rootContext()->setContextProperty( "openText", i18n( "Open" ) );
-    rootContext()->setContextProperty( "openText", tr( "Open" ) );
+        rootContext()->setContextProperty( "openText", i18n( "Open" ) );
     else
     {
         KService *serv = ptr.data();
-//        rootContext()->setContextProperty( "openText",  ( i18n( "Open in " ) + serv->name() ) );
-        rootContext()->setContextProperty( "openText",  ( tr( "Open in " ) + serv->name() ) );
+        rootContext()->setContextProperty( "openText",  ( i18n( "Open in " ) + serv->name() ) );
     }
 
     QFileInfo fi( m_currentFile->name() );
@@ -391,10 +386,8 @@ void DeclarativeViewer::updateContent( int index )
 {
     if (index == -1)
     {
-        rootContext()->setContextProperty( "openText",  tr( "Open in..." ) );
-//        rootContext()->setContextProperty( "openText",  i18n( "Open in..." ) );
-        rootContext()->setContextProperty( "fileName",  tr( "Elements: " ) + QString::number( m_files.count() ) );
-//        rootContext()->setContextProperty( "fileName",  i18n( "Elements: " ) + QString::number( m_files.count() ) );
+        rootContext()->setContextProperty( "openText",  i18n( "Open in..." ) );
+        rootContext()->setContextProperty( "fileName",  i18n( "Elements: " ) + QString::number( m_files.count() ) );
     }
     else
     {

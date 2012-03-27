@@ -1,7 +1,7 @@
 TEMPLATE += app
 QT += gui declarative phonon dbus opengl
 
-#DEFINES += QT_NO_DEBUG_OUTPUT
+DEFINES += QT_NO_DEBUG_OUTPUT
 
 CONFIG += qt
 
@@ -74,14 +74,11 @@ OTHER_FILES += \
     qml/klook/Preview.qml \
     qml/klook/ScrollBar.qml \
     qml/klook/DefaultImage.qml \
-    translations/klook_ru.ts \
     qml/klook/images/play-empty.png \
     qml/klook/SingleDelegate.qml \
     qtsingleapplication/qtsinglecoreapplication.pri \
     resources/pla-empty-box.png \
     resources/play-empty.png
-
-TRANSLATIONS = translations/klook_ru.ts
 
 include(qtsingleapplication/qtsingleapplication.pri)
 
@@ -100,9 +97,6 @@ target.path=/usr/bin
 qml.path=$$LIBS_PATH/klook/
 qml.files=qml/klook/*.qml
 
-qm.path=$$LIBS_PATH/klook/translations
-qm.files=translations/klook_ru.qm
-
 icons.path=$$LIBS_PATH/klook/images/
 icons.files=qml/klook/images/*.png
 
@@ -118,8 +112,7 @@ button_disable.files=qml/klook/images/buttons/disable/*.png
 button_press.path=$$LIBS_PATH/klook/images/buttons/press/
 button_press.files=qml/klook/images/buttons/press/*.png
 
-INSTALLS = target icons qml button_press button_disable button_hover button_normal qm
-#INSTALLS = qm
+INSTALLS = target icons qml button_press button_disable button_hover button_normal
 
 *-g++-32 {
 message("Any 32-bit GCC build")
