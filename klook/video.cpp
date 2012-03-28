@@ -190,7 +190,7 @@ void MyVideo::play_or_pause()
 
 void MyVideo::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
 {
-    // It is added for deciding Qt bug when while viewing video colors are invereted
+    // It is workaround of bug that makes video colors output invereted
     // When using Phonon with the GStreamer backed on linux inside QGraphicsView, the colors are wrong, it is like being in BGR instead of RGB.
     // It's Qt bug (https://bugreports.qt.nokia.com//browse/QTBUG-8737).
     QPainter* painter_inverted = new QPainter();

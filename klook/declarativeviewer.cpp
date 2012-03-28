@@ -135,15 +135,15 @@ void DeclarativeViewer::setRegisterTypes()
     qmlRegisterType<MyText>( "Widgets", 1, 0, "PlainText" );
 
     QDesktopWidget dw;
-    QRect r = dw.screenGeometry(this);
+    QRect r = dw.screenGeometry( this );
     rootContext()->setContextProperty( "DWigth", r.width() );
     rootContext()->setContextProperty( "DHeight", r.height() );
     rootContext()->setContextProperty( "fileModel", m_fileModel );
-    rootContext()->setContextProperty("previewGenerator", PreviewGenerator::createInstance() );
+    rootContext()->setContextProperty( "previewGenerator", PreviewGenerator::createInstance() );
     rootContext()->setContextProperty( "cppObject",  this );
     rootContext()->setContextProperty( "effects", "on" );
     rootContext()->setContextProperty( "actualSize", "off" );
-    rootContext()->setContextProperty( "openText",  i18n( "Open in..." ) );
+    rootContext()->setContextProperty( "openText", ki18n( "Open in..." ).toString() );
     rootContext()->setContextProperty( "fileName", "" );
     rootContext()->setContextProperty( "fileUrl", "" );
     rootContext()->setContextProperty( "fileType", "Undefined" );
@@ -435,11 +435,11 @@ void DeclarativeViewer::changeContent()
 
     KService::Ptr ptr = KMimeTypeTrader::self()->preferredService( m_currentFile->mime() );
     if ( ptr.isNull() )
-        rootContext()->setContextProperty( "openText", i18n( "Open" ) );
+        rootContext()->setContextProperty( "openText", ki18n( "Open" ).toString() );
     else
     {
         KService *serv = ptr.data();
-        rootContext()->setContextProperty( "openText",  ( i18n( "Open in " ) + serv->name() ) );
+        rootContext()->setContextProperty( "openText",  ( ki18n( "Open in " ).toString() + serv->name() ) );
     }
 
     QFileInfo fi( m_currentFile->name() );
@@ -452,8 +452,8 @@ void DeclarativeViewer::updateContent( int index )
 {
     if (index == -1)
     {
-        rootContext()->setContextProperty( "openText",  i18n( "Open in..." ) );
-        rootContext()->setContextProperty( "fileName",  i18n( "Elements: " ) + QString::number( m_files.count() ) );
+        rootContext()->setContextProperty( "openText",  ki18n( "Open in..." ).toString() );
+        rootContext()->setContextProperty( "fileName",  ki18n( "Elements: " ).toString() + QString::number( m_files.count() ) );
     }
     else
     {
@@ -760,7 +760,9 @@ void DeclarativeViewer::handleMessage( const QString& message )
 
     m_previewGenerator->setFiles( m_urls );
 
-    emit needToShow();
+    rootContext()->setContextProperty( "viewMode", ( ( m_urls.count() == 1 ) ? "single" : "multi" ) );
+
+    emit setStartWindow();
 }
 
 int DeclarativeViewer::processArgs( const QStringList& args )

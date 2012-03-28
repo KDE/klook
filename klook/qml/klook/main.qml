@@ -36,6 +36,9 @@ Rectangle {
 
     property int currentFileType: 3
 
+    property alias mainState: mainWindow.state
+    property alias wrapperState: albumWrapper.state
+
     signal appendItem( string path, int type )
     signal setGalleryView( bool isGallery )
 
@@ -54,6 +57,12 @@ Rectangle {
     function setEmbeddedState()
     {
         mainWindow.state = 'embedded'
+    }
+
+    function setStartWindow()
+    {
+        mainWindow.state = 'windowed'
+        albumWrapper.state = 'fullscreen'
     }
 
     function updatePanelState()
