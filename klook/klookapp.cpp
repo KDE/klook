@@ -40,7 +40,15 @@ KLookApp::KLookApp( const QStringList& args )
     m_viewer = new DeclarativeViewer( args );
 
     QFileInfo fi( QCoreApplication::applicationFilePath() );
-    QString qmlPath = "/usr/share/" + fi.baseName() + "/main.qml";
+
+    QString qmlPath;
+        
+    if(isLocal())
+        qmlPath += "/usr/share";
+    else
+        qmlPath += "../klook/";
+        
+    qmlPath += fi.baseName() + "/main.qml";
 /*
     if(!QFile::exists(qmlPath))
     {
@@ -95,4 +103,10 @@ int KLookApp::newInstance()
     args->clear();
 
     return 0;
+}
+
+bool KLookApp::isLocal() const
+{
+    const QString appPath = applicationFilePath();
+    return appPath.startsWith("/usr/bin") || appPath.startsWith("/usr/local/bin");
 }
