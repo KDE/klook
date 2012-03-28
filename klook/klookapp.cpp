@@ -44,11 +44,10 @@ KLookApp::KLookApp( const QStringList& args )
     QString qmlPath;
         
     if(isLocal())
-        qmlPath += "/usr/share";
+        qmlPath += "/usr/share/" + fi.baseName() + "/main.qml";
     else
-        qmlPath += "../klook/";
+        qmlPath += "../klook/qml/klook/main.qml";
         
-    qmlPath += fi.baseName() + "/main.qml";
 /*
     if(!QFile::exists(qmlPath))
     {
