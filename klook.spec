@@ -3,7 +3,7 @@
 Summary:	Klook is a quick preview feature
 Name:		klook
 Version:	0.1
-Release:	43
+Release:	44
 License:	GPL v.3
 Group:		Graphical desktop
 Source:		%{name}-%{version}.tar.gz
@@ -27,57 +27,57 @@ make
 %install
 cd klook
 make INSTALL_ROOT=$RPM_BUILD_ROOT install
-%__mkdir -p %{buildroot}/usr/share/locale/ru/LC_MESSAGES/
+%__mkdir -p %{buildroot}/%{_prefix}/share/locale/ru/LC_MESSAGES/
 cp locale/ru/LC_MESSAGES/KLook.mo %{buildroot}/usr/share/locale/ru/LC_MESSAGES/
 
 %files
-%{_libdir}/klook/main.qml
-%{_libdir}/klook/Button.qml
-%{_libdir}/klook/PlayButton.qml
-%{_libdir}/klook/Slider.qml
-%{_libdir}/klook/Delegate.qml
-%{_libdir}/klook/ControlPanel.qml
-%{_libdir}/klook/ControlPanelButton.qml
-%{_libdir}/klook/ScrollBar.qml
-%{_libdir}/klook/Preview.qml
-%{_libdir}/klook/SingleDelegate.qml
-%{_libdir}/klook/images/bg.png
-%{_libdir}/klook/images/separator.png
-%{_libdir}/klook/DefaultImage.qml
-%{_libdir}/klook/images/go-next.png
-%{_libdir}/klook/images/go-previous.png
-%{_libdir}/klook/images/gallery.png
-%{_libdir}/klook/images/play.png
-%{_libdir}/klook/images/resume.png
-%{_libdir}/klook/images/pause.png
-%{_libdir}/klook/images/pla-empty-box.png
-%{_libdir}/klook/images/play-empty.png
-%{_libdir}/klook/images/close.png
-%{_libdir}/klook/images/slider.png
-%{_libdir}/klook/images/buttons/normal/prev_normal.png
-%{_libdir}/klook/images/buttons/normal/next_normal.png
-%{_libdir}/klook/images/buttons/normal/gallery_normal.png
-%{_libdir}/klook/images/buttons/normal/open_in_normal.png
-%{_libdir}/klook/images/buttons/normal/fullscreen_normal.png
-%{_libdir}/klook/images/buttons/normal/close_normal.png
-%{_libdir}/klook/images/buttons/hover/prev_hover.png
-%{_libdir}/klook/images/buttons/hover/next_hover.png
-%{_libdir}/klook/images/buttons/hover/gallery_hover.png
-%{_libdir}/klook/images/buttons/hover/open_in_hover.png
-%{_libdir}/klook/images/buttons/hover/fullscreen_hover.png
-%{_libdir}/klook/images/buttons/hover/close_hover.png
-%{_libdir}/klook/images/buttons/disable/prev_disable.png
-%{_libdir}/klook/images/buttons/disable/next_disable.png
-%{_libdir}/klook/images/buttons/disable/gallery_disable.png
-%{_libdir}/klook/images/buttons/disable/open_in_disable.png
-%{_libdir}/klook/images/buttons/disable/fullscreen_disable.png
-%{_libdir}/klook/images/buttons/disable/close_disable.png
-%{_libdir}/klook/images/buttons/press/prev_press.png
-%{_libdir}/klook/images/buttons/press/next_press.png
-%{_libdir}/klook/images/buttons/press/gallery_press.png
-%{_libdir}/klook/images/buttons/press/open_in_press.png
-%{_libdir}/klook/images/buttons/press/fullscreen_press.png
-%{_libdir}/klook/images/buttons/press/close_press.png
+%{_prefix}/share/klook/main.qml
+%{_prefix}/share/klook/Button.qml
+%{_prefix}/share/klook/PlayButton.qml
+%{_prefix}/share/klook/Slider.qml
+%{_prefix}/share/klook/Delegate.qml
+%{_prefix}/share/klook/ControlPanel.qml
+%{_prefix}/share/klook/ControlPanelButton.qml
+%{_prefix}/share/klook/ScrollBar.qml
+%{_prefix}/share/klook/Preview.qml
+%{_prefix}/share/klook/SingleDelegate.qml
+%{_prefix}/share/klook/images/bg.png
+%{_prefix}/share/klook/images/separator.png
+%{_prefix}/share/klook/DefaultImage.qml
+%{_prefix}/share/klook/images/go-next.png
+%{_prefix}/share/klook/images/go-previous.png
+%{_prefix}/share/klook/images/gallery.png
+%{_prefix}/share/klook/images/play.png
+%{_prefix}/share/klook/images/resume.png
+%{_prefix}/share/klook/images/pause.png
+%{_prefix}/share/klook/images/pla-empty-box.png
+%{_prefix}/share/klook/images/play-empty.png
+%{_prefix}/share/klook/images/close.png
+%{_prefix}/share/klook/images/slider.png
+%{_prefix}/share/klook/images/buttons/normal/prev_normal.png
+%{_prefix}/share/klook/images/buttons/normal/next_normal.png
+%{_prefix}/share/klook/images/buttons/normal/gallery_normal.png
+%{_prefix}/share/klook/images/buttons/normal/open_in_normal.png
+%{_prefix}/share/klook/images/buttons/normal/fullscreen_normal.png
+%{_prefix}/share/klook/images/buttons/normal/close_normal.png
+%{_prefix}/share/klook/images/buttons/hover/prev_hover.png
+%{_prefix}/share/klook/images/buttons/hover/next_hover.png
+%{_prefix}/share/klook/images/buttons/hover/gallery_hover.png
+%{_prefix}/share/klook/images/buttons/hover/open_in_hover.png
+%{_prefix}/share/klook/images/buttons/hover/fullscreen_hover.png
+%{_prefix}/share/klook/images/buttons/hover/close_hover.png
+%{_prefix}/share/klook/images/buttons/disable/prev_disable.png
+%{_prefix}/share/klook/images/buttons/disable/next_disable.png
+%{_prefix}/share/klook/images/buttons/disable/gallery_disable.png
+%{_prefix}/share/klook/images/buttons/disable/open_in_disable.png
+%{_prefix}/share/klook/images/buttons/disable/fullscreen_disable.png
+%{_prefix}/share/klook/images/buttons/disable/close_disable.png
+%{_prefix}/share/klook/images/buttons/press/prev_press.png
+%{_prefix}/share/klook/images/buttons/press/next_press.png
+%{_prefix}/share/klook/images/buttons/press/gallery_press.png
+%{_prefix}/share/klook/images/buttons/press/open_in_press.png
+%{_prefix}/share/klook/images/buttons/press/fullscreen_press.png
+%{_prefix}/share/klook/images/buttons/press/close_press.png
 /usr/bin/klook
 /usr/share/locale
 

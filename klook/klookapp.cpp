@@ -21,25 +21,17 @@
 
 #include "klookapp.h"
 
-//#include <unistd.h>
-
-//#include <QPixmapCache>
-//#include <QtDBus/QtDBus>
-//#include <QMessageBox>
 #include <QFileInfo>
-#include <QLibraryInfo>
+#include <QFile>
 #include <QDir>
 #include <QGraphicsObject>
 
-//#include <kcolorutils.h>
 #include <kcmdlineargs.h>
-//#include <kwindowsystem.h>
 #include <kurl.h>
 
+
 #include "declarativeviewer.h"
-//#include "video.h"
-//#include "workerthread.h"
-//#include "previewgenerator.h"
+
 
 KLookApp::KLookApp( const QStringList& args )
     : KUniqueApplication()
@@ -48,10 +40,16 @@ KLookApp::KLookApp( const QStringList& args )
     m_viewer = new DeclarativeViewer( args );
 
     QFileInfo fi( QCoreApplication::applicationFilePath() );
-    QString qmlPath = QLibraryInfo::location( QLibraryInfo::LibrariesPath ) + "/" + fi.baseName();
-
+    QString qmlPath = "/usr/share/" + fi.baseName() + "/main.qml";
+/*
+    if(!QFile::exists(qmlPath))
+    {
+	QMessageBox::information(0, ki18n("Warning"), ki18n("Application can't find all necessary files. Exiting now...")
+	quit();
+    }
+*/    
     m_viewer->setSource( QUrl::fromLocalFile( qmlPath + "/main.qml" ) );
-//    m_viewer->setSource( QUrl::fromLocalFile( "/home/julia/work/KLook/klook/qml/klook/main.qml" ) );
+;
 
     QObject* rootObject = dynamic_cast<QObject*>( m_viewer->rootObject() );
 

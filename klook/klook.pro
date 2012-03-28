@@ -1,5 +1,5 @@
 TEMPLATE += app
-QT += gui declarative phonon dbus opengl
+QT += gui declarative phonon dbus
 
 DEFINES += QT_NO_DEBUG_OUTPUT
 
@@ -71,38 +71,28 @@ OTHER_FILES += \
     qml/klook/SingleDelegate.qml \
     resources/pla-empty-box.png \
     resources/play-empty.png
-
-unix {
-    HARDWARE_PLATFORM = $$system(uname -i)
-    contains( HARDWARE_PLATFORM, x86_64 ) {
-        LIBS_PATH = /usr/lib64
-    } else {
-        LIBS_PATH = /usr/lib
-    }
-}
-
+    
+    
+SHARE_PATH = /usr/share
 
 target.path=/usr/bin
 
-qml.path=$$LIBS_PATH/klook/
+qml.path=$$SHARE_PATH/klook/
 qml.files=qml/klook/*.qml
 
-qm.path=$$LIBS_PATH/klook/translations
-qm.files=translations/klook_ru.qm
-
-icons.path=$$LIBS_PATH/klook/images/
+icons.path=$$SHARE_PATH/klook/images/
 icons.files=qml/klook/images/*.png
 
-button_normal.path=$$LIBS_PATH/klook/images/buttons/normal/
+button_normal.path=$$SHARE_PATH/klook/images/buttons/normal/
 button_normal.files=qml/klook/images/buttons/normal/*.png
 
-button_hover.path=$$LIBS_PATH/klook/images/buttons/hover/
+button_hover.path=$$SHARE_PATH/klook/images/buttons/hover/
 button_hover.files=qml/klook/images/buttons/hover/*.png
 
-button_disable.path=$$LIBS_PATH/klook/images/buttons/disable/
+button_disable.path=$$SHARE_PATH/klook/images/buttons/disable/
 button_disable.files=qml/klook/images/buttons/disable/*.png
 
-button_press.path=$$LIBS_PATH/klook/images/buttons/press/
+button_press.path=$$SHARE_PATH/klook/images/buttons/press/
 button_press.files=qml/klook/images/buttons/press/*.png
 
 INSTALLS = target icons qml button_press button_disable button_hover button_normal
