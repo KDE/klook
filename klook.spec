@@ -6,7 +6,7 @@ Version:	0.1
 Release:	43
 License:	GPL v.3
 Group:		Graphical desktop
-Source:		%{name}-%{version}.tar.bz2
+Source:		%{name}-%{version}.tar.gz
 BuildRequires:	qt4-devel	>= 4.7.0
 BuildRequires:	qt4-linguist	>= 4.2.0
 BuildRequires:	kdelibs4-devel	>= 4.6.5
@@ -20,12 +20,12 @@ Klook is a quick preview feature based on Qt and Qt Quick, allows users to look 
 %setup -c
 
 %build
-cd klook-%{version}
+cd klook
 qmake klook.pro
 make
 
 %install
-cd klook-%{version}
+cd klook
 make INSTALL_ROOT=$RPM_BUILD_ROOT install
 %__mkdir -p %{buildroot}/usr/share/locale/ru/LC_MESSAGES/
 cp locale/ru/LC_MESSAGES/KLook.mo %{buildroot}/usr/share/locale/ru/LC_MESSAGES/
