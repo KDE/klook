@@ -37,9 +37,18 @@ int main(int argc, char *argv[])
     KAboutData about( "KLook", 0, ki18n( "KLook" ),
                       version, ki18n( description ), KAboutData::License_GPL_V3,
                       ki18n( "(c) ROSA 2011-2012" ) );
-    about.addAuthor( ki18n( "Julia Mineeva, Evgeniy Auzhin, Sergey Borovkov" ),
-                     ki18n( "Authors" ),
-                     "support@rosalab.ru" );
+
+    about.addAuthor( ki18n( "Julia Mineeva" ),
+                     ki18n( "Developer" ),
+                     "julia.mineeva@osinit.ru" );
+
+    about.addAuthor( ki18n( "Evgeniy Auzhin" ),
+                     ki18n( "Developer" ),
+                     "evgeniy.augin@osinit.ru" );
+
+    about.addAuthor( ki18n( "Sergey Borovkov" ),
+                     ki18n( "Developer" ),
+                     "sergey.borovkov@osinit.ru" );
 
     KCmdLineArgs::init( argc, argv, &about );
 
