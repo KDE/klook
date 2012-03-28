@@ -118,6 +118,8 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     XChangeProperty( QX11Info::display(), winId(), XInternAtom( dpy, "_NET_WM_STATE", False ), XA_ATOM, 32, PropModeReplace, ( unsigned char* )state, 3 );
 
     setViewMode( Single );
+
+    connect(qApp, SIGNAL(focusChanged(QWidget*,QWidget*)),this,SLOT(focusChanged(QWidget*,QWidget*)));
 }
 
 DeclarativeViewer::~DeclarativeViewer()
@@ -348,16 +350,80 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
 {
     QDesktopWidget dw;
     QRect rectDesktop = dw.screenGeometry(this);
+    QSize sz1;
+    if (m_isEmbedded)
+    {
+        int iconOffset = 30;
+        QRect top(rectDesktop.x() + rectDesktop.width()*0.1 ,
+                  rectDesktop.y() + rectDesktop.height()*0.1 ,
+                  rectDesktop.width()*0.8 ,
+                  m_rcIcon.y() - rectDesktop.height()*0.1 - iconOffset );
 
-    int w = sz.width();
-    int h = sz.height();
+        QRect left(rectDesktop.x() + rectDesktop.width()*0.1,
+                   rectDesktop.y() + rectDesktop.height()*0.1,
+                   m_rcIcon.x() - iconOffset - rectDesktop.x() - rectDesktop.width()*0.1,
+                   rectDesktop.height()*0.8);
 
-    QRect rect( ( rectDesktop.width() - w ) / 2,
-                ( rectDesktop.height() - h ) / 2,
-                w, h );
-    rect.moveTop( rect.y() - height_offset / 2 );
+        QRect right(m_rcIcon.topRight().x(),
+                    rectDesktop.y() + rectDesktop.height()*0.1,
+                    rectDesktop.width() - m_rcIcon.topRight().x() - rectDesktop.width()*0.1,
+                    rectDesktop.height()*0.8);
 
-    setGeometry( rect );
+        qDebug() << top << left << right;
+
+        int topArea = top.width()*top.height();
+        int leftArea = left.width()*left.height();
+        int rightArea = right.width()*right.height();
+
+        QWidget * wid = new QWidget();
+        wid->setGeometry(m_rcIcon);
+        wid->show();
+
+        QRect rect;
+
+        if ((topArea > leftArea)&&(topArea > rightArea))
+        {
+            sz1 = inscribedRectToRect( sz, top.size() );            
+            int x = m_rcIcon.x() + m_rcIcon.width()/2 - sz1.width()/2;
+            x = qMax(x , static_cast<int>(rectDesktop.width()*0.1));
+            x = qMin(x, top.topRight().x() - sz1.width());
+            int y = m_rcIcon.y() - iconOffset - sz1.height();            
+            QRect rect(x,y,sz1.width(),sz1.height());
+            setGeometry(rect);
+        }
+        else if (leftArea > rightArea )
+        {
+            sz1 = inscribedRectToRect( sz, left.size() );
+            int x = m_rcIcon.x() - sz1.width() - iconOffset;
+            int y = m_rcIcon.y() + m_rcIcon.height()/2 - sz1.height()/2;
+            y = qMax(y , static_cast<int>(rectDesktop.height()*0.1));
+            y = qMin(y, left.bottomLeft().y() -sz1.height() );
+            QRect rect(x,y,sz1.width(),sz1.height());
+            setGeometry(rect);
+        }
+        else
+        {
+            sz1 = inscribedRectToRect( sz, right.size() );
+            int x = m_rcIcon.topRight().x() + iconOffset;
+            int y = m_rcIcon.y() + m_rcIcon.height()/2 - sz1.height()/2;
+            y = qMax(y , static_cast<int>(rectDesktop.height()*0.1));
+            y = qMin(y, right.bottomLeft().y() - sz1.height() );
+            QRect rect(x,y,sz.width(),sz.height());
+            setGeometry(rect);
+        }        
+    }
+    else
+    {
+        int w = sz.width();
+        int h = sz.height();
+
+        QRect rect( ( rectDesktop.width() - w ) / 2,
+                    ( rectDesktop.height() - h ) / 2,
+                    w, h );
+        rect.moveTop( rect.y() - height_offset / 2 );
+
+        setGeometry( rect );
+    }
 }
 
 void DeclarativeViewer::changeContent()
@@ -699,7 +765,7 @@ void DeclarativeViewer::handleMessage( const QString& message )
 
 int DeclarativeViewer::processArgs( const QStringList& args )
 {
-    m_isEmbedded = false;
+    setEmbedded(false);
     m_urls.clear();
 
     for ( int n = 0; n < args.count(); n++ )
@@ -715,7 +781,7 @@ int DeclarativeViewer::processArgs( const QStringList& args )
                 {
                     bool ok_x, ok_y, ok_width, ok_height;
 
-                    m_isEmbedded = true;
+                    setEmbedded(true);
                     m_urls << args[ n ];
                     n++;
 
@@ -803,3 +869,30 @@ QSize DeclarativeViewer::getTextWindowSize(QString url)
 
     return size;
 }
+
+
+void DeclarativeViewer::focusChanged(QWidget *, QWidget *now)
+{
+    if (m_isEmbedded)
+    {
+        if (!now)
+            close();
+    }
+}
+
+
+
+void DeclarativeViewer::setEmbedded(bool state)
+{
+    if (state)
+    {
+        setMinimumSize(50,50);
+    }
+    else
+    {
+        setMinimumSize(600,427);
+    }
+    m_isEmbedded = state;
+
+}
+
