@@ -48,8 +48,7 @@ KLookApp::KLookApp( const QStringList& args )
 	quit();
     }
 */    
-    m_viewer->setSource( QUrl::fromLocalFile( qmlPath + "/main.qml" ) );
-;
+    m_viewer->setSource( QUrl::fromLocalFile( qmlPath) );
 
     QObject* rootObject = dynamic_cast<QObject*>( m_viewer->rootObject() );
 
