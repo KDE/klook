@@ -66,7 +66,7 @@ signals:
     void sizeChanged();
     void setFullScreenState();
     void setEmbeddedState();
-    void needToShow();
+    void setStartWindow();
 
 public slots:
 

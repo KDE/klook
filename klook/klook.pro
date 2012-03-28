@@ -28,10 +28,7 @@ SOURCES += main.cpp \
     previewgenerator.cpp \
     previewprovider.cpp \
     filemodel.cpp \
-    qtsingleapplication/qtsinglecoreapplication.cpp \
-    qtsingleapplication/qtlockedfile_win.cpp \
-    qtsingleapplication/qtlockedfile_unix.cpp \
-    qtsingleapplication/qtlockedfile.cpp
+    klookapp.cpp
 
 HEADERS += \
     declarativeviewer.h \
@@ -42,11 +39,7 @@ HEADERS += \
     previewgenerator.h \
     previewprovider.h \
     filemodel.h \
-    qtsingleapplication/qtsingleapplication.h \
-    qtsingleapplication/qtsinglecoreapplication.h \
-    qtsingleapplication/QtSingleApplication \
-    qtsingleapplication/qtlockedfile.h \
-    qtsingleapplication/QtLockedFile
+    klookapp.h
 
 OTHER_FILES += \
     qml/klook/main.qml \
@@ -76,11 +69,8 @@ OTHER_FILES += \
     qml/klook/DefaultImage.qml \
     qml/klook/images/play-empty.png \
     qml/klook/SingleDelegate.qml \
-    qtsingleapplication/qtsinglecoreapplication.pri \
     resources/pla-empty-box.png \
     resources/play-empty.png
-
-include(qtsingleapplication/qtsingleapplication.pri)
 
 unix {
     HARDWARE_PLATFORM = $$system(uname -i)
@@ -96,6 +86,9 @@ target.path=/usr/bin
 
 qml.path=$$LIBS_PATH/klook/
 qml.files=qml/klook/*.qml
+
+qm.path=$$LIBS_PATH/klook/translations
+qm.files=translations/klook_ru.qm
 
 icons.path=$$LIBS_PATH/klook/images/
 icons.files=qml/klook/images/*.png

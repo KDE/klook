@@ -19,74 +19,44 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <QApplication>
-#include <QLibraryInfo>
-#include <QFileInfo>
-#include <QTranslator>
+#include <stdio.h>
 
-#include <QtPlugin>
+#include <kaboutdata.h>
+#include <kcmdlineargs.h>
+#include <klocale.h>
 
-#include <qtsingleapplication/qtsingleapplication.h>
+#include "klookapp.h"
 
-#include "declarativeviewer.h"
-#include "video.h"
-#include "workerthread.h"
-#include "previewgenerator.h"
+static const char description[] = I18N_NOOP( "KLook is a quick preview future" );
+static const char version[] = "0.1";
 
-#define QT_SINGLE_APP
-
-int main( int argc, char *argv[] )
+int main(int argc, char *argv[])
 {
     QApplication::setGraphicsSystem( "raster" );
 
-    QtSingleApplication app( argc, argv );
+    KAboutData about( "KLook", 0, ki18n( "KLook" ),
+                      version, ki18n( description ), KAboutData::License_GPL_V3,
+                      ki18n( "(c) ROSA 2011-2012" ) );
+    about.addAuthor( ki18n( "Julia Mineeva, Evgeniy Auzhin, Sergey Borovkov" ),
+                     ki18n( "Authors" ),
+                     "support@rosalab.ru" );
 
-    QString message;
-    for ( int a = 1; a < argc; ++a )
+    KCmdLineArgs::init( argc, argv, &about );
+
+    KCmdLineOptions options;
+    options.add( "+file", ki18n("A required argument 'file'" ) );
+    KCmdLineArgs::addCmdLineOptions( options );
+
+    if ( !KUniqueApplication::start() )
     {
-        message += QString::fromUtf8( argv[ a ] );
-        if ( a < argc - 1 )
-            message += ";";
-    }
-
-    if ( app.sendMessage( message ) )
-    {
-        qDebug("app is running...");
-
+        fprintf( stderr, "KLook is already running!\n" );
         return 0;
     }
 
-    app.setApplicationName( "KLook" );
+    QStringList args;
+    for ( int a = 1; a < argc; ++a )
+        args << QString::fromUtf8( argv[ a ] );
 
-    QString locale = QLocale::system().name();
-    QString libPath = QLibraryInfo::location( QLibraryInfo::LibrariesPath ) ;
-    QTranslator translator;
-    translator.load( QString( "klook_" ) + locale, libPath + "/klook/translations" );
-    app.installTranslator( &translator );
-
-    QStringList files = QApplication::arguments();
-    files.removeFirst(); // remove application name
-
-    DeclarativeViewer view( files );
-
-    QFileInfo fi( QCoreApplication::applicationFilePath() );
-    QString qmlPath = QLibraryInfo::location( QLibraryInfo::LibrariesPath ) + "/" + fi.baseName();
-
-    view.setSource( QUrl::fromLocalFile( qmlPath + "/main.qml" ) );
-
-    QObject* rootObject = dynamic_cast<QObject*>( view.rootObject() );
-
-    QObject::connect( &view, SIGNAL( setFullScreenState() ), rootObject, SLOT( setFullScreenState() ) );
-    QObject::connect( &view, SIGNAL( setEmbeddedState() ), rootObject, SLOT( setEmbeddedState() ) );
-    QObject::connect( rootObject, SIGNAL( setGalleryView( bool ) ), &view, SLOT( onSetGallery( bool ) ) );
-
-    view.setAttribute( Qt::WA_QuitOnClose );
-
-    QObject::connect( &app, SIGNAL( messageReceived( const QString& ) ), &view, SLOT( handleMessage( const QString& ) ) );
-
-    app.setActivationWindow( &view, false );
-
-    QObject::connect( &view, SIGNAL( needToShow() ), &app, SLOT( activateWindow() ) );
-
-    return app.exec();
+    KLookApp a( args );
+    return a.exec();
 }
