@@ -84,40 +84,19 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
 
     ListItem *prototypeItem = new ListItem( this );
     m_fileModel = new FileModel( prototypeItem, this );
-    PreviewGenerator::createInstance()->setModel(m_fileModel);
+    PreviewGenerator::createInstance()->setModel( m_fileModel );
 
     connect( this, SIGNAL( fileData( QVariant, QVariant ) ), m_fileModel, SLOT( append( QVariant, QVariant ) ) );
 
     setRegisterTypes();
 
-    //Check whether the KDE effects are included
-    QDBusInterface remoteApp( "org.kde.kwin", "/KWin", "org.kde.KWin" );
-    QDBusReply<bool> reply = remoteApp.call( "compositingActive" );
-    if ( reply.isValid() )
-    {
-        if (reply.value())
-            rootContext()->setContextProperty( "effects", "on" );
-        else
-            rootContext()->setContextProperty( "effects", "off" );
-    }
-    else
-    {
-        rootContext()->setContextProperty( "effects", "off" );
-        qDebug() << "DBus reply is not valid";
-    }
-
     //Remove standart KDE title
     setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
 
-    //Skip Taskbar
-    Display* dpy = QX11Info::display();
-    Atom state[3];
-    state[0] = XInternAtom( dpy, "_NET_WM_STATE_SKIP_PAGER", false );
-    state[1] = XInternAtom( dpy, "_NET_WM_STATE_SKIP_TASKBAR", false );
-    state[2] = XInternAtom( dpy, "_NET_WM_STATE_STICKY", false );
-    XChangeProperty( QX11Info::display(), winId(), XInternAtom( dpy, "_NET_WM_STATE", False ), XA_ATOM, 32, PropModeReplace, ( unsigned char* )state, 3 );
+    skipTaskBar();
 
     setViewMode( Single );
+
 }
 
 DeclarativeViewer::~DeclarativeViewer()
@@ -125,6 +104,18 @@ DeclarativeViewer::~DeclarativeViewer()
     qDeleteAll( m_files );
 
     delete m_thread;
+}
+
+//Check whether the KDE effects are included
+bool DeclarativeViewer::checkComposite()
+{
+    QDBusInterface remoteApp( "org.kde.kwin", "/KWin", "org.kde.KWin" );
+    QDBusReply<bool> reply = remoteApp.call( "compositingActive" );
+    if ( reply.isValid() )
+        return reply.value();
+
+    qDebug() << "DBus reply is not valid";
+    return false;
 }
 
 void DeclarativeViewer::setRegisterTypes()
@@ -147,6 +138,7 @@ void DeclarativeViewer::setRegisterTypes()
     rootContext()->setContextProperty( "fileType", "Undefined" );
     rootContext()->setContextProperty( "viewMode", "single" );
     rootContext()->setContextProperty( "embedded", m_isEmbedded );
+    rootContext()->setContextProperty( "effects", ( checkComposite() ) ? "on" : "off" );
 }
 
 void DeclarativeViewer::startWorkingThread()
@@ -330,8 +322,8 @@ void DeclarativeViewer::updateSize( const File* file )
     }
     else if ( file->type() == File::Txt )
     {
-        QSize size = getTextWindowSize(file->name());
-        if ((m_startFullScreen) && (size == this->size()))
+        QSize size = getTextWindowSize( file->name() );
+        if ( ( m_startFullScreen ) && ( size == this->size() ) )
         {
             showFullScreen();
             emit setFullScreenState();
@@ -341,7 +333,7 @@ void DeclarativeViewer::updateSize( const File* file )
             centerWidget( size );
         }
         m_startFullScreen = false;
-    }    
+    }
 }
 
 void DeclarativeViewer::centerWidget( const QSize& sz )
@@ -411,16 +403,16 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )
         headerTitle.setRect( border_width + 1,
                              border_width + 1,
                              r.width() - border_width - 270,
-                            header_height - border_width + 1 );
+                             header_height - border_width + 1 );
         headerR = headerR.united( headerTitle.toRect() );
         headerR = headerR.united( header2.toRect() );
     }
     else
     {
         headerTitle.setRect( 6 + 42 * 3 + 12,
-                            border_width + 1,
-                            r.width() - 414,
-                            header_height- border_width + 1 );
+                             border_width + 1,
+                             r.width() - 414,
+                             header_height - border_width + 1 );
         headerR = headerR.united( headerTitle.toRect() );
         headerR = headerR.united( header1.toRect() );
         headerR = headerR.united( header2.toRect() );
@@ -643,6 +635,18 @@ void DeclarativeViewer::mouseReleaseEvent( QMouseEvent* event )
     QDeclarativeView::mouseReleaseEvent( event );
 }
 
+
+void DeclarativeViewer::skipTaskBar()
+{
+    //Skip Taskbar
+    Display* dpy = QX11Info::display();
+    Atom state[3];
+    state[0] = XInternAtom( dpy, "_NET_WM_STATE_SKIP_PAGER", false );
+    state[1] = XInternAtom( dpy, "_NET_WM_STATE_SKIP_TASKBAR", false );
+    state[2] = XInternAtom( dpy, "_NET_WM_STATE_STICKY", false );
+    XChangeProperty( QX11Info::display(), winId(), XInternAtom( dpy, "_NET_WM_STATE", False ), XA_ATOM, 32, PropModeReplace, ( unsigned char* )state, 3 );
+}
+
 void DeclarativeViewer::newFileProcessed( const File *file )
 {
     if ( m_files.empty() )
@@ -651,6 +655,12 @@ void DeclarativeViewer::newFileProcessed( const File *file )
         changeContent();
         setActualSize();
         show();
+        activateWindow();
+
+        rootContext()->setContextProperty( "viewMode", ( ( m_urls.count() == 1 ) ? "single" : "multi" ) );
+        emit setStartWindow();
+
+        skipTaskBar();
     }
     else {
         setViewMode( Multi );
@@ -658,6 +668,18 @@ void DeclarativeViewer::newFileProcessed( const File *file )
 
     m_files.append( file );
     emit fileData( QVariant( file->name() ), QVariant( file->type() ) );
+}
+
+void DeclarativeViewer::onCanShow()
+{
+    if (m_files.count() > 1)
+        return;
+    hide();
+    changeContent();
+    setActualSize();
+    show();
+    activateWindow();
+    raise();
 }
 
 void DeclarativeViewer::showNoFilesNotification()
@@ -683,6 +705,8 @@ void DeclarativeViewer::setViewMode( DeclarativeViewer::ViewMode mode )
 
 void DeclarativeViewer::handleMessage( const QString& message )
 {
+    hide();
+
     QStringList params = message.split( ";", QString::SkipEmptyParts );
     processArgs( params );
 
@@ -693,10 +717,6 @@ void DeclarativeViewer::handleMessage( const QString& message )
     m_fileModel->reset();
 
     m_previewGenerator->setFiles( m_urls );
-
-    rootContext()->setContextProperty( "viewMode", ( ( m_urls.count() == 1 ) ? "single" : "multi" ) );
-
-    emit setStartWindow();
 }
 
 int DeclarativeViewer::processArgs( const QStringList& args )

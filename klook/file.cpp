@@ -72,5 +72,6 @@ QString File::fileTypeToString( FileType ft )
     if ( ft == Image ) return QString( "ImageType" );
     else if ( ft == Video ) return QString( "VideoType" );
     else if ( ft == Txt ) return QString( "TxtType" );
+    else if ( ft == Audio ) return QString( "AudioType" );
     else return QString( "UndefinedType" );
 }

@@ -79,6 +79,8 @@ public slots:
     void onMetaDataChanged();
     void handleMessage( const QString& message );
 
+    void onCanShow();
+
 private slots:
     void newFileProcessed(const File* file);
     void showNoFilesNotification();
@@ -104,6 +106,9 @@ protected:
     void centerWidget( const QSize& sz );
 
     int processArgs( const QStringList& args );
+
+    void skipTaskBar();
+    bool checkComposite();
 
 private:
 
@@ -142,6 +147,7 @@ private:
     WorkerThread*       m_thread;
     PreviewGenerator*   m_previewGenerator;
     FileModel*          m_fileModel;
+
 };
 
 QApplication *createApplication( int& argc, char** argv );

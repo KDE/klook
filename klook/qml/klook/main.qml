@@ -42,6 +42,9 @@ Rectangle {
     signal appendItem( string path, int type )
     signal setGalleryView( bool isGallery )
 
+    signal canShow()
+
+
     function setFullScreen()
     {
         if ( mainWindow.state === 'fullscreen' )
@@ -63,6 +66,7 @@ Rectangle {
     {
         mainWindow.state = 'windowed'
         albumWrapper.state = 'fullscreen'
+        photosListView.focus = true
     }
 
     function updatePanelState()

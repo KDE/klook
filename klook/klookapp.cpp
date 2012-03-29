@@ -59,6 +59,7 @@ KLookApp::KLookApp( const QStringList& args )
     QObject::connect( m_viewer, SIGNAL( setEmbeddedState() ), rootObject, SLOT( setEmbeddedState() ) );
     QObject::connect( m_viewer, SIGNAL( setStartWindow() ), rootObject, SLOT( setStartWindow() ) );
     QObject::connect( rootObject, SIGNAL( setGalleryView( bool ) ), m_viewer, SLOT( onSetGallery( bool ) ) );
+    QObject::connect( rootObject, SIGNAL( canShow() ), m_viewer, SLOT( onCanShow( ) ) );
 
     m_viewer->setAttribute( Qt::WA_QuitOnClose );
 
@@ -90,8 +91,6 @@ int KLookApp::newInstance()
     if ( m_viewer && !first )
     {
         m_viewer->handleMessage( message );
-        m_viewer->raise();
-        m_viewer->activateWindow();
     }
 
     first = false;
