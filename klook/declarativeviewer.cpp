@@ -369,16 +369,9 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
                     rectDesktop.width() - m_rcIcon.topRight().x() - rectDesktop.width()*0.1,
                     rectDesktop.height()*0.8);
 
-        qDebug() << top << left << right;
-
         int topArea = top.width()*top.height();
         int leftArea = left.width()*left.height();
         int rightArea = right.width()*right.height();
-/*
-        QWidget * wid = new QWidget();
-        wid->setGeometry(m_rcIcon);
-        wid->show();
-*/
 
         if ((topArea > leftArea)&&(topArea > rightArea))
         {
@@ -403,13 +396,11 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
         else
         {
             sz1 = inscribedRectToRect( sz, right.size() );
-            qDebug() << sz1;
             int x = m_rcIcon.topRight().x() + iconOffset;
             int y = m_rcIcon.y() + m_rcIcon.height()/2 - sz1.height()/2;
             y = qMax(y , static_cast<int>(rectDesktop.height()*0.1));
             y = qMin(y, right.bottomLeft().y() - sz1.height() );
-            QRect rect(x,y,sz1.width(),sz1.height());
-            qDebug() << rect;
+            QRect rect(x,y,sz1.width(),sz1.height());            
             setGeometry(rect);
         }        
     }
@@ -878,8 +869,8 @@ void DeclarativeViewer::focusChanged(QWidget *, QWidget *now)
 {
     if (m_isEmbedded)
     {
-        if (!now)
-            close();
+        if (!now)            
+            this->close();
     }
 }
 

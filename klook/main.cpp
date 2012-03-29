@@ -54,6 +54,8 @@ int main(int argc, char *argv[])
 
     KCmdLineOptions options;
     options.add( "+file", ki18n("A required argument 'file'" ) );
+    options.add( "embedded", ki18n("turn on embedded mode" ) );
+    options.add( "c", ki18n("coordinates icon" ) );
     KCmdLineArgs::addCmdLineOptions( options );
 
     if ( !KUniqueApplication::start() )
