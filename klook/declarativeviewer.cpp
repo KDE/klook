@@ -374,12 +374,11 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
         int topArea = top.width()*top.height();
         int leftArea = left.width()*left.height();
         int rightArea = right.width()*right.height();
-
+/*
         QWidget * wid = new QWidget();
         wid->setGeometry(m_rcIcon);
         wid->show();
-
-        QRect rect;
+*/
 
         if ((topArea > leftArea)&&(topArea > rightArea))
         {
@@ -404,11 +403,13 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
         else
         {
             sz1 = inscribedRectToRect( sz, right.size() );
+            qDebug() << sz1;
             int x = m_rcIcon.topRight().x() + iconOffset;
             int y = m_rcIcon.y() + m_rcIcon.height()/2 - sz1.height()/2;
             y = qMax(y , static_cast<int>(rectDesktop.height()*0.1));
             y = qMin(y, right.bottomLeft().y() - sz1.height() );
-            QRect rect(x,y,sz.width(),sz.height());
+            QRect rect(x,y,sz1.width(),sz1.height());
+            qDebug() << rect;
             setGeometry(rect);
         }        
     }
