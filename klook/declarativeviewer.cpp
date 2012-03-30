@@ -887,7 +887,7 @@ void DeclarativeViewer::focusChanged(QWidget *, QWidget *now)
 {
     if (m_isEmbedded)
     {
-        if (!now)            
+        if (!now)
             this->close();
     }
 }
