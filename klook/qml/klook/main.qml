@@ -178,7 +178,6 @@ Rectangle {
 
         setGalleryView( albumWrapper.state === 'inGrid' )
     }
-
     property int index: 0
 
     // Item 1: menu bar
@@ -540,19 +539,17 @@ Rectangle {
         State {
             name: "windowed"
             PropertyChanges { target: mainWindow; border.width: 2 }
+            PropertyChanges { target: mainWindow; color: "transparent" }
             PropertyChanges { target: row; visible: true }
             PropertyChanges { target: photosListView; highlightMoveSpeed: 5000 }
             PropertyChanges { target: panel; opacity: 1 }
             PropertyChanges { target: panel; state: "videoPanel" }
-
             ParentChange { target: drawer; parent: drawerBorder }
-
             PropertyChanges { target: drawer; anchors.margins: 1 }
             PropertyChanges { target: drawer; anchors.rightMargin: 2 }
             PropertyChanges { target: drawer; anchors.leftMargin: 2 }
             PropertyChanges { target: drawer; anchors.bottomMargin: 2 }
             PropertyChanges { target: drawer; anchors.topMargin: 1 }
-
             PropertyChanges { target: drawerBorder; color: "#dadada" }
             PropertyChanges { target: drawerBorder; visible: true }
         },
@@ -562,19 +559,18 @@ Rectangle {
             PropertyChanges { target: photosListView; highlightMoveSpeed: 7000 }
             PropertyChanges { target: panel; state: updatePanelState() }
             PropertyChanges { target: row; visible: false }
-
             ParentChange { target: drawer; parent: mainWindow }
             PropertyChanges { target: drawer; anchors.rightMargin: 0 }
             PropertyChanges { target: drawer; anchors.leftMargin: 0 }
             PropertyChanges { target: drawer; anchors.bottomMargin: 0 }
             PropertyChanges { target: drawer; anchors.topMargin: 0 }
-
             PropertyChanges { target: drawerBorder; color: "#3feaeaea" }
             PropertyChanges { target: drawerBorder; visible: false }
         },
         State {
             name: "embedded"
             PropertyChanges { target: mainWindow; border.width: 2 }
+            PropertyChanges { target: mainWindow; color: "#dadada" }
             PropertyChanges { target: row; visible: false }
             PropertyChanges { target: photosListView; highlightMoveSpeed: 5000 }
             PropertyChanges { target: panel; opacity: 1 }
@@ -583,12 +579,9 @@ Rectangle {
             ParentChange { target: drawer; parent: mainWindow }
             PropertyChanges { target: drawer; anchors.margins: 1 }
             PropertyChanges { target: drawer; anchors.rightMargin: 2 }
-            PropertyChanges { target: drawer; anchors.leftMargin: 3 }
+            PropertyChanges { target: drawer; anchors.leftMargin: 2 }
             PropertyChanges { target: drawer; anchors.bottomMargin: 2 }
-            PropertyChanges { target: drawer; anchors.topMargin: 1 }
-
-            PropertyChanges { target: drawerBorder; color: "#dadada" }
-            PropertyChanges { target: drawerBorder; visible: true }
+            PropertyChanges { target: drawer; anchors.topMargin: 2 }
         }
     ]
 }

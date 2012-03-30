@@ -37,6 +37,8 @@ public:
     virtual int newInstance();
 
 private:
+    bool isLocal() const;
+    
     DeclarativeViewer* m_viewer;
 
 };

@@ -78,12 +78,14 @@ public slots:
 
     void onMetaDataChanged();
     void handleMessage( const QString& message );
+    void setEmbedded(bool);
 
     void onCanShow();
 
 private slots:
     void newFileProcessed(const File* file);
     void showNoFilesNotification();
+    void focusChanged(QWidget*, QWidget*);
 
 protected:
     QSize getActualSize();
