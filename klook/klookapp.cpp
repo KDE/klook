@@ -93,7 +93,7 @@ int KLookApp::newInstance()
     }
 
     if ( m_viewer && !first )
-    {
+    {        
         m_viewer->handleMessage( message );
     }
 

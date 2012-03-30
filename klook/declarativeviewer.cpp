@@ -761,8 +761,7 @@ void DeclarativeViewer::setViewMode( DeclarativeViewer::ViewMode mode )
 }
 
 void DeclarativeViewer::handleMessage( const QString& message )
-{
-    hide();
+{    
 
     QStringList params = message.split( ";", QString::SkipEmptyParts );
     processArgs( params );
