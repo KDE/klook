@@ -44,7 +44,6 @@ Rectangle {
 
     signal canShow()
 
-
     function setFullScreen()
     {
         if ( mainWindow.state === 'fullscreen' )
@@ -64,7 +63,10 @@ Rectangle {
 
     function setStartWindow()
     {
-        mainWindow.state = 'windowed'
+        if ( embedded )
+            mainWindow.state = 'embedded'
+        else
+            mainWindow.state = 'windowed'
         albumWrapper.state = 'fullscreen'
         photosListView.focus = true
     }
