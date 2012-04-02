@@ -20,6 +20,13 @@
  */
 
 #include "filemodel.h"
+#include "file.h"
+
+#include <QStack>
+#include <QTimer>
+
+#include <kglobal.h>
+#include <klocale.h>
 
 FileModel::FileModel( ListItem *prototype, QObject *parent )
     : QAbstractListModel( parent )
@@ -53,7 +60,7 @@ bool FileModel::setData( const QModelIndex &index, const QVariant &value, int ro
     if ( role == ListItem::FilePathRole )
         m_list[ index.row() ]->setPath( value.toString() );
     else if ( role == ListItem::MimeTypeRole )
-        m_list[ index.row() ]->setType( value.toString() );
+        m_list[ index.row() ]->setMimeType( value.toString() );
 
     emit dataChanged( index, index );
 
@@ -84,9 +91,24 @@ void FileModel::reset()
     endRemoveRows();
 }
 
+void FileModel::refreshItem(ListItem *item)
+{
+    for(int i = 0; i < m_list.size(); i++)
+        if(m_list[i] == item)
+        {
+            refreshRow(index(i));
+            break;
+        }
+}
+
 void FileModel::append( QVariant path, QVariant type )
 {
-    appendRow( new ListItem(path.toString(), type.toString(), this ) );
+    if(type == File::Directory)
+    {
+        appendRow(new DirectoryItem(path.toString(), type.toString(), this));
+    }
+    else
+        appendRow( new ListItem(path.toString(), type.toString(), this ) );
 }
 
 QString ListItem::path() const
@@ -96,21 +118,21 @@ QString ListItem::path() const
 
 QString ListItem::type() const
 {
-    return m_type;
+    return m_mimeType;
 }
 
 QVariant ListItem::data( int role )
 {
     switch ( role )
     {
-        case FilePathRole:
-            return path();
-            break;
-        case MimeTypeRole:
-            return type();
-            break;
-        default:
-            break;
+    case FilePathRole:
+        return path();
+        break;
+    case MimeTypeRole:
+        return type();
+        break;
+    default:
+        break;
     }
     return QVariant();
 }
@@ -120,6 +142,9 @@ QHash<int, QByteArray> ListItem::roleNames() const
     QHash<int, QByteArray> names;
     names[ FilePathRole ] = "filePath";
     names[ MimeTypeRole ] = "mimeType";
+    names[ LastModifiedRole ] = "lastModified";
+    names[ ContentSizeRole ] = "contentSize";
+
     return names;
 }
 
@@ -132,4 +157,76 @@ void ListItem::setLoaded( bool b )
 {
     m_isLoaded = b;
     emit imageChanged();
+}
+
+DirectoryItem::DirectoryItem(QString filePath, QString type, QObject *parent)
+    : ListItem(filePath, type, parent),
+      dir(filePath),
+      sizeFinder(new DirectorySizeFinder(filePath)),
+      timer(new QTimer(this)),
+      size(0)
+{
+    sizeFinder->start(QThread::LowPriority);
+
+    connect(timer, SIGNAL(timeout()), SLOT(timeout()));
+    timer->start(100);
+}
+
+QVariant DirectoryItem::data(int role)
+{
+    if(role == LastModifiedRole)
+    {
+        QFileInfo fi(path());
+        return fi.lastModified().toString();
+    }
+    else if(role == ContentSizeRole)
+    {
+        return formatSize(size);
+    }
+    else
+        return ListItem::data(role);
+}
+
+void DirectoryItem::timeout()
+{
+    if(sizeFinder->isFinished())
+        timer->stop();
+
+    notifyModel();
+    size = sizeFinder->size();
+}
+
+QString DirectoryItem::formatSize(qint64 size)
+{
+    return KGlobal::locale()->formatByteSize(size);
+}
+
+void DirectoryItem::notifyModel()
+{
+    FileModel *model;
+    if((model = dynamic_cast<FileModel *>(parent())))
+    {
+        model->refreshItem(this);
+    }
+}
+
+void DirectorySizeFinder::run()
+{
+    QStack<QString> scan;
+    scan.push(path);
+
+    while(!scan.empty())
+    {
+        const QString topItem = scan.pop();
+        QDir dir(topItem);
+        QFileInfoList list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs);
+
+        for(int i = 0; i < list.size(); i++)
+        {            
+            if(list[i].isDir())
+                scan.push(list[i].absoluteFilePath());
+            else
+              m_size += list[i].size();
+        }
+    }
 }

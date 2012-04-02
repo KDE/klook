@@ -36,7 +36,8 @@ public:
         Undefined = 0,
         Image,
         Video,
-        Txt
+        Txt,
+        Directory
     };
 
     File( QObject* parent = 0 );

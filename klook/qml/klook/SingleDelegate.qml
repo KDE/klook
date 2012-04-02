@@ -177,6 +177,46 @@ Item {
         }
     }
 
+    Component {
+        id: folderDelegate
+
+        Rectangle {
+            color: "black"
+
+            Image {
+                id: folderIcon
+                source: "image://preview/" + filePath + "%" + Math.random( 10 )
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                width: parent.width / 2
+            }
+
+           Text {
+                id: omg
+                anchors.left: folderIcon.right
+                anchors.verticalCenter: parent.verticalCenter
+                width: parent.width / 2
+                color: "white"
+                text: "Last Modified: " + lastModified
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+            }
+
+           Text {
+               id: content
+               anchors.top: omg.bottom
+               anchors.left: folderIcon.right
+               width: parent.width / 2
+               color: "white"
+               text: contentSize
+               verticalAlignment: Text.AlignVCenter
+               horizontalAlignment: Text.AlignHCenter
+           }
+        }
+    }
+
+
+
     // function for getting delegate of loader element
     function bestDelegate( t ) {
 
@@ -186,6 +226,8 @@ Item {
             return videoDelegate;
         else if ( t == 3 )
             return txtDelegate;
+        else if (t == 4)
+            return folderDelegate;
         else
             return txtDelegate;
     }

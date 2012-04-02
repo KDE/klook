@@ -124,6 +124,11 @@ File::FileType WorkerThread::getType( const QString& mime ) const
                   mime == QLatin1String( "application/x-zerosize" ) ||
                   mime == QLatin1String( "application/x-shellscript" ) )
             type = File::Txt;
+        else if( mime.mid(delimiter + 1) == QLatin1String("directory"))
+        {
+            type = File::Directory;
+        }
+
     }
 
     if ( type == File::Undefined )

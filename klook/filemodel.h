@@ -25,6 +25,9 @@
 #include <QAbstractListModel>
 #include <QList>
 #include <QObject>
+#include <QDir>
+#include <QDateTime>
+#include <QThread>
 
 class ListItem;
 
@@ -45,6 +48,8 @@ public:
     QModelIndex indexFromRowNumber( int row );
     void reset();
 
+    void refreshItem(ListItem *item);
+
 public slots:
     void append(QVariant path, QVariant type);
 
@@ -61,11 +66,13 @@ public:
     enum
     {
         FilePathRole = Qt::UserRole + 1,
-        MimeTypeRole
+        MimeTypeRole,
+        LastModifiedRole,
+        ContentSizeRole // size and object count for folders
     };
 
     ListItem(QString filePath, QString fileType, QObject* parent = 0)
-        : QObject( parent ), m_path( filePath ), m_type( fileType ) {}
+        : QObject( parent ), m_path( filePath ), m_mimeType( fileType ) {}
     ListItem(QObject *parent = 0)
         : QObject(parent) {}
     virtual ~ListItem() {}
@@ -79,7 +86,7 @@ public slots:
     virtual QString type() const;
 
     void setPath(QString path) { m_path = path; }
-    void setType(QString type) { m_type = type; }
+    void setMimeType(QString type) { m_mimeType = type; }
 
 signals:
     void dataChanged();
@@ -87,7 +94,44 @@ signals:
 
 private:
     QString m_path;
-    QString m_type;
+    QString m_mimeType;
     bool m_isLoaded;
 };
+
+class DirectorySizeFinder : public QThread
+{
+public:
+    DirectorySizeFinder(QString path, QObject *parent = 0)
+        : QThread(parent), path(path), m_size(0) {}
+    virtual void run ();
+
+    qint64 size() const { return m_size; }
+private:
+    QString path;
+    qint64 m_size;
+};
+
+class QTimer;
+
+class DirectoryItem : public ListItem
+{
+    Q_OBJECT
+public:
+    DirectoryItem(QString filePath, QString type, QObject* parent = 0);
+    QVariant data(int role);
+
+
+private slots:
+    void timeout();
+private:
+    QString formatSize(qint64 size);
+    void notifyModel();
+
+    QDir dir;
+    DirectorySizeFinder *sizeFinder;
+    QTimer *timer;
+    qint64 size;
+};
+
+
 #endif // FILEMODEL_H

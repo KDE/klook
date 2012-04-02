@@ -1,4 +1,4 @@
-/* KLook
+ /* KLook
  * Copyright (c) 2011-2012 ROSA  <support@rosalab.ru>
  * Authors: Julia Mineeva, Evgeniy Auzhin, Sergey Borovkov.
  * License: GPLv3
@@ -24,10 +24,14 @@
 #include <QPainter>
 
 #include <kfile.h>
+#include <kicon.h>
 
 #include "filemodel.h"
+#include <QtCore/QDebug>
 
 PreviewGenerator *PreviewGenerator::instance = 0;
+
+#define NO_DIRECTORY_THUMBNAIL
 
 PreviewGenerator::PreviewGenerator(QObject *parent)
     : QObject( parent )
@@ -37,6 +41,12 @@ PreviewGenerator::PreviewGenerator(QObject *parent)
     defaultPreview.load( ":images/pla-empty-box.png" );
     videoPixmap.load( ":images/play-empty.png" );
     m_plugins = KIO::PreviewJob::availablePlugins();
+
+#ifdef NO_DIRECTORY_THUMBNAIL
+    m_plugins.removeAll("directorythumbnail");
+#endif
+
+    qDebug() << m_plugins;
 }
 
 void PreviewGenerator::notifyModel( const QString& filePath )
@@ -137,7 +147,7 @@ void PreviewGenerator::stop()
 }
 
 void PreviewGenerator::previewFailed( KFileItem item )
-{    
+{
     if ( item.mimetype().startsWith( "text/" ) )
     {
         QStringList listP;
@@ -148,5 +158,11 @@ void PreviewGenerator::previewFailed( KFileItem item )
         job->setIgnoreMaximumSize();
         job->setAutoDelete( true );
         connect( job, SIGNAL( gotPreview( const KFileItem&, const QPixmap& ) ), SLOT( setPreview( const KFileItem&, const QPixmap& ) ) );
+    }
+    else
+    {
+        KIcon icon(item.iconName(), 0, item.overlays());
+        QPixmap pixmap = icon.pixmap(500);
+        setPreview(item, pixmap);
     }
 }
