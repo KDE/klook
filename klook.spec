@@ -3,7 +3,7 @@
 Summary:	Klook is a quick preview feature
 Name:		klook
 Version:	0.1
-Release:	46
+Release:	47
 License:	GPL v.3
 Group:		Graphical desktop
 Source:		%{name}-%{version}.tar.gz
@@ -82,6 +82,9 @@ cp locale/ru/LC_MESSAGES/KLook.mo %{buildroot}/usr/share/locale/ru/LC_MESSAGES/
 /usr/share/locale
 
 %changelog
+* Thu Mar 29 2012 Sergey Borovkov <sergey.borovkov@osinit.ru>
+- Move qml files and icons to /usr/share
+
 * Tue Feb 21 2012 abf
 - The release updated by ABF
 
