@@ -276,8 +276,8 @@ QSize DeclarativeViewer::calculateViewSize( const QSize& sz )
 
     szItem = inscribedRectToRect( sz, QSize( wDesktop, hDesktop ) );
 
-    szItem.setWidth( ( szItem.width() < minimumWidth() ) ? minimumWidth() : szItem.width() ) ;
-    szItem.setHeight( (szItem.height() < minimumHeight() ) ? minimumHeight() : szItem.height() );
+    szItem.setWidth(qMax(szItem.width(), minimumWidth()));
+    szItem.setHeight(qMax(szItem.height(), minimumHeight()));
 
     return szItem;
 }
@@ -686,6 +686,8 @@ void DeclarativeViewer::handleMessage( const QString& message )
     QStringList params = message.split( ";", QString::SkipEmptyParts );
     processArgs( params );
 
+
+    qDeleteAll(m_files);
     m_files.clear();
 
     startWorkingThread();
@@ -800,8 +802,9 @@ QSize DeclarativeViewer::getTextWindowSize(QString url)
     }
 
     size.setHeight( size.height() + ( m_isEmbedded ? 0 : height_offset ) );
-    size.setWidth( ( size.width() < minimumWidth() ) ? minimumWidth() : size.width() ) ;
-    size.setHeight( (size.height() < minimumHeight() ) ? minimumHeight() : size.height() );
+
+    size.setWidth( qMax(size.width(), minimumWidth()) ) ;
+    size.setHeight( qMax(size.height(), minimumHeight()) );
 
     return size;
 }
