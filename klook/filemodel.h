@@ -102,13 +102,16 @@ class DirectorySizeFinder : public QThread
 {
 public:
     DirectorySizeFinder(QString path, QObject *parent = 0)
-        : QThread(parent), path(path), m_size(0) {}
+        : QThread(parent), path(path), m_size(0), count(0) {}
     virtual void run ();
 
     qint64 size() const { return m_size; }
+    int fileCount() const { return count; }
+
 private:
     QString path;
     qint64 m_size;
+    int count;
 };
 
 class QTimer;
@@ -131,6 +134,7 @@ private:
     DirectorySizeFinder *sizeFinder;
     QTimer *timer;
     qint64 size;
+    int count;
 };
 
 

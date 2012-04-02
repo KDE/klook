@@ -31,6 +31,7 @@
 #include "previewgenerator.h"
 #include "previewprovider.h"
 #include "filemodel.h"
+#include "mimetypeimageprovider.h"
 #include "workerthread.h"
 
 #include <QX11Info>
@@ -70,6 +71,7 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     connect( engine(), SIGNAL( quit() ), SLOT( close() ) );
 
     engine()->addImageProvider( "preview", new PreviewProvider );
+    engine()->addImageProvider( "mime", new MimeTypeImageProvider );
 
     setResizeMode( QDeclarativeView::SizeRootObjectToView );
 

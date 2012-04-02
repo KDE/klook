@@ -32,7 +32,7 @@ static const char version[] = "0.1";
 
 int main(int argc, char *argv[])
 {
-    QApplication::setGraphicsSystem( "raster" );
+    //QApplication::setGraphicsSystem( "raster" );
 
     KAboutData about( "KLook", 0, ki18n( "KLook" ),
                       version, ki18n( description ), KAboutData::License_GPL_V3,
@@ -61,6 +61,7 @@ int main(int argc, char *argv[])
         fprintf( stderr, "KLook is already running!\n" );
         return 0;
     }
+
 
     QStringList args;
     for ( int a = 1; a < argc; ++a )

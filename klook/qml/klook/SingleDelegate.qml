@@ -185,32 +185,33 @@ Item {
 
             Image {
                 id: folderIcon
-                source: "image://preview/" + filePath + "%" + Math.random( 10 )
+                source: "image://mime/" + filePath
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
+                height: parent.height / 3 * 2
+                anchors.leftMargin: 20
                 width: parent.width / 2
+                fillMode: Image.PreserveAspectFit
+
             }
 
            Text {
                 id: omg
                 anchors.left: folderIcon.right
-                anchors.verticalCenter: parent.verticalCenter
-                width: parent.width / 2
+                anchors.top: folderIcon.top
+                anchors.topMargin: 200
                 color: "white"
                 text: "Last Modified: " + lastModified
-                verticalAlignment: Text.AlignVCenter
-                horizontalAlignment: Text.AlignHCenter
+                font.pointSize: 12
             }
 
            Text {
                id: content
                anchors.top: omg.bottom
                anchors.left: folderIcon.right
-               width: parent.width / 2
                color: "white"
                text: contentSize
-               verticalAlignment: Text.AlignVCenter
-               horizontalAlignment: Text.AlignHCenter
+               font.pointSize: 12
            }
         }
     }
