@@ -27,7 +27,6 @@
 
 MyText::MyText( QGraphicsItem* parent )
     : QGraphicsProxyWidget( parent )
-    , m_source( "" )
     , m_isPreview( false )
 {
     m_viewer = new QPlainTextEdit();
