@@ -164,7 +164,8 @@ DirectoryItem::DirectoryItem(QString filePath, QString type, QObject *parent)
       dir(filePath),
       sizeFinder(new DirectorySizeFinder(filePath)),
       timer(new QTimer(this)),
-      size(0)
+      size(0),
+      count(0)
 {
     sizeFinder->start(QThread::LowPriority);
 
@@ -177,7 +178,7 @@ QVariant DirectoryItem::data(int role)
     if(role == LastModifiedRole)
     {
         QFileInfo fi(path());
-        return fi.lastModified().toString();
+        return ki18n("Last Modified: ").toString() + fi.lastModified().toString();
     }
     else if(role == ContentSizeRole)
     {
@@ -194,11 +195,12 @@ void DirectoryItem::timeout()
 
     notifyModel();
     size = sizeFinder->size();
+    count = sizeFinder->fileCount();
 }
 
 QString DirectoryItem::formatSize(qint64 size)
 {
-    return KGlobal::locale()->formatByteSize(size);
+    return ki18n("Size: ").toString() + KGlobal::locale()->formatByteSize(size) + ki18n("\nElements: ").toString() + QString::number(count);
 }
 
 void DirectoryItem::notifyModel()
@@ -220,6 +222,7 @@ void DirectorySizeFinder::run()
         const QString topItem = scan.pop();
         QDir dir(topItem);
         QFileInfoList list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs);
+        count += list.size();
 
         for(int i = 0; i < list.size(); i++)
         {            

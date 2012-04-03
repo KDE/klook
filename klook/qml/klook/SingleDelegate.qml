@@ -181,7 +181,7 @@ Item {
         id: folderDelegate
 
         Rectangle {
-            color: "black"
+            color: "#dadada"
 
             Image {
                 id: folderIcon
@@ -195,21 +195,35 @@ Item {
 
             }
 
+            function getName(path)
+            {
+                if(path.substr(-1) === '/' && path.length !== 1) { // remove trailing slash if it's not root
+                    path = path.substr(0, path.length - 1);
+                }
+                return path.substring(path.lastIndexOf('/') + 1);
+            }
+
+            Text {
+                 id: name
+                 anchors.left: folderIcon.right
+                 anchors.top: folderIcon.top
+                 anchors.topMargin: 200
+                 text: "<b>" + getName(filePath) + "</b>\n" + "\nFolder"
+                 font.pointSize: 12
+           }
+
            Text {
-                id: omg
+                id: modified
                 anchors.left: folderIcon.right
-                anchors.top: folderIcon.top
-                anchors.topMargin: 200
-                color: "white"
-                text: "Last Modified: " + lastModified
+                anchors.top: name.bottom
+                text: lastModified
                 font.pointSize: 12
             }
 
            Text {
                id: content
-               anchors.top: omg.bottom
+               anchors.top: modified.bottom
                anchors.left: folderIcon.right
-               color: "white"
                text: contentSize
                font.pointSize: 12
            }
