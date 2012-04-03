@@ -24,6 +24,7 @@
 
 #include <QStack>
 #include <QTimer>
+#include <QMessageBox>
 
 #include <kglobal.h>
 #include <klocale.h>
@@ -111,6 +112,16 @@ void FileModel::append( QVariant path, QVariant type )
         appendRow( new ListItem(path.toString(), type.toString(), this ) );
 }
 
+void FileModel::scanDirectory(int index)
+{
+    if(index >= 0 && index < rowCount())
+    {
+        DirectoryItem *item = static_cast<DirectoryItem *>(m_list[index]);
+        if(item)
+            item->startScan();
+    }
+}
+
 QString ListItem::path() const
 {
     return m_path;
@@ -183,14 +194,6 @@ QVariant DirectoryItem::data( int role )
     else if ( ( role == ContentSizeRole ) ||
               ( role == CountRole ) )
     {
-        // if it's first time let's run directory scan
-        if ( !isScanned )
-        {
-            isScanned = true;
-            sizeFinder->start( QThread::LowPriority );
-            connect( timer, SIGNAL( timeout() ), SLOT( timeout() ) );
-            timer->start( 100 );
-        }
         if ( role == ContentSizeRole )
             return KGlobal::locale()->formatByteSize( size );
         else // CountRole
@@ -203,13 +206,12 @@ QVariant DirectoryItem::data( int role )
 void DirectoryItem::timeout()
 {
     if ( sizeFinder->isFinished() )
-    {
         timer->stop();
-    }
 
-    notifyModel();
     size = sizeFinder->size();
     count = sizeFinder->fileCount();
+
+    notifyModel();
 }
 
 void DirectoryItem::notifyModel()
@@ -221,18 +223,30 @@ void DirectoryItem::notifyModel()
     }
 }
 
+void DirectoryItem::startScan()
+{
+    // if it's not first time let's return
+    if(isScanned)        
+        return;
+
+    isScanned = true;
+    sizeFinder->start(QThread::LowPriority);
+    connect(timer, SIGNAL(timeout()), SLOT(timeout()));
+    timer->start(100);
+}
+
+
 void DirectorySizeFinder::run()
 {
     QStack<QString> scan;
     scan.push(path);
-
     while(!scan.empty())
     {
         const QString topItem = scan.pop();
         QDir dir(topItem);
         QFileInfoList list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs);
-        count += list.size();
 
+        count += list.size();
         for(int i = 0; i < list.size(); i++)
         {            
             if(list[i].isDir())

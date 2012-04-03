@@ -1,3 +1,4 @@
+
 /* KLook
  * Copyright (c) 2011-2012 ROSA  <support@rosalab.ru>
  * Authors: Julia Mineeva, Evgeniy Auzhin, Sergey Borovkov.
@@ -49,8 +50,8 @@ Item {
                 asynchronous: true
                 smooth: true;
                 visible: albumWrapper.state === "fullscreen"
-                width: ( sourceSize.width > parent.width ) ? parent.width : sourceSize.width
-                height: ( sourceSize.height > parent.height ) ? parent.height : sourceSize.height
+                width: Math.min( sourceSize.width, parent.width )
+                height: Math.min( sourceSize.height, parent.height )
 
                 signal ready()
 
@@ -408,8 +409,10 @@ Item {
             return videoDelegate;
         else if ( t == 3 )
             return txtDelegate;
-        else if ( t == 4 )
+        else if (t == 4) {
+            fileModel.scanDirectory(index)
             return folderDelegate;
+        }
         else if ( t == 5 )
             return audioDelegate;
         else
@@ -421,14 +424,6 @@ Item {
         id: componentLoader
         anchors.fill: parent;
         sourceComponent: bestDelegate( mimeType )
-        /*
-        onStatusChanged: {
-            if ( componentLoader.status == Loader.Ready )
-            {
-                canShow()
-            }
-        }
-        */
     }
 }
 

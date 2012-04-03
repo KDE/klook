@@ -30,6 +30,7 @@
 #include <QThread>
 
 class ListItem;
+class DirectoryItem;
 
 class FileModel : public QAbstractListModel
 {
@@ -52,6 +53,7 @@ public:
 
 public slots:
     void append(QVariant path, QVariant type);
+    void scanDirectory(int index);
 
 private:
     ListItem* m_prototype;
@@ -123,13 +125,14 @@ class DirectoryItem : public ListItem
 public:
     DirectoryItem( QString filePath, QString type, QObject* parent = 0 );
     QVariant data( int role );
-
+    void startScan();
 private slots:
     void timeout();
 
 private:
     QString formatSize(qint64 size);
     void notifyModel();
+
 
     bool isScanned;
     QDir dir;
