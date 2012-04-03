@@ -178,7 +178,7 @@ QVariant DirectoryItem::data( int role )
     if(role == LastModifiedRole)
     {
         QFileInfo fi( path() );
-        return fi.lastModified().toString();
+        return KGlobal::locale()->formatDate( fi.lastModified().date() );
     }
     else if ( ( role == ContentSizeRole ) ||
               ( role == CountRole ) )
