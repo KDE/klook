@@ -24,6 +24,7 @@
 #include <QMetaType>
 #include <QDir>
 #include <QImageReader>
+
 #include <KDE/Phonon/BackendCapabilities>
 
 #include <kmimetype.h>
@@ -58,7 +59,7 @@ void WorkerThread::processUrl( const QStringList &urls )
         if ( QFile::exists( path ) )
         {
             QString mime = getMime( str );
-            File::FileType type = getType( mime );
+            File::FileType type = getType( mime, path );
             if ( type != File::Undefined )
             {
                 const File *file = new File( path, type, mime );
@@ -80,7 +81,7 @@ QString WorkerThread::getMime( const QString& st ) const
     return type->name();
 }
 
-File::FileType WorkerThread::getType( const QString& mime ) const
+File::FileType WorkerThread::getType( const QString& mime, const QString& path ) const
 {
     int delimiter = mime.indexOf( '/' );
 
@@ -149,8 +150,15 @@ File::FileType WorkerThread::getType( const QString& mime ) const
         if ( mime == QLatin1String( "application/x-matroska" ) ||
              mime == QLatin1String( "application/vnd.rn-realmedia" ) )
             type = File::Video;
-        else if( mime == QLatin1String( "bmp" ) )
+        else if ( mime == QLatin1String( "bmp" ) )
             type = File::Image;
+        else if ( mime == QLatin1String( "application/octet-stream" ) )
+        {
+            QFileInfo fi( path );
+            if ( fi.suffix() == QLatin1String( "mp3" ) ||
+                 fi.suffix() == QLatin1String( "ogg" ) )
+                type = File::Audio;
+        }
     }
 
     return type;

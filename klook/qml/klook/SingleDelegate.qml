@@ -163,7 +163,7 @@ Item {
 
             function getHeight( parentHeight, iconHeight)
             {
-                var h = parentHeight * 3 / 5
+                var h = ( parentHeight - panel.height ) * 4 / 5
                 if ( h > iconHeight )
                     h = iconHeight
                 return h
@@ -174,9 +174,9 @@ Item {
                 anchors.left: parent.left
 //                anchors.top: parent.top
 //                anchors.bottom: parent.bottom
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.topMargin: 20
-                anchors.bottomMargin: 20
+//                anchors.verticalCenter: parent.verticalCenter
+//                anchors.topMargin: 20
+//                anchors.bottomMargin: 20
                 clip: true
                 source: "image://mime/" + audio.source
                 opacity: 0
@@ -185,6 +185,8 @@ Item {
                 smooth: true;
                 visible: albumWrapper.state === "fullscreen"
                 height: getHeight( parent.height, 500 ) //parent.height * 3 / 5
+                y: (parent.height - panel.height - height)/2
+
 
                 Behavior on opacity { NumberAnimation { duration: 500 } }
             }
