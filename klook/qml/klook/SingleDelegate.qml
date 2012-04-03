@@ -208,7 +208,7 @@ Item {
                  anchors.left: folderIcon.right
                  anchors.top: folderIcon.top
                  anchors.topMargin: 200
-                 text: "<b>" + getName(filePath) + "</b>\n" + "\nFolder"
+                 text: "<br><b>" + getName(filePath) + "</b></br>" + "<br>Folder</br>"
                  font.pointSize: 12
            }
 
