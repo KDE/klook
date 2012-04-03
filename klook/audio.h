@@ -20,31 +20,38 @@
  */
 
 
-#ifndef VIDEO_H
-#define VIDEO_H
+#ifndef AUDIO_H
+#define AUDIO_H
 
-#include <QGraphicsProxyWidget>
-#include <KDE/Phonon/VideoPlayer>
+#include <QTime>
+
+#include <QDeclarativeItem>
+#include <KDE/Phonon/MediaObject>
+#include <KDE/Phonon/AudioOutput>
 
 class QHBoxLayout;
 
-class MyVideo : public QGraphicsProxyWidget
+class MyAudio : public QDeclarativeItem
 {
     Q_OBJECT
     Q_PROPERTY( QString source READ source WRITE setSource NOTIFY sourceChanged )
     Q_PROPERTY( bool playing READ playing )
     Q_PROPERTY( bool paused READ paused )
-    Q_PROPERTY( bool muted READ muted WRITE setMuted )
     Q_PROPERTY( qlonglong totalTime READ totalTime NOTIFY totalTimeChanged )
+    Q_PROPERTY( QTime duration READ duration )
     Q_PROPERTY( qlonglong position READ position WRITE setPosition NOTIFY positionChanged )
-    Q_PROPERTY( int videoWidth READ videoWidth )
-    Q_PROPERTY( int videoHeight READ videoHeight )
     Q_PROPERTY( bool preview READ isPreview WRITE setPreview )
     Q_PROPERTY( bool ready READ isReady WRITE setReady NOTIFY ready )
 
+    Q_PROPERTY( QString artist READ artist NOTIFY artistChanged )
+    Q_PROPERTY( QString album READ album NOTIFY albumChanged )
+    Q_PROPERTY( QString title READ title NOTIFY titleChanged  )
+    Q_PROPERTY( QString composer READ composer  NOTIFY composerChanged )
+    Q_PROPERTY( QString genre READ genre  NOTIFY genreChanged )
+
 public:
-    MyVideo( QGraphicsItem* parent = 0 );
-    ~MyVideo();
+    MyAudio( QDeclarativeItem* parent = 0 );
+    ~MyAudio();
 
 public slots:
     QString source() const;
@@ -57,16 +64,17 @@ public slots:
     bool isReady();
     void setReady(bool b);
 
-    bool muted() const;
-    void setMuted( bool m );
-
-    int videoWidth() const { return m_videoWidth; }
-    int videoHeight() const { return m_videoHeight; }
-
     qlonglong totalTime() const;
+    QTime duration();
 
     qlonglong position() const;
     void setPosition( qlonglong pos );
+
+    QString artist();
+    QString album();
+    QString title();
+    QString composer();
+    QString genre();
 
     void play_or_pause();
     void play();
@@ -77,15 +85,12 @@ public slots:
 
     void onFinished();
 
-    void onMetaDataChanged();
-    void stateChanged(Phonon::State oldState, Phonon::State newState);
+    void stateChanged( Phonon::State oldState, Phonon::State newState );
 
     bool isPreview() const;
     void setPreview( bool preview );
-    void setPlayerParent();
 
 protected:
-  void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget );
 
 Q_SIGNALS:
     void clicked( bool );
@@ -96,17 +101,17 @@ Q_SIGNALS:
     void playFinished();
     void ready();
 
+    void artistChanged();
+    void albumChanged();
+    void titleChanged();
+    void composerChanged();
+    void genreChanged();
+
 private:
-    static Phonon::VideoPlayer* m_player;
-
-    QWidget*        m_wid;
-    QHBoxLayout*    m_layout;
-
-    int m_videoWidth;
-    int m_videoHeight;
+    Phonon::MediaObject* m_mediaObject;
 
     bool m_isPreview;
     bool m_isReady;
 };
 
-#endif // VIDEO_H
+#endif // AUDIO_H

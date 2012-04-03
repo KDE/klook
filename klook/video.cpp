@@ -67,13 +67,13 @@ MyVideo::~MyVideo()
     if ( list.size() > 1 )
     {
         m_player->stop();
-        m_player->setParent(0);
+        m_player->setParent( 0 );
     }
 }
 
 void MyVideo::setPlayerParent()
 {
-    m_layout->addWidget(m_player);
+    m_layout->addWidget( m_player );
 }
 
 void MyVideo::setPause()

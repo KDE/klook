@@ -27,11 +27,13 @@
 #include <kmimetypetrader.h>
 
 #include "video.h"
+#include "audio.h"
 #include "text.h"
 #include "previewgenerator.h"
 #include "previewprovider.h"
+#include "mimeprovider.h"
 #include "filemodel.h"
-#include "mimetypeimageprovider.h"
+#include "mimeprovider.h"
 #include "workerthread.h"
 
 #include <QX11Info>
@@ -71,7 +73,7 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     connect( engine(), SIGNAL( quit() ), SLOT( close() ) );
 
     engine()->addImageProvider( "preview", new PreviewProvider );
-    engine()->addImageProvider( "mime", new MimeTypeImageProvider );
+    engine()->addImageProvider( "mime", new MimeProvider );
 
     setResizeMode( QDeclarativeView::SizeRootObjectToView );
 
@@ -93,7 +95,7 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     setRegisterTypes();
 
     //Remove standart KDE title
-    setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
+    setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint );
 
     skipTaskBar();
 
@@ -124,6 +126,7 @@ bool DeclarativeViewer::checkComposite()
 void DeclarativeViewer::setRegisterTypes()
 {
     qmlRegisterType<MyVideo>( "Widgets", 1, 0, "Video" );
+    qmlRegisterType<MyAudio>( "Widgets", 1, 0, "Audio" );
     qmlRegisterType<MyText>( "Widgets", 1, 0, "PlainText" );
 
     QDesktopWidget dw;
@@ -142,6 +145,9 @@ void DeclarativeViewer::setRegisterTypes()
     rootContext()->setContextProperty( "viewMode", "single" );
     rootContext()->setContextProperty( "embedded", m_isEmbedded );
     rootContext()->setContextProperty( "effects", ( checkComposite() ) ? "on" : "off" );
+
+    rootContext()->setContextProperty( "artistStr", ki18n( "Artist:" ).toString() );
+    rootContext()->setContextProperty( "totalTimeStr", ki18n( "Total time:" ).toString() );
 }
 
 void DeclarativeViewer::startWorkingThread()
@@ -320,6 +326,20 @@ void DeclarativeViewer::updateSize( const File* file )
         else
         {
             centerWidget( sz );
+        }
+        m_startFullScreen = false;
+    }
+    else if ( file->type() == File::Audio )
+    {
+        QSize size( 600, 427 );
+        if ( ( m_startFullScreen ) && ( size == this->size() ) )
+        {
+            showFullScreen();
+            emit setFullScreenState();
+        }
+        else
+        {
+            centerWidget( size );
         }
         m_startFullScreen = false;
     }
@@ -763,7 +783,8 @@ void DeclarativeViewer::setViewMode( DeclarativeViewer::ViewMode mode )
 }
 
 void DeclarativeViewer::handleMessage( const QString& message )
-{    
+{
+    hide();
 
     QStringList params = message.split( ";", QString::SkipEmptyParts );
     processArgs( params );
@@ -787,6 +808,7 @@ int DeclarativeViewer::processArgs( const QStringList& args )
     for ( int n = 0; n < args.count(); n++ )
     {
         QString argument = args[ n ];
+        qDebug() << argument;
 
         if ( argument == "-embedded" )
         {
@@ -797,7 +819,7 @@ int DeclarativeViewer::processArgs( const QStringList& args )
                 {
                     bool ok_x, ok_y, ok_width, ok_height;
 
-                    setEmbedded(true);
+                    setEmbedded( true );
                     m_urls << args[ n ];
                     n++;
 
@@ -887,29 +909,26 @@ QSize DeclarativeViewer::getTextWindowSize(QString url)
     return size;
 }
 
-
-void DeclarativeViewer::focusChanged(QWidget *, QWidget *now)
+void DeclarativeViewer::focusChanged( QWidget*, QWidget* now )
 {
-    if (m_isEmbedded)
+    if ( m_isEmbedded )
     {
-        if (!now)
+        if ( !now )
             this->close();
     }
 }
 
-
-
-void DeclarativeViewer::setEmbedded(bool state)
+void DeclarativeViewer::setEmbedded( bool state )
 {
     if (state)
     {
-        setMinimumSize(50,50);
+        setMinimumSize( 50, 50 );
     }
     else
     {
-        setMinimumSize(600,427);
+        setMinimumSize( 600, 427 );
     }
-    m_isEmbedded = state;
 
+    m_isEmbedded = state;
 }
 

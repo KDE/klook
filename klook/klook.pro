@@ -29,7 +29,8 @@ SOURCES += main.cpp \
     previewprovider.cpp \
     filemodel.cpp \
     klookapp.cpp \
-    mimetypeimageprovider.cpp
+    audio.cpp \
+    mimeprovider.cpp
 
 HEADERS += \
     declarativeviewer.h \
@@ -41,7 +42,8 @@ HEADERS += \
     previewprovider.h \
     filemodel.h \
     klookapp.h \
-    mimetypeimageprovider.h
+    audio.h \
+    mimeprovider.h
 
 OTHER_FILES += \
     qml/klook/main.qml \

@@ -31,7 +31,7 @@
 FileModel::FileModel( ListItem *prototype, QObject *parent )
     : QAbstractListModel( parent )
 {
-    setRoleNames( prototype->roleNames()) ;
+    setRoleNames( prototype->roleNames() ) ;
 }
 
 FileModel::~FileModel()
@@ -39,7 +39,7 @@ FileModel::~FileModel()
 }
 
 
-int FileModel::rowCount(const QModelIndex &parent) const
+int FileModel::rowCount( const QModelIndex &parent ) const
 {
     Q_UNUSED( parent )
     return m_list.count();
@@ -165,8 +165,8 @@ DirectoryItem::DirectoryItem(QString filePath, QString type, QObject *parent)
       sizeFinder(new DirectorySizeFinder(filePath)),
       timer(new QTimer(this)),
       size(0),
-      count(0),
-      isScanned(false)
+      isScanned(false),
+      count(0)
 {
 }
 

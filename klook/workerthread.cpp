@@ -85,6 +85,7 @@ File::FileType WorkerThread::getType( const QString& mime ) const
     int delimiter = mime.indexOf( '/' );
 
     File::FileType type = File::Undefined;
+
     if ( delimiter != -1 )
     {
         QString left = mime.left( delimiter );
@@ -92,7 +93,7 @@ File::FileType WorkerThread::getType( const QString& mime ) const
         if ( left == QLatin1String( "image" ) )
         {
             QString right = mime.mid(delimiter + 1);
-            if(supportedImageFormats.contains( right.toLatin1()) || right == "x-xpixmap" )
+            if ( supportedImageFormats.contains( right.toLatin1()) || right == "x-xpixmap" )
                 type = File::Image;
             else if ( supportedImageFormats.contains( "svg" ) && ( right == ( "svg+xml" ) || right == ( "svg+xml-compressed" ) ) )
                 type = File::Image;
@@ -119,6 +120,23 @@ File::FileType WorkerThread::getType( const QString& mime ) const
                  right == QLatin1String("quicktime") )
                 type = File::Video;
 #endif
+        }
+        else if ( left == QLatin1String( "audio" ) )
+        {
+            QString right = mime.mid( delimiter + 1 );
+
+            if ( m_mimeTypes.contains( mime ) )
+                type = File::Audio;
+
+            if ( type == File::Undefined )
+            {
+                if ( right == QLatin1String( "ogg" ) ||
+                     right == QLatin1String( "mpeg" ) ||
+                     right == QLatin1String( "x-speex+ogg" ) ||
+                     right == QLatin1String( "x-vorbis+ogg" ) ||
+                     right == QLatin1String( "x-flac+ogg" ) )
+                    type = File::Audio;
+            }
         }
         else if ( left == QLatin1String( "text" ) ||
                   mime == QLatin1String( "application/x-zerosize" ) ||
