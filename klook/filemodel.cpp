@@ -103,7 +103,7 @@ void FileModel::refreshItem(ListItem *item)
 
 void FileModel::append( QVariant path, QVariant type )
 {
-    if(type == File::Directory)
+    if ( type == File::Directory )
     {
         appendRow(new DirectoryItem(path.toString(), type.toString(), this));
     }
@@ -128,9 +128,11 @@ QVariant ListItem::data( int role )
     case FilePathRole:
         return path();
         break;
+
     case MimeTypeRole:
         return type();
         break;
+
     default:
         break;
     }
@@ -144,6 +146,7 @@ QHash<int, QByteArray> ListItem::roleNames() const
     names[ MimeTypeRole ] = "mimeType";
     names[ LastModifiedRole ] = "lastModified";
     names[ ContentSizeRole ] = "contentSize";
+    names[ CountRole ] = "countElements";
 
     return names;
 }
@@ -161,34 +164,37 @@ void ListItem::setLoaded( bool b )
 
 DirectoryItem::DirectoryItem(QString filePath, QString type, QObject *parent)
     : ListItem(filePath, type, parent),
-      dir(filePath),
-      sizeFinder(new DirectorySizeFinder(filePath)),
-      timer(new QTimer(this)),
-      size(0),
-      isScanned(false),
-      count(0)
+      isScanned( false ),
+      dir( filePath ),
+      sizeFinder( new DirectorySizeFinder( filePath ) ),
+      timer( new QTimer( this ) ),
+      size( 0 ),
+      count( 0 )
 {
 }
 
-QVariant DirectoryItem::data(int role)
+QVariant DirectoryItem::data( int role )
 {
     if(role == LastModifiedRole)
     {
-        QFileInfo fi(path());
-        return ki18n("Last Modified: ").toString() + fi.lastModified().toString();
+        QFileInfo fi( path() );
+        return fi.lastModified().toString();
     }
-    else if(role == ContentSizeRole)
+    else if ( ( role == ContentSizeRole ) ||
+              ( role == CountRole ) )
     {
         // if it's first time let's run directory scan
-        if(!isScanned)
+        if ( !isScanned )
         {
             isScanned = true;
-            sizeFinder->start(QThread::LowPriority);
-            connect(timer, SIGNAL(timeout()), SLOT(timeout()));
-            timer->start(100);
+            sizeFinder->start( QThread::LowPriority );
+            connect( timer, SIGNAL( timeout() ), SLOT( timeout() ) );
+            timer->start( 100 );
         }
-
-        return formatSize(size);
+        if ( role == ContentSizeRole )
+            return KGlobal::locale()->formatByteSize( size );
+        else // CountRole
+            return QString::number( count );
     }
     else
         return ListItem::data(role);
@@ -196,7 +202,7 @@ QVariant DirectoryItem::data(int role)
 
 void DirectoryItem::timeout()
 {
-    if(sizeFinder->isFinished())
+    if ( sizeFinder->isFinished() )
     {
         timer->stop();
     }
@@ -204,11 +210,6 @@ void DirectoryItem::timeout()
     notifyModel();
     size = sizeFinder->size();
     count = sizeFinder->fileCount();
-}
-
-QString DirectoryItem::formatSize(qint64 size)
-{
-    return ki18n("Size: ").toString() + KGlobal::locale()->formatByteSize(size) + ki18n("\nElements: ").toString() + QString::number(count);
 }
 
 void DirectoryItem::notifyModel()

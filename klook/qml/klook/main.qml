@@ -77,12 +77,12 @@ Rectangle {
             return 'videoPanel'
 
         if ( viewMode === "multi" )
-            if ( ( mainWindow.currentFileType === 2 ) || ( mainWindow.currentFileType === 4 ) )
+            if ( ( mainWindow.currentFileType === 2 ) || ( mainWindow.currentFileType === 5 ) )
                 return 'fullscreenVideoPanelMulti'
             else
                 return 'fullscreenPanelMulti'
         else
-            if ( ( mainWindow.currentFileType === 2 ) || ( mainWindow.currentFileType === 4 ) )
+            if ( ( mainWindow.currentFileType === 2 ) || ( mainWindow.currentFileType === 5 ) )
                 return 'fullscreenVideoPanelSingle'
             else
                 return 'fullscreenPanelSingle'
@@ -96,7 +96,7 @@ Rectangle {
         if ( ( mainWindow.state === "windowed" ) || ( mainWindow.state === "embedded" ) )
         {
             if ( ( albumWrapper.state === 'fullscreen' ) &&
-                    ( ( currentFileType === 2 ) || ( currentFileType === 4 ) ) )
+                    ( ( currentFileType === 2 ) || ( currentFileType === 5 ) ) )
                 panel.visible = true
             else
                 panel.visible = false
@@ -562,7 +562,7 @@ Rectangle {
                 anchors.leftMargin: 2
                 anchors.bottomMargin: 2
                 anchors.topMargin: 1
-                color: ( ( mainWindow.currentFileType == 4 ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
+                color: ( ( ( mainWindow.currentFileType == 4 ) || ( mainWindow.currentFileType == 5 ) ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
             }
             PropertyChanges {
                 target: drawerBorder
@@ -618,7 +618,7 @@ Rectangle {
                 anchors.leftMargin: 2
                 anchors.bottomMargin: 2
                 anchors.topMargin: 2
-                color: ( ( mainWindow.currentFileType == 4 ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
+                color: ( ( ( mainWindow.currentFileType == 4 ) || ( mainWindow.currentFileType == 5 ) ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
             }
         }
     ]

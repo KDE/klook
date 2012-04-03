@@ -148,6 +148,10 @@ void DeclarativeViewer::setRegisterTypes()
 
     rootContext()->setContextProperty( "artistStr", ki18n( "Artist:" ).toString() );
     rootContext()->setContextProperty( "totalTimeStr", ki18n( "Total time:" ).toString() );
+    rootContext()->setContextProperty( "folderStr", ki18n( "Folder" ).toString() );
+    rootContext()->setContextProperty( "lastModifiedStr", ki18n( "Last Modified:" ).toString() );
+    rootContext()->setContextProperty( "sizeStr", ki18n( "Size:" ).toString() );
+    rootContext()->setContextProperty( "elementsStr", ki18n( "Elements:" ).toString() );
 }
 
 void DeclarativeViewer::startWorkingThread()
@@ -329,7 +333,8 @@ void DeclarativeViewer::updateSize( const File* file )
         }
         m_startFullScreen = false;
     }
-    else if ( file->type() == File::Audio )
+    else if ( ( file->type() == File::Audio ) ||
+              ( file->type() == File::Directory ) )
     {
         QSize size( 600, 427 );
         if ( ( m_startFullScreen ) && ( size == this->size() ) )

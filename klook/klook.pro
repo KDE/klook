@@ -74,7 +74,8 @@ OTHER_FILES += \
     qml/klook/images/play-empty.png \
     qml/klook/SingleDelegate.qml \
     resources/pla-empty-box.png \
-    resources/play-empty.png
+    resources/play-empty.png \
+    qml/klook/InfoItem.qml
     
     
 SHARE_PATH = /usr/share
