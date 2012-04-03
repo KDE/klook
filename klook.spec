@@ -3,12 +3,11 @@
 Summary:	Klook is a quick preview feature
 Name:		klook
 Version:	0.1
-Release:	51
+Release:	52
 License:	GPL v.3
 Group:		Graphical desktop
 Source:		%{name}-%{version}.tar.gz
 BuildRequires:	qt4-devel	>= 4.7.0
-BuildRequires:	qt4-linguist	>= 4.2.0
 BuildRequires:	kdelibs4-devel	>= 4.6.5
 Requires:	dolphin
 BuildRoot:	/tmp/klook-build
@@ -41,6 +40,7 @@ cp locale/ru/LC_MESSAGES/KLook.mo %{buildroot}/usr/share/locale/ru/LC_MESSAGES/
 %{_prefix}/share/klook/ScrollBar.qml
 %{_prefix}/share/klook/Preview.qml
 %{_prefix}/share/klook/SingleDelegate.qml
+%{_prefix}/share/klook/InfoItem.qml
 %{_prefix}/share/klook/images/bg.png
 %{_prefix}/share/klook/images/separator.png
 %{_prefix}/share/klook/DefaultImage.qml

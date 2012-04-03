@@ -27,6 +27,14 @@ Item {
     id: listItem
     width: photosListView.width; height: photosListView.height
 
+    function getHeight( parentHeight, iconHeight)
+    {
+        var h = ( parentHeight - panel.height ) * 4 / 5
+        if ( h > iconHeight )
+            h = iconHeight
+        return h
+    }
+
     Component {
         id: imgDelegate
 
@@ -47,7 +55,7 @@ Item {
 
                 signal ready()
 
-                onStatusChanged: if ( img.status === Image.Ready ){ ready(); opacity = 1; }
+                onStatusChanged: if ( img.status === Image.Ready ) { ready(); opacity = 1; }
 
                 Behavior on opacity { NumberAnimation { duration: 500 } }
             }
@@ -162,22 +170,9 @@ Item {
 
             signal ready()
 
-            function getHeight( parentHeight, iconHeight)
-            {
-                var h = parentHeight * 3 / 5
-                if ( h > iconHeight )
-                    h = iconHeight
-                return h
-            }
-
             Image {
                 id: audioIcon
                 anchors.left: parent.left
-//                anchors.top: parent.top
-//                anchors.bottom: parent.bottom
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.topMargin: 20
-                anchors.bottomMargin: 20
                 clip: true
                 source: "image://mime/" + audio.source
                 opacity: 0
@@ -186,53 +181,31 @@ Item {
                 smooth: true;
                 visible: albumWrapper.state === "fullscreen"
                 height: getHeight( parent.height, 500 ) //parent.height * 3 / 5
+                y: ( parent.height - panel.height - height ) / 2
 
                 Behavior on opacity { NumberAnimation { duration: 500 } }
             }
 
-            Text {
+            InfoItem {
                 id : title
                 font.pointSize: 15
-                wrapMode: Text.WordWrap
-                color: ( mainWindow.state != "fullscreen" ) ? "black" : "white"
-                elide: Text.ElideRight
                 anchors.top: audioIcon.top
                 anchors.left: audioIcon.right
                 anchors.right: parent.right
-                anchors.rightMargin: 10
-                anchors.topMargin: 10
-                anchors.bottomMargin: 10
             }
 
-            Text {
+            InfoItem {
                 id : artist
-                wrapMode: Text.WordWrap
-                color: ( mainWindow.state != "fullscreen" ) ? "black" : "white"
-                elide: Text.ElideRight
-                font.pointSize: 12
                 anchors.top: title.bottom
                 anchors.left: audioIcon.right
-                anchors.right: parent.right
-                anchors.rightMargin: 10
-                anchors.topMargin: 10
-                anchors.bottomMargin: 10
             }
 
-            Text {
+            InfoItem {
                 id : totalTime
-                wrapMode: Text.WordWrap
-                color: ( mainWindow.state != "fullscreen" ) ? "black" : "white"
-                elide: Text.ElideRight
-                font.pointSize: 12
                 anchors.top: artist.bottom
                 anchors.left: audioIcon.right
-                anchors.right: parent.right
-                anchors.rightMargin: 10
-                anchors.topMargin: 10
-                anchors.bottomMargin: 10
             }
 
-//            Binding { target: artist; property: "visible"; value: audio.artist != "" }
             Binding { target: totalTime; property: "anchors.top"; value: artist.visible ? artist.bottom : title.bottom }
 
             Audio {
@@ -282,8 +255,7 @@ Item {
 
             Connections{ target: panel.videoSlider; onPosChanged: audio.setPosition( panel.videoSlider.value * audio.totalTime / 1000 ) }
 
-            Connections
-            {
+            Connections{
                 target: albumWrapper;
                 onStateChanged:
                 {
@@ -301,7 +273,7 @@ Item {
                     {
                         audioIcon.opacity = 1
                         audio.source = filePath
-                        mainWindow.currentFileType = 4;
+                        mainWindow.currentFileType = 5;
                         mainWindow.updatePanel()
                         if ( albumWrapper.state === "fullscreen" )
                             audio.play()
@@ -346,57 +318,87 @@ Item {
     Component {
         id: folderDelegate
 
-        Rectangle {
-            color: "#dadada"
+        Item {
+            id: folderItem
 
             Image {
                 id: folderIcon
                 source: "image://mime/" + filePath
+                clip: true
                 anchors.left: parent.left
-                anchors.verticalCenter: parent.verticalCenter
-                height: parent.height / 3 * 2
                 anchors.leftMargin: 20
-                width: parent.width / 2
                 fillMode: Image.PreserveAspectFit
+                asynchronous: true
+                smooth: true;
+                opacity: 0
+                visible: albumWrapper.state === "fullscreen"
+                height: getHeight( parent.height, 500 )
+                y: ( parent.height - panel.height - height ) / 2
 
+                Behavior on opacity { NumberAnimation { duration: 500 } }
             }
 
-            function getName(path)
+            function getName( path )
             {
-                if(path.substr(-1) === '/' && path.length !== 1) { // remove trailing slash if it's not root
-                    path = path.substr(0, path.length - 1);
+                if ( path.substr( -1 ) === '/' && path.length !== 1 ) { // remove trailing slash if it's not root
+                    path = path.substr( 0, path.length - 1 );
                 }
-                return path.substring(path.lastIndexOf('/') + 1);
+                return path.substring( path.lastIndexOf( '/' ) + 1 );
             }
 
-            Text {
-                 id: name
-                 anchors.left: folderIcon.right
-                 anchors.top: folderIcon.top
-                 anchors.topMargin: 200
-                 text: "<br><b>" + getName(filePath) + "</b></br>" + "<br>Folder</br>"
-                 font.pointSize: 12
-           }
-
-           Text {
-                id: modified
+            InfoItem {
+                id: name
+                anchors.top: folderIcon.top
                 anchors.left: folderIcon.right
-                anchors.top: name.bottom
-                text: lastModified
-                font.pointSize: 12
+                text: "<b>" + getName( filePath ) +"</b>"
+                font.pointSize: 15
             }
 
-           Text {
-               id: content
-               anchors.top: modified.bottom
-               anchors.left: folderIcon.right
-               text: contentSize
-               font.pointSize: 12
-           }
+            InfoItem {
+                id: type
+                anchors.top: name.bottom
+                anchors.left: folderIcon.right
+                text: folderStr
+            }
+
+            InfoItem {
+                id: modified
+                anchors.top: type.bottom
+                anchors.left: folderIcon.right
+                text: lastModifiedStr + " " + lastModified
+            }
+
+            InfoItem {
+                id: size
+                anchors.top: modified.bottom
+                anchors.left: folderIcon.right
+                text: sizeStr + " " + contentSize
+            }
+
+            InfoItem {
+                id: content
+                anchors.top: size.bottom
+                anchors.left: folderIcon.right
+                text: elementsStr + " " + countElements
+            }
+
+            Connections{
+                target: photosListView;
+                onCurrentIndexChanged: {
+                    if ( listItem.ListView.isCurrentItem )
+                    {
+                        mainWindow.currentFileType = 4;
+                        folderIcon.opacity = 1
+                        mainWindow.updatePanel()
+                    } else
+                    {
+                        folderIcon.opacity = 0
+                    }
+                }
+            }
         }
+
     }
-
-
 
     // function for getting delegate of loader element
     function bestDelegate( t ) {

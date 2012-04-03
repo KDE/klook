@@ -70,7 +70,8 @@ public:
         FilePathRole = Qt::UserRole + 1,
         MimeTypeRole,
         LastModifiedRole,
-        ContentSizeRole // size and object count for folders
+        ContentSizeRole,// size for folders
+        CountRole       // object count for folders
     };
 
     ListItem(QString filePath, QString fileType, QObject* parent = 0)
@@ -103,8 +104,8 @@ private:
 class DirectorySizeFinder : public QThread
 {
 public:
-    DirectorySizeFinder(QString path, QObject *parent = 0)
-        : QThread(parent), path(path), m_size(0), count(0) {}
+    DirectorySizeFinder( QString path, QObject* parent = 0 )
+        : QThread( parent ), path( path ), m_size( 0 ), count( 0 ) {}
     virtual void run ();
 
     qint64 size() const { return m_size; }
@@ -122,12 +123,12 @@ class DirectoryItem : public ListItem
 {
     Q_OBJECT
 public:
-    DirectoryItem(QString filePath, QString type, QObject* parent = 0);
-    QVariant data(int role);
+    DirectoryItem( QString filePath, QString type, QObject* parent = 0 );
+    QVariant data( int role );
     void startScan();
-
 private slots:
     void timeout();
+
 private:
     QString formatSize(qint64 size);
     void notifyModel();

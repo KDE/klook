@@ -77,12 +77,12 @@ Rectangle {
             return 'videoPanel'
 
         if ( viewMode === "multi" )
-            if ( ( mainWindow.currentFileType === 2 ) || ( mainWindow.currentFileType === 4 ) )
+            if ( ( mainWindow.currentFileType === 2 ) || ( mainWindow.currentFileType === 5 ) )
                 return 'fullscreenVideoPanelMulti'
             else
                 return 'fullscreenPanelMulti'
         else
-            if ( ( mainWindow.currentFileType === 2 ) || ( mainWindow.currentFileType === 4 ) )
+            if ( ( mainWindow.currentFileType === 2 ) || ( mainWindow.currentFileType === 5 ) )
                 return 'fullscreenVideoPanelSingle'
             else
                 return 'fullscreenPanelSingle'
@@ -96,7 +96,7 @@ Rectangle {
         if ( ( mainWindow.state === "windowed" ) || ( mainWindow.state === "embedded" ) )
         {
             if ( ( albumWrapper.state === 'fullscreen' ) &&
-                    ( ( currentFileType === 2 ) || ( currentFileType === 4 ) ) )
+                    ( ( currentFileType === 2 ) || ( currentFileType === 5 ) ) )
                 panel.visible = true
             else
                 panel.visible = false
@@ -495,7 +495,7 @@ Rectangle {
             ControlPanel {
                 id: panel
                 z: 1;
-                y: albumWrapper.height - 85
+                y: albumWrapper.height - 70
 
                 Connections{
                     target: mainWindow
@@ -549,22 +549,23 @@ Rectangle {
             PropertyChanges { target: row; visible: true }
             PropertyChanges { target: photosListView; highlightMoveSpeed: 5000 }
             PropertyChanges {
-                target: panel;
+                target: panel
                 opacity: 1
                 state: "videoPanel"
+                y: albumWrapper.height - panel.height - 10
             }
             ParentChange { target: drawer; parent: drawerBorder }
             PropertyChanges {
-                target: drawer;
+                target: drawer
                 anchors.margins: 1
                 anchors.rightMargin: 2
                 anchors.leftMargin: 2
                 anchors.bottomMargin: 2
                 anchors.topMargin: 1
-                color: ( ( mainWindow.currentFileType == 4 ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
+                color: ( ( ( mainWindow.currentFileType == 4 ) || ( mainWindow.currentFileType == 5 ) ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
             }
             PropertyChanges {
-                target: drawerBorder;
+                target: drawerBorder
                 color: "#dadada"
                 visible: true
             }
@@ -573,11 +574,15 @@ Rectangle {
             name: "fullscreen"
             PropertyChanges { target: mainWindow; border.width: 0 }
             PropertyChanges { target: photosListView; highlightMoveSpeed: 7000 }
-            PropertyChanges { target: panel; state: updatePanelState() }
+            PropertyChanges {
+                target: panel;
+                state: updatePanelState()
+                y: albumWrapper.height - panel.height - 19
+            }
             PropertyChanges { target: row; visible: false }
             ParentChange { target: drawer; parent: mainWindow }
             PropertyChanges {
-                target: drawer;
+                target: drawer
                 anchors.rightMargin: 0
                 anchors.leftMargin: 0
                 anchors.bottomMargin: 0
@@ -593,7 +598,7 @@ Rectangle {
         State {
             name: "embedded"
             PropertyChanges {
-                target: mainWindow;
+                target: mainWindow
                 border.width: 2
                 color: "#dadada"
             }
@@ -603,6 +608,7 @@ Rectangle {
                 target: panel
                 opacity: 1
                 state: "videoPanel"
+                y: albumWrapper.height - panel.height - 10
             }
             ParentChange { target: drawer; parent: mainWindow }
             PropertyChanges {
@@ -612,7 +618,7 @@ Rectangle {
                 anchors.leftMargin: 2
                 anchors.bottomMargin: 2
                 anchors.topMargin: 2
-                color: ( ( mainWindow.currentFileType == 4 ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
+                color: ( ( ( mainWindow.currentFileType == 4 ) || ( mainWindow.currentFileType == 5 ) ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
             }
         }
     ]
