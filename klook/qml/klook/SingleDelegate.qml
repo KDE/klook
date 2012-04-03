@@ -252,6 +252,14 @@ Item {
         id: componentLoader
         anchors.fill: parent;
         sourceComponent: bestDelegate( mimeType )
+/*
+        onStatusChanged: {
+            if ( componentLoader.status == Loader.Ready )
+            {
+                canShow()
+            }
+        }
+        */
     }
 }
 

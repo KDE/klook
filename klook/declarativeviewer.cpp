@@ -86,40 +86,20 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
 
     ListItem *prototypeItem = new ListItem( this );
     m_fileModel = new FileModel( prototypeItem, this );
-    PreviewGenerator::createInstance()->setModel(m_fileModel);
+    PreviewGenerator::createInstance()->setModel( m_fileModel );
 
     connect( this, SIGNAL( fileData( QVariant, QVariant ) ), m_fileModel, SLOT( append( QVariant, QVariant ) ) );
 
     setRegisterTypes();
 
-    //Check whether the KDE effects are included
-    QDBusInterface remoteApp( "org.kde.kwin", "/KWin", "org.kde.KWin" );
-    QDBusReply<bool> reply = remoteApp.call( "compositingActive" );
-    if ( reply.isValid() )
-    {
-        if (reply.value())
-            rootContext()->setContextProperty( "effects", "on" );
-        else
-            rootContext()->setContextProperty( "effects", "off" );
-    }
-    else
-    {
-        rootContext()->setContextProperty( "effects", "off" );
-        qDebug() << "DBus reply is not valid";
-    }
-
     //Remove standart KDE title
     setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
 
-    //Skip Taskbar
-    Display* dpy = QX11Info::display();
-    Atom state[3];
-    state[0] = XInternAtom( dpy, "_NET_WM_STATE_SKIP_PAGER", false );
-    state[1] = XInternAtom( dpy, "_NET_WM_STATE_SKIP_TASKBAR", false );
-    state[2] = XInternAtom( dpy, "_NET_WM_STATE_STICKY", false );
-    XChangeProperty( QX11Info::display(), winId(), XInternAtom( dpy, "_NET_WM_STATE", False ), XA_ATOM, 32, PropModeReplace, ( unsigned char* )state, 3 );
+    skipTaskBar();
 
     setViewMode( Single );
+
+    connect( qApp, SIGNAL( focusChanged( QWidget*, QWidget* ) ),this , SLOT( focusChanged( QWidget*, QWidget* ) ) );
 }
 
 DeclarativeViewer::~DeclarativeViewer()
@@ -127,6 +107,18 @@ DeclarativeViewer::~DeclarativeViewer()
     qDeleteAll( m_files );
 
     delete m_thread;
+}
+
+//Check whether the KDE effects are included
+bool DeclarativeViewer::checkComposite()
+{
+    QDBusInterface remoteApp( "org.kde.kwin", "/KWin", "org.kde.KWin" );
+    QDBusReply<bool> reply = remoteApp.call( "compositingActive" );
+    if ( reply.isValid() )
+        return reply.value();
+
+    qDebug() << "DBus reply is not valid";
+    return false;
 }
 
 void DeclarativeViewer::setRegisterTypes()
@@ -149,6 +141,7 @@ void DeclarativeViewer::setRegisterTypes()
     rootContext()->setContextProperty( "fileType", "Undefined" );
     rootContext()->setContextProperty( "viewMode", "single" );
     rootContext()->setContextProperty( "embedded", m_isEmbedded );
+    rootContext()->setContextProperty( "effects", ( checkComposite() ) ? "on" : "off" );
 }
 
 void DeclarativeViewer::startWorkingThread()
@@ -332,8 +325,8 @@ void DeclarativeViewer::updateSize( const File* file )
     }
     else if ( file->type() == File::Txt )
     {
-        QSize size = getTextWindowSize(file->name());
-        if ((m_startFullScreen) && (size == this->size()))
+        QSize size = getTextWindowSize( file->name() );
+        if ( ( m_startFullScreen ) && ( size == this->size() ) )
         {
             showFullScreen();
             emit setFullScreenState();
@@ -343,23 +336,79 @@ void DeclarativeViewer::updateSize( const File* file )
             centerWidget( size );
         }
         m_startFullScreen = false;
-    }    
+    }
 }
 
 void DeclarativeViewer::centerWidget( const QSize& sz )
 {
     QDesktopWidget dw;
     QRect rectDesktop = dw.screenGeometry(this);
+    QSize sz1;
+    if (m_isEmbedded)
+    {
+        int iconOffset = 30;
+        QRect top(rectDesktop.x() + rectDesktop.width()*0.1 ,
+                  rectDesktop.y() + rectDesktop.height()*0.1 ,
+                  rectDesktop.width()*0.8 ,
+                  m_rcIcon.y() - rectDesktop.height()*0.1 - iconOffset );
 
-    int w = sz.width();
-    int h = sz.height();
+        QRect left(rectDesktop.x() + rectDesktop.width()*0.1,
+                   rectDesktop.y() + rectDesktop.height()*0.1,
+                   m_rcIcon.x() - iconOffset - rectDesktop.x() - rectDesktop.width()*0.1,
+                   rectDesktop.height()*0.8);
 
-    QRect rect( ( rectDesktop.width() - w ) / 2,
-                ( rectDesktop.height() - h ) / 2,
-                w, h );
-    rect.moveTop( rect.y() - height_offset / 2 );
+        QRect right(m_rcIcon.topRight().x(),
+                    rectDesktop.y() + rectDesktop.height()*0.1,
+                    rectDesktop.width() - m_rcIcon.topRight().x() - rectDesktop.width()*0.1,
+                    rectDesktop.height()*0.8);
 
-    setGeometry( rect );
+        int topArea = top.width()*top.height();
+        int leftArea = left.width()*left.height();
+        int rightArea = right.width()*right.height();
+
+        if ((topArea > leftArea)&&(topArea > rightArea))
+        {
+            sz1 = inscribedRectToRect( sz, top.size() );            
+            int x = m_rcIcon.x() + m_rcIcon.width()/2 - sz1.width()/2;
+            x = qMax(x , static_cast<int>(rectDesktop.width()*0.1));
+            x = qMin(x, top.topRight().x() - sz1.width());
+            int y = m_rcIcon.y() - iconOffset - sz1.height();            
+            QRect rect(x,y,sz1.width(),sz1.height());
+            setGeometry(rect);
+        }
+        else if (leftArea > rightArea )
+        {
+            sz1 = inscribedRectToRect( sz, left.size() );
+            int x = m_rcIcon.x() - sz1.width() - iconOffset;
+            int y = m_rcIcon.y() + m_rcIcon.height()/2 - sz1.height()/2;
+            y = qMax(y , static_cast<int>(rectDesktop.height()*0.1));
+            y = qMin(y, left.bottomLeft().y() -sz1.height() );
+            QRect rect(x,y,sz1.width(),sz1.height());
+            setGeometry(rect);
+        }
+        else
+        {
+            sz1 = inscribedRectToRect( sz, right.size() );
+            int x = m_rcIcon.topRight().x() + iconOffset;
+            int y = m_rcIcon.y() + m_rcIcon.height()/2 - sz1.height()/2;
+            y = qMax(y , static_cast<int>(rectDesktop.height()*0.1));
+            y = qMin(y, right.bottomLeft().y() - sz1.height() );
+            QRect rect(x,y,sz1.width(),sz1.height());            
+            setGeometry(rect);
+        }        
+    }
+    else
+    {
+        int w = sz.width();
+        int h = sz.height();
+
+        QRect rect( ( rectDesktop.width() - w ) / 2,
+                    ( rectDesktop.height() - h ) / 2,
+                    w, h );
+        rect.moveTop( rect.y() - height_offset / 2 );
+
+        setGeometry( rect );
+    }
 }
 
 void DeclarativeViewer::changeContent()
@@ -413,16 +462,16 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )
         headerTitle.setRect( border_width + 1,
                              border_width + 1,
                              r.width() - border_width - 270,
-                            header_height - border_width + 1 );
+                             header_height - border_width + 1 );
         headerR = headerR.united( headerTitle.toRect() );
         headerR = headerR.united( header2.toRect() );
     }
     else
     {
         headerTitle.setRect( 6 + 42 * 3 + 12,
-                            border_width + 1,
-                            r.width() - 414,
-                            header_height- border_width + 1 );
+                             border_width + 1,
+                             r.width() - 414,
+                             header_height - border_width + 1 );
         headerR = headerR.united( headerTitle.toRect() );
         headerR = headerR.united( header1.toRect() );
         headerR = headerR.united( header2.toRect() );
@@ -645,6 +694,18 @@ void DeclarativeViewer::mouseReleaseEvent( QMouseEvent* event )
     QDeclarativeView::mouseReleaseEvent( event );
 }
 
+
+void DeclarativeViewer::skipTaskBar()
+{
+    //Skip Taskbar
+    Display* dpy = QX11Info::display();
+    Atom state[3];
+    state[0] = XInternAtom( dpy, "_NET_WM_STATE_SKIP_PAGER", false );
+    state[1] = XInternAtom( dpy, "_NET_WM_STATE_SKIP_TASKBAR", false );
+    state[2] = XInternAtom( dpy, "_NET_WM_STATE_STICKY", false );
+    XChangeProperty( QX11Info::display(), winId(), XInternAtom( dpy, "_NET_WM_STATE", False ), XA_ATOM, 32, PropModeReplace, ( unsigned char* )state, 3 );
+}
+
 void DeclarativeViewer::newFileProcessed( const File *file )
 {
     if ( m_files.empty() )
@@ -653,6 +714,12 @@ void DeclarativeViewer::newFileProcessed( const File *file )
         changeContent();
         setActualSize();
         show();
+        activateWindow();
+
+        rootContext()->setContextProperty( "viewMode", ( ( m_urls.count() == 1 ) ? "single" : "multi" ) );
+        emit setStartWindow();
+
+        skipTaskBar();
     }
     else {
         setViewMode( Multi );
@@ -660,6 +727,18 @@ void DeclarativeViewer::newFileProcessed( const File *file )
 
     m_files.append( file );
     emit fileData( QVariant( file->name() ), QVariant( file->type() ) );
+}
+
+void DeclarativeViewer::onCanShow()
+{
+    if (m_files.count() > 1)
+        return;
+    hide();
+    changeContent();
+    setActualSize();
+    show();
+    activateWindow();
+    raise();
 }
 
 void DeclarativeViewer::showNoFilesNotification()
@@ -684,7 +763,8 @@ void DeclarativeViewer::setViewMode( DeclarativeViewer::ViewMode mode )
 }
 
 void DeclarativeViewer::handleMessage( const QString& message )
-{
+{    
+
     QStringList params = message.split( ";", QString::SkipEmptyParts );
     processArgs( params );
 
@@ -697,15 +777,11 @@ void DeclarativeViewer::handleMessage( const QString& message )
     m_fileModel->reset();
 
     m_previewGenerator->setFiles( m_urls );
-
-    rootContext()->setContextProperty( "viewMode", ( ( m_urls.count() == 1 ) ? "single" : "multi" ) );
-
-    emit setStartWindow();
 }
 
 int DeclarativeViewer::processArgs( const QStringList& args )
 {
-    m_isEmbedded = false;
+    setEmbedded(false);
     m_urls.clear();
 
     for ( int n = 0; n < args.count(); n++ )
@@ -721,7 +797,7 @@ int DeclarativeViewer::processArgs( const QStringList& args )
                 {
                     bool ok_x, ok_y, ok_width, ok_height;
 
-                    m_isEmbedded = true;
+                    setEmbedded(true);
                     m_urls << args[ n ];
                     n++;
 
@@ -810,3 +886,30 @@ QSize DeclarativeViewer::getTextWindowSize(QString url)
 
     return size;
 }
+
+
+void DeclarativeViewer::focusChanged(QWidget *, QWidget *now)
+{
+    if (m_isEmbedded)
+    {
+        if (!now)
+            this->close();
+    }
+}
+
+
+
+void DeclarativeViewer::setEmbedded(bool state)
+{
+    if (state)
+    {
+        setMinimumSize(50,50);
+    }
+    else
+    {
+        setMinimumSize(600,427);
+    }
+    m_isEmbedded = state;
+
+}
+

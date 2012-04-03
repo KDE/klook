@@ -85,6 +85,9 @@ QString File::fileTypeToString( FileType ft )
     case Directory:
         str = "DirectoryType";
         break;
+    case Audio:
+        str = "AudioType";
+        break;
     default:
         str = "UndefinedType";
         break;

@@ -37,7 +37,8 @@ public:
         Image,
         Video,
         Txt,
-        Directory
+        Directory,
+        Audio
     };
 
     File( QObject* parent = 0 );
