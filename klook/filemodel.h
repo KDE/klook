@@ -130,6 +130,7 @@ private:
     QString formatSize(qint64 size);
     void notifyModel();
 
+    bool isScanned;
     QDir dir;
     DirectorySizeFinder *sizeFinder;
     QTimer *timer;

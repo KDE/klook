@@ -165,12 +165,9 @@ DirectoryItem::DirectoryItem(QString filePath, QString type, QObject *parent)
       sizeFinder(new DirectorySizeFinder(filePath)),
       timer(new QTimer(this)),
       size(0),
-      count(0)
+      count(0),
+      isScanned(false)
 {
-    sizeFinder->start(QThread::LowPriority);
-
-    connect(timer, SIGNAL(timeout()), SLOT(timeout()));
-    timer->start(100);
 }
 
 QVariant DirectoryItem::data(int role)
@@ -182,6 +179,15 @@ QVariant DirectoryItem::data(int role)
     }
     else if(role == ContentSizeRole)
     {
+        // if it's first time let's run directory scan
+        if(!isScanned)
+        {
+            isScanned = true;
+            sizeFinder->start(QThread::LowPriority);
+            connect(timer, SIGNAL(timeout()), SLOT(timeout()));
+            timer->start(100);
+        }
+
         return formatSize(size);
     }
     else
@@ -191,7 +197,9 @@ QVariant DirectoryItem::data(int role)
 void DirectoryItem::timeout()
 {
     if(sizeFinder->isFinished())
+    {
         timer->stop();
+    }
 
     notifyModel();
     size = sizeFinder->size();
