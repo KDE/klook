@@ -50,6 +50,16 @@ typedef enum WidgetRegion
 
 } WidgetRegion;
 
+typedef enum ArrowPosition
+{
+    TOP,
+    BOTTOM,
+    LEFT,
+    RIGHT
+
+} ArrowPosition;
+
+
 class DeclarativeViewer : public QDeclarativeView
 {
     Q_OBJECT
@@ -146,9 +156,11 @@ private:
     int m_width;
     int m_height;
 
+    bool                m_compositing;
     WorkerThread*       m_thread;
     PreviewGenerator*   m_previewGenerator;
     FileModel*          m_fileModel;
+    ArrowPosition       m_posArrow;
 
 };
 

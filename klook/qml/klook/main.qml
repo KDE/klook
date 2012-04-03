@@ -22,6 +22,8 @@
 import QtQuick 1.0
 import Widgets 1.0
 
+
+
 Rectangle {
     id: mainWindow
     width: 600
@@ -33,6 +35,10 @@ Rectangle {
     smooth: true
     focus: true
     state: ( embedded ? 'embedded' : 'windowed' )
+    anchors.fill: parent
+    anchors.leftMargin: 0
+    anchors.rightMargin: 0
+    anchors.bottomMargin: 0
 
     property int currentFileType: 3
 
@@ -182,6 +188,14 @@ Rectangle {
     }
     property int index: 0
 
+    Image{
+        id: arrow
+        source: "images/arrow/arrow-left.png"
+        z:100
+        visible: false
+    }
+
+
     // Item 1: menu bar
     Rectangle {
         id: row
@@ -315,6 +329,7 @@ Rectangle {
 
         Rectangle {
             id: drawer
+            clip:true
             anchors.rightMargin: 2
             anchors.leftMargin: 2
             anchors.bottomMargin: 2
@@ -323,6 +338,8 @@ Rectangle {
             color:  "#333333" //( effects === 'on' ) ? "#c8000000" :  "#333333"
             border.width: 0
             border.color: "#000000"
+
+
 
             Rectangle {
                 id: albumsShade; color: mainWindow.color;  width: parent.width; height: parent.height; opacity: 0.0
@@ -562,28 +579,44 @@ Rectangle {
             PropertyChanges { target: panel; state: updatePanelState() }
             PropertyChanges { target: row; visible: false }
             ParentChange { target: drawer; parent: mainWindow }
-            PropertyChanges { target: drawer; anchors.rightMargin: 0 }
-            PropertyChanges { target: drawer; anchors.leftMargin: 0 }
-            PropertyChanges { target: drawer; anchors.bottomMargin: 0 }
-            PropertyChanges { target: drawer; anchors.topMargin: 0 }
-            PropertyChanges { target: drawerBorder; color: "#3feaeaea" }
-            PropertyChanges { target: drawerBorder; visible: false }
+            PropertyChanges {
+                target: drawer
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                anchors.bottomMargin: 0
+                anchors.topMargin: 0
+            }
+            PropertyChanges {
+                target: drawerBorder;
+                color: "#3feaeaea"
+                visible: false
+            }
         },
         State {
             name: "embedded"
-            PropertyChanges { target: mainWindow; border.width: 2 }
-            PropertyChanges { target: mainWindow; color: "#dadada" }
-            PropertyChanges { target: row; visible: false }
-            PropertyChanges { target: photosListView; highlightMoveSpeed: 5000 }
-            PropertyChanges { target: panel; opacity: 1 }
-            PropertyChanges { target: panel; state: "videoPanel" }
-
-            ParentChange { target: drawer; parent: mainWindow }
-            PropertyChanges { target: drawer; anchors.margins: 1 }
-            PropertyChanges { target: drawer; anchors.rightMargin: 2 }
-            PropertyChanges { target: drawer; anchors.leftMargin: 2 }
-            PropertyChanges { target: drawer; anchors.bottomMargin: 2 }
-            PropertyChanges { target: drawer; anchors.topMargin: 2 }
+            PropertyChanges { target: mainWindow;  border.width: 0 }
+            PropertyChanges { target: row; visible: false  }
+            PropertyChanges {
+                target: panel
+                opacity: 1
+                state: "videoPanel"
+            }
+            AnchorChanges   { target: drawerBorder; anchors.top: parent.top }
+            PropertyChanges   { target: drawerBorder; anchors.topMargin: 0 }
+            PropertyChanges   { target: drawer; anchors.topMargin: 1 }
+            PropertyChanges {
+                target: drawerBorder
+                color: "#537492"
+                anchors.rightMargin: (embeddedLayout === "left")? 14 : 0
+                anchors.leftMargin: (embeddedLayout === "right")? 14: 0
+                anchors.bottomMargin : (embeddedLayout === "top")? 14 : 0
+            }
+            PropertyChanges {
+                target: arrow
+                source: (embeddedLayout === "top") ? "images/arrow/arrow-bottom.png" : ((embeddedLayout === "left") ? "images/arrow/arrow-right.png" : "images/arrow/arrow-left.png")
+                visible : true
+                x : arrowX; y: arrowY
+            }
         }
     ]
 }

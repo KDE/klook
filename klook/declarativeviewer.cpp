@@ -33,6 +33,9 @@
 #include "filemodel.h"
 #include "workerthread.h"
 
+#include "plasma/windoweffects.h"
+
+
 #include <QX11Info>
 
 #include <X11/Xlib.h>
@@ -41,6 +44,8 @@
 static int header_height = 27;
 static int border_width = 2;
 static int height_offset = 27;
+static int arrowIconWidth = 29;
+static int arrowIconHeight = 16;
 
 DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent )
     : QDeclarativeView( parent )
@@ -58,12 +63,10 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     , m_width( 600 )
     , m_height( 427 )
     , m_thread( 0 )
+    , m_compositing( false )
 {
     setOptimizationFlags( QGraphicsView::DontSavePainterState );
     setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate);
-
-    setAttribute( Qt::WA_TranslucentBackground );
-    setStyleSheet( "background:transparent;" );
 
     setMouseTracking( true );
 
@@ -93,11 +96,18 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     //Remove standart KDE title
     setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
 
+    setAttribute( Qt::WA_TranslucentBackground );
+    setAutoFillBackground(false);
+    setStyleSheet( "background:transparent;" );
+
     skipTaskBar();
 
     setViewMode( Single );
 
     connect( qApp, SIGNAL( focusChanged( QWidget*, QWidget* ) ),this , SLOT( focusChanged( QWidget*, QWidget* ) ) );
+
+    Plasma::WindowEffects::overrideShadow(this->winId(),   true);
+    Plasma::WindowEffects::enableBlurBehind	(winId());
 }
 
 DeclarativeViewer::~DeclarativeViewer()
@@ -113,9 +123,12 @@ bool DeclarativeViewer::checkComposite()
     QDBusInterface remoteApp( "org.kde.kwin", "/KWin", "org.kde.KWin" );
     QDBusReply<bool> reply = remoteApp.call( "compositingActive" );
     if ( reply.isValid() )
+    {
+        m_compositing = reply.value();
         return reply.value();
-
+    }
     qDebug() << "DBus reply is not valid";
+    m_compositing = false;
     return false;
 }
 
@@ -139,6 +152,9 @@ void DeclarativeViewer::setRegisterTypes()
     rootContext()->setContextProperty( "fileType", "Undefined" );
     rootContext()->setContextProperty( "viewMode", "single" );
     rootContext()->setContextProperty( "embedded", m_isEmbedded );
+    rootContext()->setContextProperty( "embeddedLayout", "null" );
+    rootContext()->setContextProperty( "arrowX", .0 );
+    rootContext()->setContextProperty( "arrowY", .0 );
     rootContext()->setContextProperty( "effects", ( checkComposite() ) ? "on" : "off" );
 }
 
@@ -341,10 +357,11 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
 {
     QDesktopWidget dw;
     QRect rectDesktop = dw.screenGeometry(this);
-    QSize sz1;
+    QSize sz1 = sz;
     if (m_isEmbedded)
     {
-        int iconOffset = 30;
+
+        int iconOffset = 10;
         QRect top(rectDesktop.x() + rectDesktop.width()*0.1 ,
                   rectDesktop.y() + rectDesktop.height()*0.1 ,
                   rectDesktop.width()*0.8 ,
@@ -365,35 +382,51 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
         int rightArea = right.width()*right.height();
 
         if ((topArea > leftArea)&&(topArea > rightArea))
-        {
-            sz1 = inscribedRectToRect( sz, top.size() );            
+        {            
+            sz1.setHeight(sz1.height() + arrowIconHeight);
+            sz1 = inscribedRectToRect( sz1, top.size() );
             int x = m_rcIcon.x() + m_rcIcon.width()/2 - sz1.width()/2;
             x = qMax(x , static_cast<int>(rectDesktop.width()*0.1));
             x = qMin(x, top.topRight().x() - sz1.width());
             int y = m_rcIcon.y() - iconOffset - sz1.height();            
             QRect rect(x,y,sz1.width(),sz1.height());
+            rootContext()->setContextProperty( "embeddedLayout", "top" );
+            rootContext()->setContextProperty( "arrowX", m_rcIcon.x() + m_rcIcon.width()/2 - arrowIconWidth/2 -rect.x());
+            rootContext()->setContextProperty( "arrowY", rect.height() - arrowIconHeight);
+            m_posArrow = TOP;
             setGeometry(rect);
         }
         else if (leftArea > rightArea )
         {
-            sz1 = inscribedRectToRect( sz, left.size() );
+            sz1.setWidth(sz1.width()+ arrowIconHeight);
+            sz1 = inscribedRectToRect( sz1, left.size() );
             int x = m_rcIcon.x() - sz1.width() - iconOffset;
             int y = m_rcIcon.y() + m_rcIcon.height()/2 - sz1.height()/2;
             y = qMax(y , static_cast<int>(rectDesktop.height()*0.1));
             y = qMin(y, left.bottomLeft().y() -sz1.height() );
             QRect rect(x,y,sz1.width(),sz1.height());
+            rootContext()->setContextProperty( "embeddedLayout", "left" );
+            rootContext()->setContextProperty( "arrowX", rect.width() - arrowIconHeight);
+            rootContext()->setContextProperty( "arrowY", m_rcIcon.y() + m_rcIcon.height()/2 - arrowIconWidth/2 - rect.y());
+            m_posArrow = RIGHT;
             setGeometry(rect);
         }
         else
         {
-            sz1 = inscribedRectToRect( sz, right.size() );
+            sz1.setWidth(sz1.width()+ arrowIconHeight);
+            sz1 = inscribedRectToRect( sz1, right.size() );
             int x = m_rcIcon.topRight().x() + iconOffset;
             int y = m_rcIcon.y() + m_rcIcon.height()/2 - sz1.height()/2;
             y = qMax(y , static_cast<int>(rectDesktop.height()*0.1));
             y = qMin(y, right.bottomLeft().y() - sz1.height() );
-            QRect rect(x,y,sz1.width(),sz1.height());            
+            QRect rect(x,y,sz1.width(),sz1.height());
+            rootContext()->setContextProperty( "embeddedLayout", "right" );
+            rootContext()->setContextProperty( "arrowX", .0);
+            rootContext()->setContextProperty( "arrowY", m_rcIcon.y() + m_rcIcon.height()/2 - arrowIconWidth/2 - rect.y());
+            m_posArrow = LEFT;
             setGeometry(rect);
         }        
+        emit setEmbeddedState();
     }
     else
     {
@@ -447,6 +480,11 @@ void DeclarativeViewer::updateContent( int index )
 
 WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )
 {
+    /*
+      To do:
+      add embedded arrow regions
+    */
+
     QPointF pos;
     pos = mousePos;
     QRectF r = rect();
@@ -528,24 +566,27 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )
 
 void DeclarativeViewer::mousePressEvent( QMouseEvent* event )
 {
-    if ( !isFullScreen() )
+    if (!m_isEmbedded)
     {
-        m_region = calculateWindowRegion( event->pos() );
-        if ( event->button() == Qt::LeftButton )
+        if ( !isFullScreen() )
         {
-            if ( m_region == HEADER_REGION )
+            m_region = calculateWindowRegion( event->pos() );
+            if ( event->button() == Qt::LeftButton )
             {
-                m_moving = true;
-                m_lastMousePosition = event->globalPos();
-                setCursor( QCursor( Qt::SizeAllCursor ) );
+                if ( m_region == HEADER_REGION )
+                {
+                    m_moving = true;
+                    m_lastMousePosition = event->globalPos();
+                    setCursor( QCursor( Qt::SizeAllCursor ) );
+                }
+                else if ( m_region != FRAME_REGION )
+                {
+                    m_resize = true;
+                    m_lastMousePosition = event->globalPos();
+                }
             }
-            else if ( m_region != FRAME_REGION )
-            {
-                m_resize = true;
-                m_lastMousePosition = event->globalPos();
-            }
+            event->accept();
         }
-        event->accept();
     }
     QDeclarativeView::mousePressEvent(event);
 }
@@ -784,7 +825,7 @@ int DeclarativeViewer::processArgs( const QStringList& args )
     {
         QString argument = args[ n ];
 
-        if ( argument == "-embedded" )
+        if ( argument == "--embedded" )
         {
             if ( ( n + 6 ) < args.count() )
             {
@@ -812,7 +853,6 @@ int DeclarativeViewer::processArgs( const QStringList& args )
                     n++;
                     m_rcIcon.setHeight( args[ n ].toInt( &ok_height ) );
 
-                    emit setEmbeddedState();
                 }
                 else
                 {
@@ -891,8 +931,6 @@ void DeclarativeViewer::focusChanged(QWidget *, QWidget *now)
             this->close();
     }
 }
-
-
 
 void DeclarativeViewer::setEmbedded(bool state)
 {

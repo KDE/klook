@@ -83,6 +83,9 @@ qml.files=qml/klook/*.qml
 icons.path=$$SHARE_PATH/klook/images/
 icons.files=qml/klook/images/*.png
 
+arrow_images.path=$$SHARE_PATH/klook/images/arrow/
+arrow_images.files=qml/klook/images/arrow/*.png
+
 button_normal.path=$$SHARE_PATH/klook/images/buttons/normal/
 button_normal.files=qml/klook/images/buttons/normal/*.png
 
@@ -95,7 +98,7 @@ button_disable.files=qml/klook/images/buttons/disable/*.png
 button_press.path=$$SHARE_PATH/klook/images/buttons/press/
 button_press.files=qml/klook/images/buttons/press/*.png
 
-INSTALLS = target icons qml button_press button_disable button_hover button_normal
+INSTALLS = target icons qml button_press button_disable button_hover button_normal arrow_images
 
 *-g++-32 {
 message("Any 32-bit GCC build")
