@@ -1,7 +1,7 @@
 TEMPLATE += app
 QT += gui declarative phonon dbus
 
-#DEFINES += QT_NO_DEBUG_OUTPUT
+DEFINES += QT_NO_DEBUG_OUTPUT
 
 CONFIG += qt
 

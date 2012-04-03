@@ -45,7 +45,7 @@ public slots:
 
 private:
     QString getMime( const QString &st ) const;
-    File::FileType getType( const QString& ) const;
+    File::FileType getType( const QString&, const QString& ) const;
 
     bool isFound; // found at least one supported file
     const QStringList& urls;
