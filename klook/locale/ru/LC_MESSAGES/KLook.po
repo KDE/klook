@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: KLook\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-28 15:31+0400\n"
+"POT-Creation-Date: 2012-04-02 16:41+0400\n"
 "PO-Revision-Date: 2012-03-23 15:10+0400\n"
 "Last-Translator: Julia Mineeva <julia.mineeva@osinit.ru>\n"
 "Language-Team: Russian <support@rosalab.ru>\n"
@@ -11,19 +11,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: klook/declarativeviewer.cpp:144 klook/declarativeviewer.cpp:389
+#: klook/declarativeviewer.cpp:140 klook/declarativeviewer.cpp:459
 msgid "Open in..."
 msgstr "Открыть в..."
 
-#: klook/declarativeviewer.cpp:372
+#: klook/declarativeviewer.cpp:148
+msgid "Artist:"
+msgstr "Артист:"
+
+#: klook/declarativeviewer.cpp:149
+msgid "Total time:"
+msgstr "Длительность:"
+
+#: klook/declarativeviewer.cpp:442
 msgid "Open"
 msgstr "Открыть"
 
-#: klook/declarativeviewer.cpp:376
+#: klook/declarativeviewer.cpp:446
 msgid "Open in "
 msgstr "Открыть в "
 
-#: klook/declarativeviewer.cpp:390
+#: klook/declarativeviewer.cpp:460
 msgid "Elements: "
 msgstr "Элементы: "
 
@@ -39,14 +47,36 @@ msgstr ""
 msgid "(c) ROSA 2011-2012"
 msgstr ""
 
-#: klook/main.cpp:40
-msgid "Julia Mineeva, Evgeniy Auzhin, Sergey Borovkov"
-msgstr "Юлия Минеева, Евгений Аужин, Сергей Боровков"
-
 #: klook/main.cpp:41
-msgid "Authors"
-msgstr "Авторы"
+msgid "Julia Mineeva"
+msgstr "Юлия Минеева"
 
-#: klook/main.cpp:47
+#: klook/main.cpp:42 klook/main.cpp:46 klook/main.cpp:50
+msgid "Developer"
+msgstr "Разработчик"
+
+#: klook/main.cpp:45
+msgid "Evgeniy Auzhin"
+msgstr "Евгений Аужин"
+
+#: klook/main.cpp:49
+msgid "Sergey Borovkov"
+msgstr "Сергей Боровков"
+
+#: klook/main.cpp:56
 msgid "A required argument 'file'"
 msgstr "Требуется параметр 'file'"
+
+#: klook/main.cpp:57
+msgid "turn on embedded mode"
+msgstr "выключить встроенный режим"
+
+#: klook/main.cpp:58
+msgid "coordinates of icon"
+msgstr "координаты иконки"
+
+#~ msgid "Julia Mineeva, Evgeniy Auzhin, Sergey Borovkov"
+#~ msgstr "Юлия Минеева, Евгений Аужин, Сергей Боровков"
+
+#~ msgid "Authors"
+#~ msgstr "Авторы"

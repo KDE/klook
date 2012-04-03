@@ -77,12 +77,12 @@ Rectangle {
             return 'videoPanel'
 
         if ( viewMode === "multi" )
-            if ( mainWindow.currentFileType === 2 )
+            if ( ( mainWindow.currentFileType === 2 ) || ( mainWindow.currentFileType === 4 ) )
                 return 'fullscreenVideoPanelMulti'
             else
                 return 'fullscreenPanelMulti'
         else
-            if ( mainWindow.currentFileType === 2 )
+            if ( ( mainWindow.currentFileType === 2 ) || ( mainWindow.currentFileType === 4 ) )
                 return 'fullscreenVideoPanelSingle'
             else
                 return 'fullscreenPanelSingle'
@@ -95,7 +95,8 @@ Rectangle {
 
         if ( ( mainWindow.state === "windowed" ) || ( mainWindow.state === "embedded" ) )
         {
-            if ( ( albumWrapper.state === 'fullscreen' ) && ( currentFileType === 2 ) )
+            if ( ( albumWrapper.state === 'fullscreen' ) &&
+                    ( ( currentFileType === 2 ) || ( currentFileType === 4 ) ) )
                 panel.visible = true
             else
                 panel.visible = false
@@ -540,20 +541,33 @@ Rectangle {
     states: [
         State {
             name: "windowed"
-            PropertyChanges { target: mainWindow; border.width: 2 }
-            PropertyChanges { target: mainWindow; color: "transparent" }
+            PropertyChanges {
+                target: mainWindow;
+                border.width: 2
+                color: "transparent"
+            }
             PropertyChanges { target: row; visible: true }
             PropertyChanges { target: photosListView; highlightMoveSpeed: 5000 }
-            PropertyChanges { target: panel; opacity: 1 }
-            PropertyChanges { target: panel; state: "videoPanel" }
+            PropertyChanges {
+                target: panel;
+                opacity: 1
+                state: "videoPanel"
+            }
             ParentChange { target: drawer; parent: drawerBorder }
-            PropertyChanges { target: drawer; anchors.margins: 1 }
-            PropertyChanges { target: drawer; anchors.rightMargin: 2 }
-            PropertyChanges { target: drawer; anchors.leftMargin: 2 }
-            PropertyChanges { target: drawer; anchors.bottomMargin: 2 }
-            PropertyChanges { target: drawer; anchors.topMargin: 1 }
-            PropertyChanges { target: drawerBorder; color: "#dadada" }
-            PropertyChanges { target: drawerBorder; visible: true }
+            PropertyChanges {
+                target: drawer;
+                anchors.margins: 1
+                anchors.rightMargin: 2
+                anchors.leftMargin: 2
+                anchors.bottomMargin: 2
+                anchors.topMargin: 1
+                color: ( ( mainWindow.currentFileType == 4 ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
+            }
+            PropertyChanges {
+                target: drawerBorder;
+                color: "#dadada"
+                visible: true
+            }
         },
         State {
             name: "fullscreen"
@@ -562,28 +576,44 @@ Rectangle {
             PropertyChanges { target: panel; state: updatePanelState() }
             PropertyChanges { target: row; visible: false }
             ParentChange { target: drawer; parent: mainWindow }
-            PropertyChanges { target: drawer; anchors.rightMargin: 0 }
-            PropertyChanges { target: drawer; anchors.leftMargin: 0 }
-            PropertyChanges { target: drawer; anchors.bottomMargin: 0 }
-            PropertyChanges { target: drawer; anchors.topMargin: 0 }
-            PropertyChanges { target: drawerBorder; color: "#3feaeaea" }
-            PropertyChanges { target: drawerBorder; visible: false }
+            PropertyChanges {
+                target: drawer;
+                anchors.rightMargin: 0
+                anchors.leftMargin: 0
+                anchors.bottomMargin: 0
+                anchors.topMargin: 0
+                //color: ( ( mainWindow.currentFileType == 4 ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
+            }
+            PropertyChanges {
+                target: drawerBorder
+                color: "#3feaeaea"
+                visible: false
+            }
         },
         State {
             name: "embedded"
-            PropertyChanges { target: mainWindow; border.width: 2 }
-            PropertyChanges { target: mainWindow; color: "#dadada" }
+            PropertyChanges {
+                target: mainWindow;
+                border.width: 2
+                color: "#dadada"
+            }
             PropertyChanges { target: row; visible: false }
             PropertyChanges { target: photosListView; highlightMoveSpeed: 5000 }
-            PropertyChanges { target: panel; opacity: 1 }
-            PropertyChanges { target: panel; state: "videoPanel" }
-
+            PropertyChanges {
+                target: panel
+                opacity: 1
+                state: "videoPanel"
+            }
             ParentChange { target: drawer; parent: mainWindow }
-            PropertyChanges { target: drawer; anchors.margins: 1 }
-            PropertyChanges { target: drawer; anchors.rightMargin: 2 }
-            PropertyChanges { target: drawer; anchors.leftMargin: 2 }
-            PropertyChanges { target: drawer; anchors.bottomMargin: 2 }
-            PropertyChanges { target: drawer; anchors.topMargin: 2 }
+            PropertyChanges {
+                target: drawer
+                anchors.margins: 1
+                anchors.rightMargin: 2
+                anchors.leftMargin: 2
+                anchors.bottomMargin: 2
+                anchors.topMargin: 2
+                color: ( ( mainWindow.currentFileType == 4 ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
+            }
         }
     ]
 }

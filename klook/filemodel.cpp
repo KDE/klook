@@ -24,7 +24,7 @@
 FileModel::FileModel( ListItem *prototype, QObject *parent )
     : QAbstractListModel( parent )
 {
-    setRoleNames( prototype->roleNames()) ;
+    setRoleNames( prototype->roleNames() ) ;
 }
 
 FileModel::~FileModel()
@@ -32,7 +32,7 @@ FileModel::~FileModel()
 }
 
 
-int FileModel::rowCount(const QModelIndex &parent) const
+int FileModel::rowCount( const QModelIndex &parent ) const
 {
     Q_UNUSED( parent )
     return m_list.count();
@@ -86,7 +86,7 @@ void FileModel::reset()
 
 void FileModel::append( QVariant path, QVariant type )
 {
-    appendRow( new ListItem(path.toString(), type.toString(), this ) );
+    appendRow( new ListItem( path.toString(), type.toString(), this ) );
 }
 
 QString ListItem::path() const

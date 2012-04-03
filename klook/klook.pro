@@ -1,7 +1,7 @@
 TEMPLATE += app
 QT += gui declarative phonon dbus
 
-DEFINES += QT_NO_DEBUG_OUTPUT
+#DEFINES += QT_NO_DEBUG_OUTPUT
 
 CONFIG += qt
 
@@ -28,7 +28,9 @@ SOURCES += main.cpp \
     previewgenerator.cpp \
     previewprovider.cpp \
     filemodel.cpp \
-    klookapp.cpp
+    klookapp.cpp \
+    audio.cpp \
+    mimeprovider.cpp
 
 HEADERS += \
     declarativeviewer.h \
@@ -39,7 +41,9 @@ HEADERS += \
     previewgenerator.h \
     previewprovider.h \
     filemodel.h \
-    klookapp.h
+    klookapp.h \
+    audio.h \
+    mimeprovider.h
 
 OTHER_FILES += \
     qml/klook/main.qml \

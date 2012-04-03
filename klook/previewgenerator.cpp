@@ -24,6 +24,7 @@
 #include <QPainter>
 
 #include <kfile.h>
+#include <kicon.h>
 
 #include "filemodel.h"
 
@@ -137,7 +138,7 @@ void PreviewGenerator::stop()
 }
 
 void PreviewGenerator::previewFailed( KFileItem item )
-{    
+{
     if ( item.mimetype().startsWith( "text/" ) )
     {
         QStringList listP;
@@ -148,5 +149,11 @@ void PreviewGenerator::previewFailed( KFileItem item )
         job->setIgnoreMaximumSize();
         job->setAutoDelete( true );
         connect( job, SIGNAL( gotPreview( const KFileItem&, const QPixmap& ) ), SLOT( setPreview( const KFileItem&, const QPixmap& ) ) );
+    }
+    else
+    {
+        KIcon icon( item.iconName(), 0, item.overlays() );
+        QPixmap pixmap = icon.pixmap( 500 );
+        setPreview(item, pixmap);
     }
 }
