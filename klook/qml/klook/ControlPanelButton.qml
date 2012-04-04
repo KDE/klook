@@ -38,6 +38,7 @@ Rectangle {
     height: buttonHeight
     color: "#00000000"
     anchors.verticalCenter: parent.verticalCenter
+    state: "normal"
 
     Image{
         id: buttonImage
@@ -46,6 +47,7 @@ Rectangle {
         smooth: true
         fillMode: Image.PreserveAspectFit
         anchors.margins: 6
+        opacity: 1
     }
 
     //buttonClick() is callable and a signal handler, onButtonClick is automatically created
@@ -60,6 +62,19 @@ Rectangle {
         onEntered: {}
         onExited: {}
     }
+
+    states: [
+        State {
+            name: "disabled"
+            PropertyChanges { target: buttonImage; opacity: 0.5 }
+            PropertyChanges { target: buttonMouseArea; enabled: false }
+        },
+        State {
+            name: "normal"
+            PropertyChanges { target: buttonImage; opacity: 1 }
+            PropertyChanges { target: buttonMouseArea; enabled: true }
+        }
+    ]
 
     //scale the button when pressed
     scale: buttonMouseArea.pressed ? 1.05 : 1.00

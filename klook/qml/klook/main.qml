@@ -131,6 +131,30 @@ Rectangle {
         else return Qt.size( w / 5, h / 4 )
     }
 
+    function updateMenuButtons()
+    {
+        prevButton.state = getPrevButtonState()
+        nextButton.state = getNextButtonState()
+        panel.prevButtonState = getPrevButtonState()
+        panel.nextButtonState = getNextButtonState()
+    }
+
+    function getPrevButtonState()
+    {
+        if ( photosListView.currentIndex === 0 )
+            return "disabled"
+        else
+            return "normal"
+    }
+
+    function getNextButtonState()
+    {
+        if ( photosListView.currentIndex === ( photosListView.count - 1 ) )
+            return "disabled"
+        else
+            return "normal"
+    }
+
     Keys.onEscapePressed: {
         if ( mainWindow.state === 'fullscreen' )
             setFullScreen();
@@ -210,6 +234,7 @@ Rectangle {
             onButtonClick:
             {
                 photosListView.decrementCurrentIndex()
+                updateMenuButtons()
             }
         }
 
@@ -226,6 +251,7 @@ Rectangle {
                 if ( photosListView.currentIndex === -1 )
                     photosListView.currentIndex = 0
                 photosListView.incrementCurrentIndex()
+                updateMenuButtons()
             }
         }
 
@@ -433,6 +459,7 @@ Rectangle {
                     onCurrentIndexChanged:
                     {
                         cppObject.updateContent ( currentIndex )
+                        updateMenuButtons()
                     }
                 }
 
@@ -450,6 +477,13 @@ Rectangle {
                     photosListView.incrementCurrentIndex()
                 }
 
+                Connections {
+                    target: fileModel
+                    onRowsInserted: {
+                        if ( fileModel.count !== 0 )
+                            updateMenuButtons()
+                    }
+                }
                 states: [
                     State {
                         name: 'inGrid'
@@ -468,8 +502,10 @@ Rectangle {
                         PropertyChanges { target: photosGridView; focus: false }
                         PropertyChanges { target: photosListView; visible: true  }
                         PropertyChanges { target: photosListView; focus: true  }
-                        PropertyChanges { target: prevButton; state: 'normal' }
-                        PropertyChanges { target: nextButton; state: 'normal' }
+                        PropertyChanges { target: prevButton; state: getPrevButtonState() }
+                        PropertyChanges { target: nextButton; state: getNextButtonState() }
+                        PropertyChanges { target: panel; prevButtonState: getPrevButtonState() }
+                        PropertyChanges { target: panel; nextButtonState: getNextButtonState() }
                     }
                 ]
 

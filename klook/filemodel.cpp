@@ -106,18 +106,18 @@ void FileModel::append( QVariant path, QVariant type )
 {
     if ( type == File::Directory )
     {
-        appendRow(new DirectoryItem(path.toString(), type.toString(), this));
+        appendRow( new DirectoryItem( path.toString(), type.toString(), this) );
     }
     else
-        appendRow( new ListItem(path.toString(), type.toString(), this ) );
+        appendRow( new ListItem( path.toString(), type.toString(), this ) );
 }
 
 void FileModel::scanDirectory(int index)
 {
-    if(index >= 0 && index < rowCount())
+    if ( index >= 0 && index < rowCount() )
     {
-        DirectoryItem *item = static_cast<DirectoryItem *>(m_list[index]);
-        if(item)
+        DirectoryItem *item = static_cast<DirectoryItem *>( m_list[ index ] );
+        if ( item )
             item->startScan();
     }
 }

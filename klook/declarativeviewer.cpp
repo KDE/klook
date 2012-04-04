@@ -45,6 +45,9 @@ static int header_height = 27;
 static int border_width = 2;
 static int height_offset = 27;
 
+static int min_width = 600;
+static int min_height = 427;
+
 DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent )
     : QDeclarativeView( parent )
     , m_lastMousePosition( 0, 0 )
@@ -58,8 +61,8 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     , m_region( FRAME_REGION )
     , m_mediaObject( 0 )
     , m_videoWidget( 0 )
-    , m_width( 600 )
-    , m_height( 427 )
+    , m_width( min_width )
+    , m_height( min_height )
     , m_thread( 0 )
 {
     setOptimizationFlags( QGraphicsView::DontSavePainterState );
@@ -336,7 +339,7 @@ void DeclarativeViewer::updateSize( const File* file )
     else if ( ( file->type() == File::Audio ) ||
               ( file->type() == File::Directory ) )
     {
-        QSize size( 600, 427 );
+        QSize size( min_width, min_height );
         if ( ( m_startFullScreen ) && ( size == this->size() ) )
         {
             showFullScreen();
@@ -931,7 +934,7 @@ void DeclarativeViewer::setEmbedded( bool state )
     }
     else
     {
-        setMinimumSize( 600, 427 );
+        setMinimumSize( min_width, min_height );
     }
 
     m_isEmbedded = state;

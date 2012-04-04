@@ -27,7 +27,7 @@
 
 #include "klookapp.h"
 
-static const char description[] = I18N_NOOP( "KLook is a quick preview future" );
+static const char description[] = I18N_NOOP( "KLook is a quick preview feature" );
 static const char version[] = "0.1";
 
 int main(int argc, char *argv[])
@@ -63,7 +63,6 @@ int main(int argc, char *argv[])
         fprintf( stderr, "KLook is already running!\n" );
         return 0;
     }
-
 
     QStringList args;
     for ( int a = 1; a < argc; ++a )

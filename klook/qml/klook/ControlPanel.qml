@@ -40,6 +40,8 @@ Rectangle{
     property alias videoSlider: slider
     property alias playItemBtn: playItemButton
     property alias playButtonState: playItemButton.state
+    property alias nextButtonState: nextItemButton.state
+    property alias prevButtonState: prevItemButton.state
 
     property int margin: 10
 
@@ -72,6 +74,7 @@ Rectangle{
             {
                 photosListView.decrementCurrentIndex()
                 controlPanel.state = mainWindow.updatePanelState()
+                updateMenuButtons()
             }
             Behavior on x { NumberAnimation { duration: 100 } }
         }
@@ -90,6 +93,7 @@ Rectangle{
                 photosListView.incrementCurrentIndex()
 
                 controlPanel.state = mainWindow.updatePanelState()
+                updateMenuButtons()
             }
         }
 
