@@ -366,8 +366,6 @@ Rectangle {
             border.width: 0
             border.color: "#000000"
 
-
-
             Rectangle {
                 id: albumsShade; color: mainWindow.color;  width: parent.width; height: parent.height; opacity: 0.0
             }
@@ -615,7 +613,7 @@ Rectangle {
                 anchors.leftMargin: 2
                 anchors.bottomMargin: 2
                 anchors.topMargin: 1
-                color: ( ( ( mainWindow.currentFileType == 4 ) || ( mainWindow.currentFileType == 5 ) ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
+                color: ( ( ( mainWindow.currentFileType === 4 ) || ( mainWindow.currentFileType === 5 ) ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
             }
             PropertyChanges {
                 target: drawerBorder
@@ -641,6 +639,7 @@ Rectangle {
                 anchors.leftMargin: 0
                 anchors.bottomMargin: 0
                 anchors.topMargin: 0
+//                color: "#333333"
             }
             PropertyChanges {
                 target: drawerBorder;
@@ -660,14 +659,14 @@ Rectangle {
                 state: "videoPanel"
             }
             AnchorChanges   { target: drawerBorder; anchors.top: parent.top }
-            PropertyChanges   { target: drawerBorder; anchors.topMargin: 0 }
-            PropertyChanges   { target: drawer; anchors.topMargin: 1 }
+            PropertyChanges { target: drawerBorder; anchors.topMargin: 0 }
+            PropertyChanges { target: drawer; anchors.topMargin: 1 }
             PropertyChanges {
                 target: drawerBorder
                 color: "#537492"
-                anchors.rightMargin: (embeddedLayout === "left")? 14 : 0
-                anchors.leftMargin: (embeddedLayout === "right")? 14: 0
-                anchors.bottomMargin : (embeddedLayout === "top")? 14 : 0
+                anchors.rightMargin: ( embeddedLayout === "left" ) ? 14 : 0
+                anchors.leftMargin: ( embeddedLayout === "right" ) ? 14 : 0
+                anchors.bottomMargin : (embeddedLayout === "top" ) ? 14 : 0
             }
             PropertyChanges {
                 target: arrow

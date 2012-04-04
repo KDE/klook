@@ -337,22 +337,6 @@ Item {
                 Behavior on opacity { NumberAnimation { duration: 500 } }
             }
 
-            Connections {
-                target: albumWrapper
-                onStateChanged:
-                {
-                    console.log("sdfads")
-                    if(albumWrapper.state === 'fullscreen') {
-                        color = "#dadada"
-                    }
-                    else
-                    {
-                        color = "#dadada"
-                    }
-
-                }
-            }
-
             function getName( path )
             {
                 if ( path.substr( -1 ) === '/' && path.length !== 1 ) { // remove trailing slash if it's not root
