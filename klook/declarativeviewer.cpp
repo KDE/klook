@@ -280,6 +280,10 @@ QSize DeclarativeViewer::getActualSize()
         sz.setHeight( sz.height() + ( m_isEmbedded ? 0 : height_offset ) );
         return sz;
     }
+    else if ( m_currentFile->type() == File::Audio)
+        return QSize(min_width, min_height);
+    else if(m_currentFile->type() == File::Directory)
+        return QSize(min_width + 100, min_height);
     else
     {
         QSize size = getTextWindowSize(m_currentFile->name());
@@ -355,7 +359,12 @@ void DeclarativeViewer::updateSize( const File* file )
     else if ( ( file->type() == File::Audio ) ||
               ( file->type() == File::Directory ) )
     {
-        QSize size( min_width, min_height );
+        int width = min_width;
+        int height = min_height;
+        if(file->type() == File::Directory)
+            width += 100;
+
+        QSize size( width, height );
         if ( ( m_startFullScreen ) && ( size == this->size() ) )
         {
             showFullScreen();
