@@ -330,12 +330,27 @@ Item {
                 fillMode: Image.PreserveAspectFit
                 asynchronous: true
                 smooth: true;
-                opacity: 0
                 visible: albumWrapper.state === "fullscreen"
                 height: getHeight( parent.height, 500 )
                 y: ( parent.height - panel.height - height ) / 2
 
                 Behavior on opacity { NumberAnimation { duration: 500 } }
+            }
+
+            Connections {
+                target: albumWrapper
+                onStateChanged:
+                {
+                    console.log("sdfads")
+                    if(albumWrapper.state === 'fullscreen') {
+                        color = "#dadada"
+                    }
+                    else
+                    {
+                        color = "#dadada"
+                    }
+
+                }
             }
 
             function getName( path )
