@@ -78,19 +78,32 @@ int KLookApp::newInstance()
 {
     KCmdLineArgs::setCwd( QDir::currentPath().toUtf8() );
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
     QString message;
-
     static bool first = true;
-    if ( args->count() > 0 )
+    if (args->isSet("embedded"))
     {
-        for ( int i = 0; i < args->count(); ++i )
+        message += "--embedded;";
+        message += args->arg(0) + ";";
+        message += "-c;";
+        message += args->arg(1) + ";";
+        message += args->arg(2) + ";";
+        message += args->arg(3) + ";";
+        message += args->arg(4);
+    }
+    else
+    {
+        if ( args->count() > 0 )
         {
-            message += args->url(i).path();
-            if ( i < ( args->count() - 1 ) )
-                message += ";";
+            for ( int i = 0; i < args->count(); i++ )
+            {
+                qDebug() << args->arg(i);
+                message += args->arg(i);
+                if ( i < ( args->count() - 1 ) )
+                    message += ";";
+            }
         }
     }
+
 
     if ( m_viewer && !first )
     {        

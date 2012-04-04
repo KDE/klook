@@ -804,7 +804,7 @@ void DeclarativeViewer::setViewMode( DeclarativeViewer::ViewMode mode )
 void DeclarativeViewer::handleMessage( const QString& message )
 {    
 
-    QStringList params = message.split( ";", QString::SkipEmptyParts );
+    QStringList params = message.split( ";", QString::SkipEmptyParts );    
     processArgs( params );
 
     m_files.clear();
@@ -817,7 +817,7 @@ void DeclarativeViewer::handleMessage( const QString& message )
 }
 
 int DeclarativeViewer::processArgs( const QStringList& args )
-{
+{    
     setEmbedded(false);
     m_urls.clear();
 
@@ -924,12 +924,12 @@ QSize DeclarativeViewer::getTextWindowSize(QString url)
 
 
 void DeclarativeViewer::focusChanged(QWidget *, QWidget *now)
-{
+{    
     if (m_isEmbedded)
     {
         if (!now)
             this->close();
-    }
+    }   
 }
 
 void DeclarativeViewer::setEmbedded(bool state)

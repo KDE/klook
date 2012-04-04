@@ -29,6 +29,14 @@
 
 static const char description[] = I18N_NOOP( "KLook is a quick preview future" );
 static const char version[] = "0.1";
+/*
+static KCmdLineOptions options[] =
+{
+  { "+[File]", I18N_NOOP("file to open"), 0 },
+  { 0, 0, 0 }
+  // INSERT YOUR COMMANDLINE OPTIONS HERE
+};
+*/
 
 int main(int argc, char *argv[])
 {
@@ -53,9 +61,10 @@ int main(int argc, char *argv[])
     KCmdLineArgs::init( argc, argv, &about );
 
     KCmdLineOptions options;
-    options.add( "+file", ki18n("A required argument 'file'" ) );
+    options.add( "+file", ki18n("A required argument 'file'" ) );        
     options.add( "embedded", ki18n("turn on embedded mode" ) );
     options.add( "c", ki18n("coordinates icon" ) );
+
     KCmdLineArgs::addCmdLineOptions( options );
 
     if ( !KUniqueApplication::start() )
