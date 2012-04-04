@@ -28,7 +28,9 @@ SOURCES += main.cpp \
     previewgenerator.cpp \
     previewprovider.cpp \
     filemodel.cpp \
-    klookapp.cpp
+    klookapp.cpp \
+    audio.cpp \
+    mimeprovider.cpp
 
 HEADERS += \
     declarativeviewer.h \
@@ -39,7 +41,9 @@ HEADERS += \
     previewgenerator.h \
     previewprovider.h \
     filemodel.h \
-    klookapp.h
+    klookapp.h \
+    audio.h \
+    mimeprovider.h
 
 OTHER_FILES += \
     qml/klook/main.qml \
@@ -70,7 +74,8 @@ OTHER_FILES += \
     qml/klook/images/play-empty.png \
     qml/klook/SingleDelegate.qml \
     resources/pla-empty-box.png \
-    resources/play-empty.png
+    resources/play-empty.png \
+    qml/klook/InfoItem.qml
     
     
 SHARE_PATH = /usr/share

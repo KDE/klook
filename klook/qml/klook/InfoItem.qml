@@ -19,38 +19,16 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef WORKERTHREAD_H
-#define WORKERTHREAD_H
+import QtQuick 1.1
 
-#include "file.h"
-
-#include <QThread>
-#include <QStringList>
-
-class WorkerThread : public QThread
-{
-    Q_OBJECT
-public:
-    explicit WorkerThread( const QStringList& urls, QObject *parent = 0 );
-
-protected:
-    void run();
-
-signals:
-    void fileProcessed( const File *file );
-    void fail();
-
-public slots:
-    void processUrl( const QStringList& urls );
-
-private:
-    QString getMime( const QString &st ) const;
-    File::FileType getType( const QString&, const QString& ) const;
-
-    bool isFound; // found at least one supported file
-    const QStringList& urls;
-    QList<QByteArray> supportedImageFormats;
-    QStringList m_mimeTypes;
-};
-
-#endif // WORKERTHREAD_H
+Text {
+    wrapMode: Text.WordWrap
+    color: ( mainWindow.state != "fullscreen" ) ? "black" : "white"
+    elide: Text.ElideRight
+    font.pointSize: 12
+    anchors.right: parent.right
+    anchors.leftMargin: 20
+    anchors.rightMargin: 10
+    anchors.topMargin: 10
+    anchors.bottomMargin: 10
+}

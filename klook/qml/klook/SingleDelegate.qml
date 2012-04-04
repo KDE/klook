@@ -1,3 +1,4 @@
+
 /* KLook
  * Copyright (c) 2011-2012 ROSA  <support@rosalab.ru>
  * Authors: Julia Mineeva, Evgeniy Auzhin, Sergey Borovkov.
@@ -26,6 +27,14 @@ Item {
     id: listItem
     width: photosListView.width; height: photosListView.height
 
+    function getHeight( parentHeight, iconHeight)
+    {
+        var h = ( parentHeight - panel.height ) * 4 / 5
+        if ( h > iconHeight )
+            h = iconHeight
+        return h
+    }
+
     Component {
         id: imgDelegate
 
@@ -41,12 +50,12 @@ Item {
                 asynchronous: true
                 smooth: true;
                 visible: albumWrapper.state === "fullscreen"
-                width: ( sourceSize.width > parent.width ) ? parent.width : sourceSize.width
-                height: ( sourceSize.height > parent.height ) ? parent.height : sourceSize.height
+                width: Math.min( sourceSize.width, parent.width )
+                height: Math.min( sourceSize.height, parent.height )
 
                 signal ready()
 
-                onStatusChanged: if ( img.status === Image.Ready ){ ready(); opacity = 1; }
+                onStatusChanged: if ( img.status === Image.Ready ) { ready(); opacity = 1; }
 
                 Behavior on opacity { NumberAnimation { duration: 500 } }
             }
@@ -87,7 +96,7 @@ Item {
                 {
                     if ( playing )
                     {
-                        panel.videoSlider.value = tick * 1000 / totalTime; // tick and totalTime in msec
+                        panel.videoSlider.value = tick * 1000 / video.totalTime; // tick and totalTime in msec
                     }
                 }
 
@@ -153,6 +162,135 @@ Item {
     }
 
     Component {
+        id: audioDelegate
+
+        Item
+        {
+            id: audioItem
+
+            signal ready()
+
+            Image {
+                id: audioIcon
+                anchors.left: parent.left
+                clip: true
+                source: "image://mime/" + audio.source
+                opacity: 0
+                fillMode: Image.PreserveAspectFit
+                asynchronous: true
+                smooth: true;
+                visible: albumWrapper.state === "fullscreen"
+                height: getHeight( parent.height, 500 ) //parent.height * 3 / 5
+                y: ( parent.height - panel.height - height ) / 2
+
+                Behavior on opacity { NumberAnimation { duration: 500 } }
+            }
+
+            InfoItem {
+                id : title
+                font.pointSize: 15
+                anchors.top: audioIcon.top
+                anchors.left: audioIcon.right
+                anchors.right: parent.right
+            }
+
+            InfoItem {
+                id : artist
+                anchors.top: title.bottom
+                anchors.left: audioIcon.right
+            }
+
+            InfoItem {
+                id : totalTime
+                anchors.top: artist.bottom
+                anchors.left: audioIcon.right
+            }
+
+            Binding { target: totalTime; property: "anchors.top"; value: artist.visible ? artist.bottom : title.bottom }
+
+            Audio {
+                id: audio
+
+                onTicked:
+                {
+                    if ( playing )
+                    {
+                        panel.videoSlider.value = tick * 1000 / audio.totalTime; // tick and totalTime in msec
+                    }
+                }
+
+                onPlayFinished:
+                {
+                    panel.playButtonState = 'Play'
+                    panel.videoSlider.value = 0
+                }
+
+                onReady:
+                {
+                    title.text = "<b>" + audio.title + "</b>"
+                    artist.text = artistStr + " <b>" + audio.artist + "</b>"
+                    artist.visible = ( audio.artist != "" )
+
+                    var h = audio.totalTime / ( 1000 * 3600 )
+                    var strFmt = ( h >= 1 ) ? "hh:mm:ss" : "m:ss"
+
+                    totalTime.text = totalTimeStr + " <b>" + Qt.formatTime( audio.duration, strFmt ) + "</b>"
+                }
+            }
+
+            Connections{
+                target: panel.playItemBtn;
+                onButtonClick:
+                {
+                    if ( listItem.ListView.isCurrentItem )
+                    {
+                        audio.play_or_pause();
+                        if ( audio.playing )
+                            panel.playButtonState = 'Play'
+                        else
+                            panel.playButtonState = 'Pause'
+                    }
+                }
+            }
+
+            Connections{ target: panel.videoSlider; onPosChanged: audio.setPosition( panel.videoSlider.value * audio.totalTime / 1000 ) }
+
+            Connections{
+                target: albumWrapper;
+                onStateChanged:
+                {
+                    if ( albumWrapper.state === "inGrid" )
+                        audio.pause()
+                    else
+                        audio.play()
+                }
+            }
+
+            Connections{
+                target: photosListView;
+                onCurrentIndexChanged: {
+                    if ( listItem.ListView.isCurrentItem )
+                    {
+                        audioIcon.opacity = 1
+                        audio.source = filePath
+                        mainWindow.currentFileType = 5;
+                        mainWindow.updatePanel()
+                        if ( albumWrapper.state === "fullscreen" )
+                            audio.play()
+
+                        if ( audio.playing )
+                            panel.playButtonState = 'Play'
+                        else
+                            panel.playButtonState = 'Pause'
+                    }
+                    else
+                        audioIcon.opacity = 0
+                }
+            }
+        }
+    }
+
+    Component {
         id: txtDelegate
 
         Item {
@@ -177,6 +315,106 @@ Item {
         }
     }
 
+    Component {
+        id: folderDelegate
+
+        Item {
+            id: folderItem
+
+            Image {
+                id: folderIcon
+                source: "image://mime/" + filePath
+                clip: true
+                anchors.left: parent.left
+                anchors.leftMargin: 20
+                fillMode: Image.PreserveAspectFit
+                asynchronous: true
+                smooth: true;
+                visible: albumWrapper.state === "fullscreen"
+                height: getHeight( parent.height, 500 )
+                y: ( parent.height - panel.height - height ) / 2
+
+                Behavior on opacity { NumberAnimation { duration: 500 } }
+            }
+
+            Connections {
+                target: albumWrapper
+                onStateChanged:
+                {
+                    console.log("sdfads")
+                    if(albumWrapper.state === 'fullscreen') {
+                        color = "#dadada"
+                    }
+                    else
+                    {
+                        color = "#dadada"
+                    }
+
+                }
+            }
+
+            function getName( path )
+            {
+                if ( path.substr( -1 ) === '/' && path.length !== 1 ) { // remove trailing slash if it's not root
+                    path = path.substr( 0, path.length - 1 );
+                }
+                return path.substring( path.lastIndexOf( '/' ) + 1 );
+            }
+
+            InfoItem {
+                id: name
+                anchors.top: folderIcon.top
+                anchors.left: folderIcon.right
+                text: "<b>" + getName( filePath ) +"</b>"
+                font.pointSize: 15
+            }
+
+            InfoItem {
+                id: type
+                anchors.top: name.bottom
+                anchors.left: folderIcon.right
+                text: folderStr
+            }
+
+            InfoItem {
+                id: modified
+                anchors.top: type.bottom
+                anchors.left: folderIcon.right
+                text: lastModifiedStr + " " + lastModified
+            }
+
+            InfoItem {
+                id: size
+                anchors.top: modified.bottom
+                anchors.left: folderIcon.right
+                text: sizeStr + " " + contentSize
+            }
+
+            InfoItem {
+                id: content
+                anchors.top: size.bottom
+                anchors.left: folderIcon.right
+                text: elementsStr + " " + countElements
+            }
+
+            Connections{
+                target: photosListView;
+                onCurrentIndexChanged: {
+                    if ( listItem.ListView.isCurrentItem )
+                    {
+                        mainWindow.currentFileType = 4;
+                        folderIcon.opacity = 1
+                        mainWindow.updatePanel()
+                    } else
+                    {
+                        folderIcon.opacity = 0
+                    }
+                }
+            }
+        }
+
+    }
+
     // function for getting delegate of loader element
     function bestDelegate( t ) {
 
@@ -186,6 +424,12 @@ Item {
             return videoDelegate;
         else if ( t == 3 )
             return txtDelegate;
+        else if (t == 4) {
+            fileModel.scanDirectory(index)
+            return folderDelegate;
+        }
+        else if ( t == 5 )
+            return audioDelegate;
         else
             return txtDelegate;
     }
@@ -195,14 +439,6 @@ Item {
         id: componentLoader
         anchors.fill: parent;
         sourceComponent: bestDelegate( mimeType )
-/*
-        onStatusChanged: {
-            if ( componentLoader.status == Loader.Ready )
-            {
-                canShow()
-            }
-        }
-        */
     }
 }
 

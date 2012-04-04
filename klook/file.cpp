@@ -69,9 +69,29 @@ void File::setMime( const QString & mime )
 
 QString File::fileTypeToString( FileType ft )
 {
-    if ( ft == Image ) return QString( "ImageType" );
-    else if ( ft == Video ) return QString( "VideoType" );
-    else if ( ft == Txt ) return QString( "TxtType" );
-    else if ( ft == Audio ) return QString( "AudioType" );
-    else return QString( "UndefinedType" );
+    QString str;
+
+    switch(ft)
+    {
+    case Image:
+        str = "ImageType";
+        break;
+    case Video:
+        str = "VideoType";
+        break;
+    case Txt:
+        str = "TxtType";
+        break;
+    case Directory:
+        str = "DirectoryType";
+        break;
+    case Audio:
+        str = "AudioType";
+        break;
+    default:
+        str = "UndefinedType";
+        break;
+    }
+
+    return str;
 }

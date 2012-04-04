@@ -27,7 +27,7 @@
 
 #include "klookapp.h"
 
-static const char description[] = I18N_NOOP( "KLook is a quick preview future" );
+static const char description[] = I18N_NOOP( "KLook is a quick preview feature" );
 static const char version[] = "0.1";
 /*
 static KCmdLineOptions options[] =
@@ -40,7 +40,7 @@ static KCmdLineOptions options[] =
 
 int main(int argc, char *argv[])
 {
-    QApplication::setGraphicsSystem( "raster" );
+    //QApplication::setGraphicsSystem( "raster" );
 
     KAboutData about( "KLook", 0, ki18n( "KLook" ),
                       version, ki18n( description ), KAboutData::License_GPL_V3,
@@ -61,9 +61,9 @@ int main(int argc, char *argv[])
     KCmdLineArgs::init( argc, argv, &about );
 
     KCmdLineOptions options;
-    options.add( "+file", ki18n("A required argument 'file'" ) );        
-    options.add( "embedded", ki18n("turn on embedded mode" ) );
-    options.add( "c", ki18n("coordinates icon" ) );
+    options.add( "+file", ki18n( "A required argument 'file'" ) );
+    options.add( "embedded", ki18n( "turn on embedded mode" ) );
+    options.add( "c", ki18n( "coordinates of icon" ) );
 
     KCmdLineArgs::addCmdLineOptions( options );
 

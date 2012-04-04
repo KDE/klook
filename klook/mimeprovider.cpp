@@ -19,38 +19,24 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef WORKERTHREAD_H
-#define WORKERTHREAD_H
+#include "mimeprovider.h"
 
-#include "file.h"
+#include <kfileitem.h>
+#include <kicon.h>
 
-#include <QThread>
-#include <QStringList>
-
-class WorkerThread : public QThread
+MimeProvider::MimeProvider()
+    : QDeclarativeImageProvider( Pixmap )
 {
-    Q_OBJECT
-public:
-    explicit WorkerThread( const QStringList& urls, QObject *parent = 0 );
+}
 
-protected:
-    void run();
+QPixmap MimeProvider::requestPixmap( const QString& id, QSize* size, const QSize &requestedSize )
+{
+    KIcon icon( KMimeType::iconNameForUrl( id ) );
+    QPixmap pixmap;
+    pixmap = icon.isNull() ? QPixmap( ":images/pla-empty-box.png" ) : icon.pixmap( 1000 );
+    if ( requestedSize.isValid() )
+        pixmap = pixmap.scaled( requestedSize, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+    *size = pixmap.size();
 
-signals:
-    void fileProcessed( const File *file );
-    void fail();
-
-public slots:
-    void processUrl( const QStringList& urls );
-
-private:
-    QString getMime( const QString &st ) const;
-    File::FileType getType( const QString&, const QString& ) const;
-
-    bool isFound; // found at least one supported file
-    const QStringList& urls;
-    QList<QByteArray> supportedImageFormats;
-    QStringList m_mimeTypes;
-};
-
-#endif // WORKERTHREAD_H
+    return pixmap;
+}

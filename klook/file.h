@@ -37,6 +37,7 @@ public:
         Image,
         Video,
         Txt,
+        Directory,
         Audio
     };
 

@@ -35,7 +35,9 @@ Rectangle {
     property string st: "normal"
     property string name
 
-    property string  imageUrl: "images/buttons/" + st + "/"+ name + "_" + st + ".png"; clip: true
+    property string  imageUrl: "images/buttons/" + st + "/"+ name + "_" + st + ".png"
+
+    clip: true
 
     //set appearance properties
     smooth: true
@@ -77,13 +79,13 @@ Rectangle {
 
         onEntered:
         {
-            if ((button.state != 'disabled' ) && (button.state != 'checked' ))
+            if ( ( button.state != 'disabled' ) && ( button.state != 'checked' ) )
                 button.state = "hover"
         }
 
         onExited:
         {
-            if ( ( button.state != 'disabled' ) && (button.state != 'checked' ) )
+            if ( ( button.state != 'disabled' ) && ( button.state != 'checked' ) )
                 button.state = "normal"
         }
     }

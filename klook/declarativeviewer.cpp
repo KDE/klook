@@ -27,10 +27,13 @@
 #include <kmimetypetrader.h>
 
 #include "video.h"
+#include "audio.h"
 #include "text.h"
 #include "previewgenerator.h"
 #include "previewprovider.h"
+#include "mimeprovider.h"
 #include "filemodel.h"
+#include "mimeprovider.h"
 #include "workerthread.h"
 
 #include "plasma/windoweffects.h"
@@ -47,6 +50,9 @@ static int height_offset = 27;
 static int arrowIconWidth = 29;
 static int arrowIconHeight = 16;
 
+static int min_width = 600;
+static int min_height = 427;
+
 DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent )
     : QDeclarativeView( parent )
     , m_lastMousePosition( 0, 0 )
@@ -60,8 +66,8 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     , m_region( FRAME_REGION )
     , m_mediaObject( 0 )
     , m_videoWidget( 0 )
-    , m_width( 600 )
-    , m_height( 427 )
+    , m_width( min_width )
+    , m_height( min_height )
     , m_thread( 0 )
     , m_compositing( false )
 {
@@ -73,6 +79,7 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     connect( engine(), SIGNAL( quit() ), SLOT( close() ) );
 
     engine()->addImageProvider( "preview", new PreviewProvider );
+    engine()->addImageProvider( "mime", new MimeProvider );
 
     setResizeMode( QDeclarativeView::SizeRootObjectToView );
 
@@ -94,7 +101,7 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     setRegisterTypes();
 
     //Remove standart KDE title
-    setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
+    setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint );
 
     setAttribute( Qt::WA_TranslucentBackground );
     setAutoFillBackground(false);
@@ -135,6 +142,7 @@ bool DeclarativeViewer::checkComposite()
 void DeclarativeViewer::setRegisterTypes()
 {
     qmlRegisterType<MyVideo>( "Widgets", 1, 0, "Video" );
+    qmlRegisterType<MyAudio>( "Widgets", 1, 0, "Audio" );
     qmlRegisterType<MyText>( "Widgets", 1, 0, "PlainText" );
 
     QDesktopWidget dw;
@@ -156,6 +164,13 @@ void DeclarativeViewer::setRegisterTypes()
     rootContext()->setContextProperty( "arrowX", .0 );
     rootContext()->setContextProperty( "arrowY", .0 );
     rootContext()->setContextProperty( "effects", ( checkComposite() ) ? "on" : "off" );
+
+    rootContext()->setContextProperty( "artistStr", ki18n( "Artist:" ).toString() );
+    rootContext()->setContextProperty( "totalTimeStr", ki18n( "Total time:" ).toString() );
+    rootContext()->setContextProperty( "folderStr", ki18n( "Folder" ).toString() );
+    rootContext()->setContextProperty( "lastModifiedStr", ki18n( "Last Modified:" ).toString() );
+    rootContext()->setContextProperty( "sizeStr", ki18n( "Size:" ).toString() );
+    rootContext()->setContextProperty( "elementsStr", ki18n( "Elements:" ).toString() );
 }
 
 void DeclarativeViewer::startWorkingThread()
@@ -265,6 +280,10 @@ QSize DeclarativeViewer::getActualSize()
         sz.setHeight( sz.height() + ( m_isEmbedded ? 0 : height_offset ) );
         return sz;
     }
+    else if ( m_currentFile->type() == File::Audio)
+        return QSize(min_width, min_height);
+    else if(m_currentFile->type() == File::Directory)
+        return QSize(min_width + 100, min_height);
     else
     {
         QSize size = getTextWindowSize(m_currentFile->name());
@@ -285,8 +304,8 @@ QSize DeclarativeViewer::calculateViewSize( const QSize& sz )
 
     szItem = inscribedRectToRect( sz, QSize( wDesktop, hDesktop ) );
 
-    szItem.setWidth( ( szItem.width() < minimumWidth() ) ? minimumWidth() : szItem.width() ) ;
-    szItem.setHeight( (szItem.height() < minimumHeight() ) ? minimumHeight() : szItem.height() );
+    szItem.setWidth(qMax(szItem.width(), minimumWidth()));
+    szItem.setHeight(qMax(szItem.height(), minimumHeight()));
 
     return szItem;
 }
@@ -334,6 +353,26 @@ void DeclarativeViewer::updateSize( const File* file )
         else
         {
             centerWidget( sz );
+        }
+        m_startFullScreen = false;
+    }
+    else if ( ( file->type() == File::Audio ) ||
+              ( file->type() == File::Directory ) )
+    {
+        int width = min_width;
+        int height = min_height;
+        if(file->type() == File::Directory)
+            width += 100;
+
+        QSize size( width, height );
+        if ( ( m_startFullScreen ) && ( size == this->size() ) )
+        {
+            showFullScreen();
+            emit setFullScreenState();
+        }
+        else
+        {
+            centerWidget( size );
         }
         m_startFullScreen = false;
     }
@@ -802,11 +841,14 @@ void DeclarativeViewer::setViewMode( DeclarativeViewer::ViewMode mode )
 }
 
 void DeclarativeViewer::handleMessage( const QString& message )
-{    
+{
+    hide();
 
     QStringList params = message.split( ";", QString::SkipEmptyParts );    
     processArgs( params );
 
+
+    qDeleteAll(m_files);
     m_files.clear();
 
     startWorkingThread();
@@ -824,6 +866,7 @@ int DeclarativeViewer::processArgs( const QStringList& args )
     for ( int n = 0; n < args.count(); n++ )
     {
         QString argument = args[ n ];
+        qDebug() << argument;
 
         if ( argument == "--embedded" )
         {
@@ -834,7 +877,7 @@ int DeclarativeViewer::processArgs( const QStringList& args )
                 {
                     bool ok_x, ok_y, ok_width, ok_height;
 
-                    setEmbedded(true);
+                    setEmbedded( true );
                     m_urls << args[ n ];
                     n++;
 
@@ -916,33 +959,33 @@ QSize DeclarativeViewer::getTextWindowSize(QString url)
     }
 
     size.setHeight( size.height() + ( m_isEmbedded ? 0 : height_offset ) );
-    size.setWidth( ( size.width() < minimumWidth() ) ? minimumWidth() : size.width() ) ;
-    size.setHeight( (size.height() < minimumHeight() ) ? minimumHeight() : size.height() );
+
+    size.setWidth( qMax(size.width(), minimumWidth()) ) ;
+    size.setHeight( qMax(size.height(), minimumHeight()) );
 
     return size;
 }
 
-
-void DeclarativeViewer::focusChanged(QWidget *, QWidget *now)
+void DeclarativeViewer::focusChanged( QWidget*, QWidget* now )
 {    
-    if (m_isEmbedded)
+    if ( m_isEmbedded )
     {
-        if (!now)
+        if ( !now )
             this->close();
     }   
 }
 
-void DeclarativeViewer::setEmbedded(bool state)
+void DeclarativeViewer::setEmbedded( bool state )
 {
     if (state)
     {
-        setMinimumSize(50,50);
+        setMinimumSize( 50, 50 );
     }
     else
     {
-        setMinimumSize(600,427);
+        setMinimumSize( min_width, min_height );
     }
-    m_isEmbedded = state;
 
+    m_isEmbedded = state;
 }
 

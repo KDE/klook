@@ -83,12 +83,12 @@ Rectangle {
             return 'videoPanel'
 
         if ( viewMode === "multi" )
-            if ( mainWindow.currentFileType === 2 )
+            if ( ( mainWindow.currentFileType === 2 ) || ( mainWindow.currentFileType === 5 ) )
                 return 'fullscreenVideoPanelMulti'
             else
                 return 'fullscreenPanelMulti'
         else
-            if ( mainWindow.currentFileType === 2 )
+            if ( ( mainWindow.currentFileType === 2 ) || ( mainWindow.currentFileType === 5 ) )
                 return 'fullscreenVideoPanelSingle'
             else
                 return 'fullscreenPanelSingle'
@@ -101,7 +101,8 @@ Rectangle {
 
         if ( ( mainWindow.state === "windowed" ) || ( mainWindow.state === "embedded" ) )
         {
-            if ( ( albumWrapper.state === 'fullscreen' ) && ( currentFileType === 2 ) )
+            if ( ( albumWrapper.state === 'fullscreen' ) &&
+                    ( ( currentFileType === 2 ) || ( currentFileType === 5 ) ) )
                 panel.visible = true
             else
                 panel.visible = false
@@ -134,6 +135,30 @@ Rectangle {
         else if ( countItems <= 12 ) return Qt.size( w / 4, h / 3 )
         else if ( countItems <= 16 ) return Qt.size( w / 4, h / 4 )
         else return Qt.size( w / 5, h / 4 )
+    }
+
+    function updateMenuButtons()
+    {
+        prevButton.state = getPrevButtonState()
+        nextButton.state = getNextButtonState()
+        panel.prevButtonState = getPrevButtonState()
+        panel.nextButtonState = getNextButtonState()
+    }
+
+    function getPrevButtonState()
+    {
+        if ( photosListView.currentIndex === 0 )
+            return "disabled"
+        else
+            return "normal"
+    }
+
+    function getNextButtonState()
+    {
+        if ( photosListView.currentIndex === ( photosListView.count - 1 ) )
+            return "disabled"
+        else
+            return "normal"
     }
 
     Keys.onEscapePressed: {
@@ -223,6 +248,7 @@ Rectangle {
             onButtonClick:
             {
                 photosListView.decrementCurrentIndex()
+                updateMenuButtons()
             }
         }
 
@@ -239,6 +265,7 @@ Rectangle {
                 if ( photosListView.currentIndex === -1 )
                     photosListView.currentIndex = 0
                 photosListView.incrementCurrentIndex()
+                updateMenuButtons()
             }
         }
 
@@ -449,6 +476,7 @@ Rectangle {
                     onCurrentIndexChanged:
                     {
                         cppObject.updateContent ( currentIndex )
+                        updateMenuButtons()
                     }
                 }
 
@@ -466,6 +494,13 @@ Rectangle {
                     photosListView.incrementCurrentIndex()
                 }
 
+                Connections {
+                    target: fileModel
+                    onRowsInserted: {
+                        if ( fileModel.count !== 0 )
+                            updateMenuButtons()
+                    }
+                }
                 states: [
                     State {
                         name: 'inGrid'
@@ -484,8 +519,10 @@ Rectangle {
                         PropertyChanges { target: photosGridView; focus: false }
                         PropertyChanges { target: photosListView; visible: true  }
                         PropertyChanges { target: photosListView; focus: true  }
-                        PropertyChanges { target: prevButton; state: 'normal' }
-                        PropertyChanges { target: nextButton; state: 'normal' }
+                        PropertyChanges { target: prevButton; state: getPrevButtonState() }
+                        PropertyChanges { target: nextButton; state: getNextButtonState() }
+                        PropertyChanges { target: panel; prevButtonState: getPrevButtonState() }
+                        PropertyChanges { target: panel; nextButtonState: getNextButtonState() }
                     }
                 ]
 
@@ -511,7 +548,7 @@ Rectangle {
             ControlPanel {
                 id: panel
                 z: 1;
-                y: albumWrapper.height - 85
+                y: albumWrapper.height - 70
 
                 Connections{
                     target: mainWindow
@@ -557,26 +594,45 @@ Rectangle {
     states: [
         State {
             name: "windowed"
-            PropertyChanges { target: mainWindow; border.width: 2 }
-            PropertyChanges { target: mainWindow; color: "transparent" }
+            PropertyChanges {
+                target: mainWindow;
+                border.width: 2
+                color: "transparent"
+            }
             PropertyChanges { target: row; visible: true }
             PropertyChanges { target: photosListView; highlightMoveSpeed: 5000 }
-            PropertyChanges { target: panel; opacity: 1 }
-            PropertyChanges { target: panel; state: "videoPanel" }
+            PropertyChanges {
+                target: panel
+                opacity: 1
+                state: "videoPanel"
+                y: albumWrapper.height - panel.height - 10
+            }
             ParentChange { target: drawer; parent: drawerBorder }
-            PropertyChanges { target: drawer; anchors.margins: 1 }
-            PropertyChanges { target: drawer; anchors.rightMargin: 2 }
-            PropertyChanges { target: drawer; anchors.leftMargin: 2 }
-            PropertyChanges { target: drawer; anchors.bottomMargin: 2 }
-            PropertyChanges { target: drawer; anchors.topMargin: 1 }
-            PropertyChanges { target: drawerBorder; color: "#dadada" }
-            PropertyChanges { target: drawerBorder; visible: true }
+            PropertyChanges {
+                target: drawer
+                anchors.margins: 1
+                anchors.rightMargin: 2
+                anchors.leftMargin: 2
+                anchors.bottomMargin: 2
+                anchors.topMargin: 1
+                color: ( ( ( mainWindow.currentFileType == 4 ) || ( mainWindow.currentFileType == 5 ) ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
+            }
+            PropertyChanges {
+                target: drawerBorder
+                color: "#dadada"
+                visible: true
+            }
         },
         State {
             name: "fullscreen"
             PropertyChanges { target: mainWindow; border.width: 0 }
+
             PropertyChanges { target: photosListView; highlightMoveSpeed: 7000 }
-            PropertyChanges { target: panel; state: updatePanelState() }
+            PropertyChanges {
+                target: panel;
+                state: updatePanelState()
+                y: albumWrapper.height - panel.height - 19
+            }
             PropertyChanges { target: row; visible: false }
             ParentChange { target: drawer; parent: mainWindow }
             PropertyChanges {
@@ -594,8 +650,10 @@ Rectangle {
         },
         State {
             name: "embedded"
-            PropertyChanges { target: mainWindow;  border.width: 0 }
+            PropertyChanges {target: mainWindow;  border.width: 0; }
+
             PropertyChanges { target: row; visible: false  }
+
             PropertyChanges {
                 target: panel
                 opacity: 1
@@ -616,6 +674,15 @@ Rectangle {
                 source: (embeddedLayout === "top") ? "images/arrow/arrow-bottom.png" : ((embeddedLayout === "left") ? "images/arrow/arrow-right.png" : "images/arrow/arrow-left.png")
                 visible : true
                 x : arrowX; y: arrowY
+            }
+            PropertyChanges {
+                target: drawer
+                anchors.margins: 1
+                anchors.rightMargin: 2
+                anchors.leftMargin: 2
+                anchors.bottomMargin: 2
+                anchors.topMargin: 1
+                color: ( ( ( mainWindow.currentFileType == 4 ) || ( mainWindow.currentFileType == 5 ) ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
             }
         }
     ]

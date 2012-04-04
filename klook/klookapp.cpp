@@ -29,7 +29,6 @@
 #include <kcmdlineargs.h>
 #include <kurl.h>
 
-
 #include "declarativeviewer.h"
 
 
@@ -66,7 +65,6 @@ KLookApp::KLookApp( const QStringList& args )
     QObject::connect( rootObject, SIGNAL( canShow() ), m_viewer, SLOT( onCanShow( ) ) );
 
     m_viewer->setAttribute( Qt::WA_QuitOnClose );
-
 }
 
 KLookApp::~KLookApp()
@@ -78,6 +76,7 @@ int KLookApp::newInstance()
 {
     KCmdLineArgs::setCwd( QDir::currentPath().toUtf8() );
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+    qDebug() << "ASDHGJASDFJASDSDKHS";
     QString message;
     static bool first = true;
     if (args->isSet("embedded"))
@@ -106,7 +105,7 @@ int KLookApp::newInstance()
 
 
     if ( m_viewer && !first )
-    {        
+    {
         m_viewer->handleMessage( message );
     }
 

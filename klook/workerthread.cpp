@@ -24,6 +24,7 @@
 #include <QMetaType>
 #include <QDir>
 #include <QImageReader>
+
 #include <KDE/Phonon/BackendCapabilities>
 
 #include <kmimetype.h>
@@ -58,7 +59,7 @@ void WorkerThread::processUrl( const QStringList &urls )
         if ( QFile::exists( path ) )
         {
             QString mime = getMime( str );
-            File::FileType type = getType( mime );
+            File::FileType type = getType( mime, path );
             if ( type != File::Undefined )
             {
                 const File *file = new File( path, type, mime );
@@ -80,11 +81,12 @@ QString WorkerThread::getMime( const QString& st ) const
     return type->name();
 }
 
-File::FileType WorkerThread::getType( const QString& mime ) const
+File::FileType WorkerThread::getType( const QString& mime, const QString& path ) const
 {
     int delimiter = mime.indexOf( '/' );
 
     File::FileType type = File::Undefined;
+
     if ( delimiter != -1 )
     {
         QString left = mime.left( delimiter );
@@ -92,7 +94,7 @@ File::FileType WorkerThread::getType( const QString& mime ) const
         if ( left == QLatin1String( "image" ) )
         {
             QString right = mime.mid(delimiter + 1);
-            if(supportedImageFormats.contains( right.toLatin1()) || right == "x-xpixmap" )
+            if ( supportedImageFormats.contains( right.toLatin1()) || right == "x-xpixmap" )
                 type = File::Image;
             else if ( supportedImageFormats.contains( "svg" ) && ( right == ( "svg+xml" ) || right == ( "svg+xml-compressed" ) ) )
                 type = File::Image;
@@ -120,10 +122,32 @@ File::FileType WorkerThread::getType( const QString& mime ) const
                 type = File::Video;
 #endif
         }
+        else if ( left == QLatin1String( "audio" ) )
+        {
+            QString right = mime.mid( delimiter + 1 );
+
+            if ( m_mimeTypes.contains( mime ) )
+                type = File::Audio;
+
+            if ( type == File::Undefined )
+            {
+                if ( right == QLatin1String( "ogg" ) ||
+                     right == QLatin1String( "mpeg" ) ||
+                     right == QLatin1String( "x-speex+ogg" ) ||
+                     right == QLatin1String( "x-vorbis+ogg" ) ||
+                     right == QLatin1String( "x-flac+ogg" ) )
+                    type = File::Audio;
+            }
+        }
         else if ( left == QLatin1String( "text" ) ||
                   mime == QLatin1String( "application/x-zerosize" ) ||
                   mime == QLatin1String( "application/x-shellscript" ) )
             type = File::Txt;
+        else if( mime.mid(delimiter + 1) == QLatin1String("directory"))
+        {
+            type = File::Directory;
+        }
+
     }
 
     if ( type == File::Undefined )
@@ -131,8 +155,15 @@ File::FileType WorkerThread::getType( const QString& mime ) const
         if ( mime == QLatin1String( "application/x-matroska" ) ||
              mime == QLatin1String( "application/vnd.rn-realmedia" ) )
             type = File::Video;
-        else if( mime == QLatin1String( "bmp" ) )
+        else if ( mime == QLatin1String( "bmp" ) )
             type = File::Image;
+        else if ( mime == QLatin1String( "application/octet-stream" ) )
+        {
+            QFileInfo fi( path );
+            if ( fi.suffix() == QLatin1String( "mp3" ) ||
+                 fi.suffix() == QLatin1String( "ogg" ) )
+                type = File::Audio;
+        }
     }
 
     return type;

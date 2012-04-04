@@ -19,38 +19,21 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef WORKERTHREAD_H
-#define WORKERTHREAD_H
+#ifndef MIMEPROVIDER_H
+#define MIMEPROVIDER_H
 
-#include "file.h"
 
-#include <QThread>
-#include <QStringList>
+#include <QtDeclarative>
+#include <QtCore>
 
-class WorkerThread : public QThread
+class MimeProvider
+        : public QObject
+        , public QDeclarativeImageProvider
 {
-    Q_OBJECT
 public:
-    explicit WorkerThread( const QStringList& urls, QObject *parent = 0 );
+    MimeProvider();
+    QPixmap requestPixmap( const QString& id, QSize* size, const QSize& requestedSize );
 
-protected:
-    void run();
-
-signals:
-    void fileProcessed( const File *file );
-    void fail();
-
-public slots:
-    void processUrl( const QStringList& urls );
-
-private:
-    QString getMime( const QString &st ) const;
-    File::FileType getType( const QString&, const QString& ) const;
-
-    bool isFound; // found at least one supported file
-    const QStringList& urls;
-    QList<QByteArray> supportedImageFormats;
-    QStringList m_mimeTypes;
 };
 
-#endif // WORKERTHREAD_H
+#endif // MIMEPROVIDER_H
