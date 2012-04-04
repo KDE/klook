@@ -76,7 +76,6 @@ int KLookApp::newInstance()
 {
     KCmdLineArgs::setCwd( QDir::currentPath().toUtf8() );
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-    qDebug() << "ASDHGJASDFJASDSDKHS";
     QString message;
     static bool first = true;
     if (args->isSet("embedded"))
