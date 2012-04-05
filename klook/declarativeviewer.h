@@ -34,6 +34,7 @@ class QRect;
 class WorkerThread;
 class PreviewGenerator;
 class FileModel;
+class QPoint;
 
 typedef enum WidgetRegion
 {
@@ -46,7 +47,8 @@ typedef enum WidgetRegion
     TOP_LEFT_CORNER_REGION,
     TOP_RIGHT_CORNER_REGION,
     BOTTOM_LEFT_CORNER_REGION,
-    BOTTOM_RIGHT_CORNER_REGION
+    BOTTOM_RIGHT_CORNER_REGION,
+    ARROW_NULL_REGION
 
 } WidgetRegion;
 
@@ -141,6 +143,7 @@ private:
     bool            m_isEmbedded;
     bool            m_isGallery;
     QRect           m_rcIcon;
+    QRect           m_rcArrow;
     QStringList     m_urls;
 
     const File*     m_currentFile;
@@ -160,7 +163,7 @@ private:
     WorkerThread*       m_thread;
     PreviewGenerator*   m_previewGenerator;
     FileModel*          m_fileModel;
-    ArrowPosition       m_posArrow;
+    ArrowPosition       m_posArrow;    
 
 };
 

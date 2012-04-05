@@ -396,7 +396,7 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
 {
     QDesktopWidget dw;
     QRect rectDesktop = dw.screenGeometry(this);
-    QSize sz1 = sz;    
+    QSize sz1 = sz;
     if (m_isEmbedded)
     {
         int iconOffset = 5;
@@ -420,10 +420,9 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
         int topArea = top.width()*top.height();
         int leftArea = left.width()*left.height();
         int rightArea = right.width()*right.height();
-        qDebug() << top << left << right;
-        qDebug() << topArea << leftArea << rightArea;
+
         if ((topArea > leftArea)&&(topArea > rightArea))
-        {            
+        {
             sz1.setHeight(sz1.height() + arrowIconHeight);
             sz1 = inscribedRectToRect( sz1, top.size() );
             int x = m_rcIcon.x() + m_rcIcon.width()/2 - sz1.width()/2;
@@ -432,11 +431,13 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
             x = qMin(x, top.topRight().x() - sz1.width());
             QRect rect(x,y,sz1.width(),sz1.height());
             rootContext()->setContextProperty( "embeddedLayout", "top" );
-            rootContext()->setContextProperty( "arrowX", m_rcIcon.x() + m_rcIcon.width()/2 - arrowIconWidth/2 -rect.x());
-            rootContext()->setContextProperty( "arrowY", rect.height() - arrowIconHeight);
-            m_posArrow = TOP;            
+            //Set arrow icon coordinates
+            m_rcArrow.setX(m_rcIcon.x() + m_rcIcon.width()/2 - arrowIconWidth/2 -rect.x());
+            m_rcArrow.setY(rect.height() - arrowIconHeight);
+            m_rcArrow.setWidth(arrowIconWidth);
+            m_rcArrow.setHeight(arrowIconHeight);
+            m_posArrow = BOTTOM;
             setGeometry(rect);
-            qDebug() << rect.bottomLeft();
         }
         else if (leftArea > rightArea )
         {
@@ -448,8 +449,11 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
             y = qMin(y, left.bottomLeft().y() -sz1.height() );
             QRect rect(x,y,sz1.width(),sz1.height());
             rootContext()->setContextProperty( "embeddedLayout", "left" );
-            rootContext()->setContextProperty( "arrowX", rect.width() - arrowIconHeight);
-            rootContext()->setContextProperty( "arrowY", m_rcIcon.y() + m_rcIcon.height()/2 - arrowIconWidth/2 - rect.y());
+            //Set arrow icon coordinates
+            m_rcArrow.setX(rect.width() - arrowIconHeight);
+            m_rcArrow.setY(m_rcIcon.y() + m_rcIcon.height()/2 - arrowIconWidth/2 - rect.y());
+            m_rcArrow.setWidth(arrowIconHeight);
+            m_rcArrow.setHeight(arrowIconWidth );
             m_posArrow = RIGHT;
             setGeometry(rect);
         }
@@ -463,11 +467,16 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
             y = qMin(y, right.bottomLeft().y() - sz1.height() );
             QRect rect(x,y,sz1.width(),sz1.height());
             rootContext()->setContextProperty( "embeddedLayout", "right" );
-            rootContext()->setContextProperty( "arrowX", .0);
-            rootContext()->setContextProperty( "arrowY", m_rcIcon.y() + m_rcIcon.height()/2 - arrowIconWidth/2 - rect.y());
-            m_posArrow = LEFT;        
+            //Set arrow icon coordinates
+            m_rcArrow.setX(0);
+            m_rcArrow.setY(m_rcIcon.y() + m_rcIcon.height()/2 - arrowIconWidth/2 - rect.y());
+            m_rcArrow.setWidth(arrowIconHeight);
+            m_rcArrow.setHeight(arrowIconWidth );
+            m_posArrow = LEFT;
             setGeometry(rect);
         }
+        rootContext()->setContextProperty( "arrowX", m_rcArrow.x());
+        rootContext()->setContextProperty( "arrowY", m_rcArrow.y());
         emit setEmbeddedState();
     }
     else
@@ -522,13 +531,38 @@ void DeclarativeViewer::updateContent( int index )
 
 WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )
 {
-    /*
-      To do:
-      add embedded arrow regions
-    */
-
     QPointF pos;
     pos = mousePos;
+    if (m_isEmbedded)
+    {
+        QRegion region;
+        QRect r = rect();
+        if (m_posArrow == BOTTOM)
+        {
+            QRect r1(r.bottomLeft().x(), r.bottomLeft().y()-arrowIconHeight, r.width(),arrowIconHeight);
+            region.setRects( &r1,1);
+            region = region.subtracted(QRegion(m_rcArrow));
+        }
+        else if (m_posArrow == LEFT)
+        {
+            QRect r2(r.x(), r.y(), m_rcArrow.width(), r.height());
+            region.setRects( &r2,1);
+            region = region.subtracted(QRegion(m_rcArrow));
+        }
+        else if (m_posArrow == RIGHT)
+        {
+            QRect r3(r.topRight().x() - m_rcArrow.width(), r.y(), m_rcArrow.width(), r.height());
+            region.setRects( &r3,1);
+            region = region.subtracted(QRegion(m_rcArrow));
+        }
+        if (region.contains(pos.toPoint()))
+        {
+            return ARROW_NULL_REGION;
+        }
+        return FRAME_REGION;
+    }
+
+
     QRectF r = rect();
     QRectF headerTitle;
     QRectF header1( 6 + 42 * 2, border_width + 1, 60, header_height - border_width + 1 );
@@ -630,6 +664,14 @@ void DeclarativeViewer::mousePressEvent( QMouseEvent* event )
             event->accept();
         }
     }
+    else
+    {
+        if ( calculateWindowRegion( event->pos() ) == ARROW_NULL_REGION )
+        {
+            close();
+        }
+    }
+
     QDeclarativeView::mousePressEvent(event);
 }
 
@@ -847,7 +889,7 @@ void DeclarativeViewer::handleMessage( const QString& message )
 {
     hide();
 
-    QStringList params = message.split( ";", QString::SkipEmptyParts );    
+    QStringList params = message.split( ";", QString::SkipEmptyParts );
     processArgs( params );
 
 
@@ -975,7 +1017,7 @@ void DeclarativeViewer::focusChanged( QWidget*, QWidget* now )
     {
         if ( !now )
             this->close();
-    }   
+    }
 }
 
 void DeclarativeViewer::setEmbedded( bool state )

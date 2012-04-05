@@ -46,7 +46,6 @@ PreviewGenerator::PreviewGenerator(QObject *parent)
     m_plugins.removeAll("directorythumbnail");
 #endif
 
-    qDebug() << m_plugins;
 }
 
 void PreviewGenerator::notifyModel( const QString& filePath )
