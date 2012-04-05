@@ -401,10 +401,6 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
     {
         int iconOffset = 5;
         int desktopMargin = 70;
-        QWidget* wid = new QWidget();
-        wid->setGeometry(m_rcIcon);
-        wid->setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint );
-        wid->show();
 
         QRect top(rectDesktop.x() + desktopMargin,
                   rectDesktop.y() + desktopMargin ,
