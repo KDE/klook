@@ -396,10 +396,9 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
 {
     QDesktopWidget dw;
     QRect rectDesktop = dw.screenGeometry(this);
-    QSize sz1 = sz;
+    QSize sz1 = sz;    
     if (m_isEmbedded)
     {
-
         int iconOffset = 10;
         QRect top(rectDesktop.x() + rectDesktop.width()*0.1 ,
                   rectDesktop.y() + rectDesktop.height()*0.1 ,
@@ -432,7 +431,7 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
             rootContext()->setContextProperty( "embeddedLayout", "top" );
             rootContext()->setContextProperty( "arrowX", m_rcIcon.x() + m_rcIcon.width()/2 - arrowIconWidth/2 -rect.x());
             rootContext()->setContextProperty( "arrowY", rect.height() - arrowIconHeight);
-            m_posArrow = TOP;
+            m_posArrow = TOP;            
             setGeometry(rect);
         }
         else if (leftArea > rightArea )
@@ -462,9 +461,9 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
             rootContext()->setContextProperty( "embeddedLayout", "right" );
             rootContext()->setContextProperty( "arrowX", .0);
             rootContext()->setContextProperty( "arrowY", m_rcIcon.y() + m_rcIcon.height()/2 - arrowIconWidth/2 - rect.y());
-            m_posArrow = LEFT;
+            m_posArrow = LEFT;        
             setGeometry(rect);
-        }        
+        }
         emit setEmbeddedState();
     }
     else

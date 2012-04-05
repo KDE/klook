@@ -664,9 +664,9 @@ Rectangle {
             PropertyChanges {
                 target: drawerBorder
                 color: "#537492"
-                anchors.rightMargin: ( embeddedLayout === "left" ) ? 14 : 0
-                anchors.leftMargin: ( embeddedLayout === "right" ) ? 14 : 0
-                anchors.bottomMargin : (embeddedLayout === "top" ) ? 14 : 0
+                anchors.rightMargin: ( embeddedLayout === "left" ) ? 15 : 0
+                anchors.leftMargin: ( embeddedLayout === "right" ) ? 15 : 0
+                anchors.bottomMargin : (embeddedLayout === "top" ) ? 15 : 0
             }
             PropertyChanges {
                 target: arrow
@@ -677,9 +677,9 @@ Rectangle {
             PropertyChanges {
                 target: drawer
                 anchors.margins: 1
-                anchors.rightMargin: 2
-                anchors.leftMargin: 2
-                anchors.bottomMargin: 2
+                anchors.rightMargin: 1
+                anchors.leftMargin: 1
+                anchors.bottomMargin: 1
                 anchors.topMargin: 1
                 color: ( ( ( mainWindow.currentFileType == 4 ) || ( mainWindow.currentFileType == 5 ) ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
             }
