@@ -8,7 +8,7 @@ import subprocess
 version = '0.1'
 name = 'klook'
 
-files = ['klook']
+files = ['src', 'CMakeLists.txt', 'locale']
 
 src_name = name + '-' +  version + '.tar.gz'
 folder = name + '-' + version + '/'
