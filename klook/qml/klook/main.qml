@@ -664,9 +664,9 @@ Rectangle {
             PropertyChanges {
                 target: drawerBorder
                 color: "#537492"
-                anchors.rightMargin: ( embeddedLayout === "left" ) ? 15 : 0
-                anchors.leftMargin: ( embeddedLayout === "right" ) ? 15 : 0
-                anchors.bottomMargin : (embeddedLayout === "top" ) ? 15 : 0
+                anchors.rightMargin: ( embeddedLayout === "left" ) ? 16 : 0
+                anchors.leftMargin: ( embeddedLayout === "right" ) ? 16 : 0
+                anchors.bottomMargin : (embeddedLayout === "top" ) ? 16 : 0
             }
             PropertyChanges {
                 target: arrow

@@ -399,40 +399,48 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
     QSize sz1 = sz;    
     if (m_isEmbedded)
     {
-        int iconOffset = 10;
-        QRect top(rectDesktop.x() + rectDesktop.width()*0.1 ,
-                  rectDesktop.y() + rectDesktop.height()*0.1 ,
-                  rectDesktop.width()*0.8 ,
-                  m_rcIcon.y() - rectDesktop.height()*0.1 - iconOffset );
+        int iconOffset = 5;
+        int desktopMargin = 70;
+        QWidget* wid = new QWidget();
+        wid->setGeometry(m_rcIcon);
+        wid->setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint );
+        wid->show();
 
-        QRect left(rectDesktop.x() + rectDesktop.width()*0.1,
-                   rectDesktop.y() + rectDesktop.height()*0.1,
-                   m_rcIcon.x() - iconOffset - rectDesktop.x() - rectDesktop.width()*0.1,
-                   rectDesktop.height()*0.8);
+        QRect top(rectDesktop.x() + desktopMargin,
+                  rectDesktop.y() + desktopMargin ,
+                  rectDesktop.width() - 2 * desktopMargin ,
+                  m_rcIcon.y() - desktopMargin - iconOffset );
+
+        QRect left(rectDesktop.x() + desktopMargin,
+                   rectDesktop.y() + desktopMargin,
+                   m_rcIcon.x() - iconOffset - rectDesktop.x() - desktopMargin,
+                   rectDesktop.height()- 2 * desktopMargin);
 
         QRect right(m_rcIcon.topRight().x(),
-                    rectDesktop.y() + rectDesktop.height()*0.1,
-                    rectDesktop.width() - m_rcIcon.topRight().x() - rectDesktop.width()*0.1,
-                    rectDesktop.height()*0.8);
+                    rectDesktop.y() + desktopMargin,
+                    rectDesktop.width() - m_rcIcon.topRight().x() - desktopMargin - iconOffset,
+                    rectDesktop.height() - 2 * desktopMargin);
 
         int topArea = top.width()*top.height();
         int leftArea = left.width()*left.height();
         int rightArea = right.width()*right.height();
-
+        qDebug() << top << left << right;
+        qDebug() << topArea << leftArea << rightArea;
         if ((topArea > leftArea)&&(topArea > rightArea))
         {            
             sz1.setHeight(sz1.height() + arrowIconHeight);
             sz1 = inscribedRectToRect( sz1, top.size() );
             int x = m_rcIcon.x() + m_rcIcon.width()/2 - sz1.width()/2;
-            x = qMax(x , static_cast<int>(rectDesktop.width()*0.1));
+            int y = m_rcIcon.y() - iconOffset - sz1.height();
+            x = qMax(x , desktopMargin);
             x = qMin(x, top.topRight().x() - sz1.width());
-            int y = m_rcIcon.y() - iconOffset - sz1.height();            
             QRect rect(x,y,sz1.width(),sz1.height());
             rootContext()->setContextProperty( "embeddedLayout", "top" );
             rootContext()->setContextProperty( "arrowX", m_rcIcon.x() + m_rcIcon.width()/2 - arrowIconWidth/2 -rect.x());
             rootContext()->setContextProperty( "arrowY", rect.height() - arrowIconHeight);
             m_posArrow = TOP;            
             setGeometry(rect);
+            qDebug() << rect.bottomLeft();
         }
         else if (leftArea > rightArea )
         {
@@ -440,7 +448,7 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
             sz1 = inscribedRectToRect( sz1, left.size() );
             int x = m_rcIcon.x() - sz1.width() - iconOffset;
             int y = m_rcIcon.y() + m_rcIcon.height()/2 - sz1.height()/2;
-            y = qMax(y , static_cast<int>(rectDesktop.height()*0.1));
+            y = qMax(y , desktopMargin);
             y = qMin(y, left.bottomLeft().y() -sz1.height() );
             QRect rect(x,y,sz1.width(),sz1.height());
             rootContext()->setContextProperty( "embeddedLayout", "left" );
@@ -455,7 +463,7 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
             sz1 = inscribedRectToRect( sz1, right.size() );
             int x = m_rcIcon.topRight().x() + iconOffset;
             int y = m_rcIcon.y() + m_rcIcon.height()/2 - sz1.height()/2;
-            y = qMax(y , static_cast<int>(rectDesktop.height()*0.1));
+            y = qMax(y , desktopMargin);
             y = qMin(y, right.bottomLeft().y() - sz1.height() );
             QRect rect(x,y,sz1.width(),sz1.height());
             rootContext()->setContextProperty( "embeddedLayout", "right" );
