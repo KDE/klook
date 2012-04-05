@@ -1,14 +1,19 @@
 project( klook )
 
+cmake_minimum_required(VERSION 2.8)
+
 find_package( KDE4 REQUIRED )
 include( KDE4Defaults )
 
 find_package( Qt4 REQUIRED QtCore QtGui QtDeclarative )
 include( ${QT_USE_FILE} )
 qt4_automoc( ${qtproject_SRCS} )
-ADD_DEFINITIONS( ${QT_DEFINITIONS} )
+add_definitions( ${QT_DEFINITIONS} )
 
 include_directories( ${KDE4_INCLUDES} ${QT_QDECLARATIVE_INCLUDE_DIR} )
+
+set (RESOURCES src/resources.qrc)
+QT4_ADD_RESOURCES(QRC_SOURCES ${RESOURCES})
 
 set( klook_SRCS src/main.cpp
 				src/declarativeviewer.cpp
