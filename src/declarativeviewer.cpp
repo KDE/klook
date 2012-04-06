@@ -53,7 +53,7 @@ static int arrowIconHeight = 16;
 static int min_width = 600;
 static int min_height = 427;
 
-DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent )
+DeclarativeViewer::DeclarativeViewer( QWidget* parent )
     : QDeclarativeView( parent )
     , m_lastMousePosition( 0, 0 )
     , m_isSingleMode( true )
@@ -68,11 +68,11 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     , m_videoWidget( 0 )
     , m_width( min_width )
     , m_height( min_height )
-    , m_thread( 0 )
     , m_compositing( false )
+    , m_thread( 0 )
 {
     setOptimizationFlags( QGraphicsView::DontSavePainterState );
-    setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate);
+    setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
 
     setMouseTracking( true );
 
@@ -86,13 +86,9 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     setMinimumWidth( m_width );
     setMinimumHeight( m_height );
 
-    // Process parameters
-    processArgs( params );
-
     m_previewGenerator = PreviewGenerator::createInstance();
-    m_previewGenerator->setFiles( m_urls );
 
-    ListItem *prototypeItem = new ListItem( this );
+    ListItem* prototypeItem = new ListItem( this );
     m_fileModel = new FileModel( prototypeItem, this );
     PreviewGenerator::createInstance()->setModel( m_fileModel );
 
@@ -104,17 +100,17 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint );
 
     setAttribute( Qt::WA_TranslucentBackground );
-    setAutoFillBackground(false);
+    setAutoFillBackground( false );
     setStyleSheet( "background:transparent;" );
 
     skipTaskBar();
 
     setViewMode( Single );
 
-    connect( qApp, SIGNAL( focusChanged( QWidget*, QWidget* ) ),this , SLOT( focusChanged( QWidget*, QWidget* ) ) );
+    connect( qApp, SIGNAL( focusChanged( QWidget*, QWidget* ) ), this, SLOT( focusChanged( QWidget*, QWidget* ) ) );
 
-    Plasma::WindowEffects::overrideShadow(this->winId(),   true);
-    Plasma::WindowEffects::enableBlurBehind	(winId());
+    Plasma::WindowEffects::overrideShadow( this->winId(), true );
+    Plasma::WindowEffects::enableBlurBehind( winId() );
 }
 
 DeclarativeViewer::~DeclarativeViewer()
@@ -122,6 +118,17 @@ DeclarativeViewer::~DeclarativeViewer()
     qDeleteAll( m_files );
 
     delete m_thread;
+}
+
+void DeclarativeViewer::init( const QStringList& urls, bool embedded, const QRect& rc )
+{
+    m_isEmbedded = embedded;
+    m_rcIcon = rc;
+    m_urls = urls;
+
+    m_previewGenerator->setFiles( m_urls );
+    rootContext()->setContextProperty( "embedded", m_isEmbedded );
+
 }
 
 //Check whether the KDE effects are included
@@ -280,13 +287,13 @@ QSize DeclarativeViewer::getActualSize()
         sz.setHeight( sz.height() + ( m_isEmbedded ? 0 : height_offset ) );
         return sz;
     }
-    else if ( m_currentFile->type() == File::Audio)
-        return QSize(min_width, min_height);
-    else if(m_currentFile->type() == File::Directory)
-        return QSize(min_width + 100, min_height);
+    else if ( m_currentFile->type() == File::Audio )
+        return QSize( min_width, min_height );
+    else if ( m_currentFile->type() == File::Directory )
+        return QSize( min_width + 100, min_height );
     else
     {
-        QSize size = getTextWindowSize(m_currentFile->name());
+        QSize size = getTextWindowSize( m_currentFile->name() );
         return size;
     }
 
@@ -323,6 +330,21 @@ QSize DeclarativeViewer::inscribedRectToRect( const QSize& sz1, const QSize& sz2
     return sz;
 }
 
+
+void DeclarativeViewer::showWidget( const QSize& sz )
+{
+    if ( ( m_startFullScreen ) && ( sz == size() ) )
+    {
+        showFullScreen();
+        emit setFullScreenState();
+    }
+    else
+    {
+        centerWidget( sz );
+    }
+    m_startFullScreen = false;
+}
+
 void DeclarativeViewer::updateSize( const File* file )
 {    
     if ( file == 0 )
@@ -344,60 +366,33 @@ void DeclarativeViewer::updateSize( const File* file )
 
         QSize sz = calculateViewSize( QSize( m_width, m_height ) );
         sz.setHeight( sz.height() + ( m_isEmbedded ? 0 : height_offset ) );
-
-        if ( ( m_startFullScreen ) && ( sz == size() ) )
-        {
-            showFullScreen();
-            emit setFullScreenState();
-        }
-        else
-        {
-            centerWidget( sz );
-        }
-        m_startFullScreen = false;
+        showWidget( sz );
     }
     else if ( ( file->type() == File::Audio ) ||
               ( file->type() == File::Directory ) )
     {
         int width = min_width;
         int height = min_height;
-        if(file->type() == File::Directory)
+        if ( file->type() == File::Directory )
             width += 100;
 
-        QSize size( width, height );
-        if ( ( m_startFullScreen ) && ( size == this->size() ) )
-        {
-            showFullScreen();
-            emit setFullScreenState();
-        }
-        else
-        {
-            centerWidget( size );
-        }
-        m_startFullScreen = false;
+        QSize sz( width, height );
+        showWidget( sz );
     }
     else if ( file->type() == File::Txt )
     {
-        QSize size = getTextWindowSize( file->name() );
-        if ( ( m_startFullScreen ) && ( size == this->size() ) )
-        {
-            showFullScreen();
-            emit setFullScreenState();
-        }
-        else
-        {
-            centerWidget( size );
-        }
-        m_startFullScreen = false;
+        QSize sz = getTextWindowSize( file->name() );
+        showWidget( sz );
     }
 }
 
 void DeclarativeViewer::centerWidget( const QSize& sz )
 {
     QDesktopWidget dw;
-    QRect rectDesktop = dw.screenGeometry(this);
+    QRect rectDesktop = dw.screenGeometry( this );
     QSize sz1 = sz;    
-    if (m_isEmbedded)
+
+    if ( m_isEmbedded )
     {
         int iconOffset = 5;
         int desktopMargin = 70;
@@ -422,7 +417,7 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
         int rightArea = right.width()*right.height();
         qDebug() << top << left << right;
         qDebug() << topArea << leftArea << rightArea;
-        if ((topArea > leftArea)&&(topArea > rightArea))
+        if ( ( topArea > leftArea ) && ( topArea > rightArea ) )
         {            
             sz1.setHeight(sz1.height() + arrowIconHeight);
             sz1 = inscribedRectToRect( sz1, top.size() );
@@ -438,7 +433,7 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
             setGeometry(rect);
             qDebug() << rect.bottomLeft();
         }
-        else if (leftArea > rightArea )
+        else if ( leftArea > rightArea )
         {
             sz1.setWidth(sz1.width()+ arrowIconHeight);
             sz1 = inscribedRectToRect( sz1, left.size() );
@@ -810,18 +805,6 @@ void DeclarativeViewer::newFileProcessed( const File *file )
     emit fileData( QVariant( file->name() ), QVariant( file->type() ) );
 }
 
-void DeclarativeViewer::onCanShow()
-{
-    if (m_files.count() > 1)
-        return;
-    hide();
-    changeContent();
-    setActualSize();
-    show();
-    activateWindow();
-    raise();
-}
-
 void DeclarativeViewer::showNoFilesNotification()
 {
     close();
@@ -829,41 +812,28 @@ void DeclarativeViewer::showNoFilesNotification()
 
 void DeclarativeViewer::setViewMode( DeclarativeViewer::ViewMode mode )
 {
-    QString modeName;
-    if ( mode == Single )
-    {
-        modeName = "single";
-        m_isSingleMode = true;
-    }
-    else
-    {
-        modeName = "multi";
-        m_isSingleMode = false;
-    }
-    rootContext()->setContextProperty( "viewMode", modeName );
+    m_isSingleMode = ( mode == Single );
+    rootContext()->setContextProperty( "viewMode", ( ( mode == Single ) ? "single" : "multi" ) );
 }
 
-void DeclarativeViewer::handleMessage( const QString& message )
+void DeclarativeViewer::restart()
 {
     hide();
 
-    QStringList params = message.split( ";", QString::SkipEmptyParts );    
-    processArgs( params );
-
-
-    qDeleteAll(m_files);
+    qDeleteAll( m_files );
     m_files.clear();
+
+    m_previewGenerator->setFiles( m_urls );
 
     startWorkingThread();
 
     m_fileModel->reset();
 
-    m_previewGenerator->setFiles( m_urls );
 }
 
 int DeclarativeViewer::processArgs( const QStringList& args )
 {    
-    setEmbedded(false);
+    setEmbedded( false );
     m_urls.clear();
 
     for ( int n = 0; n < args.count(); n++ )
@@ -922,13 +892,6 @@ int DeclarativeViewer::processArgs( const QStringList& args )
     return 0;
 }
 
-void DeclarativeViewer::init( const QStringList& urls, bool embedded, const QRect& rc )
-{
-    Q_UNUSED( urls )
-    Q_UNUSED( embedded )
-    Q_UNUSED( rc )
-}
-
 void DeclarativeViewer::onSetGallery( bool isGallery )
 {
     m_isGallery = isGallery;
@@ -980,7 +943,7 @@ void DeclarativeViewer::focusChanged( QWidget*, QWidget* now )
 
 void DeclarativeViewer::setEmbedded( bool state )
 {
-    if (state)
+    if ( state )
     {
         setMinimumSize( 50, 50 );
     }
@@ -990,5 +953,15 @@ void DeclarativeViewer::setEmbedded( bool state )
     }
 
     m_isEmbedded = state;
+}
+
+void DeclarativeViewer::setRectIcon( const QRect& rc )
+{
+    m_rcIcon = rc;
+}
+
+void DeclarativeViewer::setUrls( const QStringList& urls )
+{
+    m_urls = urls;
 }
 

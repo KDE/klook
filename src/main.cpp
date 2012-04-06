@@ -61,9 +61,12 @@ int main(int argc, char *argv[])
     KCmdLineArgs::init( argc, argv, &about );
 
     KCmdLineOptions options;
-    options.add( "+file", ki18n( "A required argument 'file'" ) );
-    options.add( "embedded", ki18n( "turn on embedded mode" ) );
-    options.add( "c", ki18n( "coordinates of icon" ) );
+    options.add( "embedded", ki18n( "turn on embedded mode" ), "0" );
+    options.add( "x <x>", ki18n( "X position of icon" ), "0" );
+    options.add( "y <y>", ki18n( "Y position of icon" ), "0" );
+    options.add( "w <width>", ki18n( "Width of icon" ), "0" );
+    options.add( "h <height>", ki18n( "Height of icon" ), "0" );
+    options.add( "+file", ki18n( "A required argument 'file'" ), 0 );
 
     KCmdLineArgs::addCmdLineOptions( options );
 
@@ -73,10 +76,6 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    QStringList args;
-    for ( int a = 1; a < argc; ++a )
-        args << QString::fromUtf8( argv[ a ] );
-
-    KLookApp a( args );
+    KLookApp a;
     return a.exec();
 }

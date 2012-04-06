@@ -32,26 +32,33 @@
 #include "declarativeviewer.h"
 
 
-KLookApp::KLookApp( const QStringList& args )
+KLookApp::KLookApp()
     : KUniqueApplication()
     , m_viewer( 0 )
 {
-    m_viewer = new DeclarativeViewer( args );
+    KCmdLineArgs::setCwd( QDir::currentPath().toUtf8() );
+
+    QStringList urls = urlsParam();
+    QRect rc = rectParam();
+    bool embedded = isEmbeddedParam();
+
+    m_viewer = new DeclarativeViewer();
+    m_viewer->init( urls, embedded, rc );
 
     QFileInfo fi( QCoreApplication::applicationFilePath() );
 
     QString qmlPath;
-        
-    if(isLocal())
+
+    if ( isLocal() )
         qmlPath += "/usr/share/" + fi.baseName() + "/main.qml";
     else
         qmlPath += "../src/qml/main.qml";
-        
-/*
+
+    /*
     if(!QFile::exists(qmlPath))
     {
-	QMessageBox::information(0, ki18n("Warning"), ki18n("Application can't find all necessary files. Exiting now...")
-	quit();
+    QMessageBox::information(0, ki18n("Warning"), ki18n("Application can't find all necessary files. Exiting now...")
+    quit();
     }
 */    
     m_viewer->setSource( QUrl::fromLocalFile( qmlPath) );
@@ -62,7 +69,6 @@ KLookApp::KLookApp( const QStringList& args )
     QObject::connect( m_viewer, SIGNAL( setEmbeddedState() ), rootObject, SLOT( setEmbeddedState() ) );
     QObject::connect( m_viewer, SIGNAL( setStartWindow() ), rootObject, SLOT( setStartWindow() ) );
     QObject::connect( rootObject, SIGNAL( setGalleryView( bool ) ), m_viewer, SLOT( onSetGallery( bool ) ) );
-    QObject::connect( rootObject, SIGNAL( canShow() ), m_viewer, SLOT( onCanShow( ) ) );
 
     m_viewer->setAttribute( Qt::WA_QuitOnClose );
 }
@@ -72,40 +78,66 @@ KLookApp::~KLookApp()
     delete m_viewer;
 }
 
+bool KLookApp::isEmbeddedParam()
+{
+    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+
+    bool embedded = args->isSet( "embedded" );
+    qDebug() << "KLookApp::isEmbeddedParam: embedded is " << embedded;
+
+    return embedded;
+}
+
+QRect KLookApp::rectParam()
+{
+    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+
+    QRect rc;
+    if ( args->isSet( "x" ) && args->isSet( "y" ) &&
+         args->isSet( "w" ) && args->isSet( "h" ) )
+    {
+        int x, y, w, h;
+        x = args->getOption( "x" ).toInt();
+        y = args->getOption( "y" ).toInt();
+        w = args->getOption( "w" ).toInt();
+        h = args->getOption( "h" ).toInt();
+        rc = QRect( x, y, w, h );
+        qDebug() << "rect is " << rc;
+    }
+    qDebug() << "KLookApp::rectParam: rect is " << rc;
+    return rc;
+}
+
+QStringList KLookApp::urlsParam()
+{
+    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+
+    QStringList urls;
+    for ( int i = 0; i < args->count(); i++ )
+        urls << args->arg( i );
+
+    qDebug() << "KLookApp::urlsParam: urls is " << urls;
+    return urls;
+}
+
 int KLookApp::newInstance()
 {
     KCmdLineArgs::setCwd( QDir::currentPath().toUtf8() );
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-    QString message;
-    static bool first = true;
-    if (args->isSet("embedded"))
-    {
-        message += "--embedded;";
-        message += args->arg(0) + ";";
-        message += "-c;";
-        message += args->arg(1) + ";";
-        message += args->arg(2) + ";";
-        message += args->arg(3) + ";";
-        message += args->arg(4);
-    }
-    else
-    {
-        if ( args->count() > 0 )
-        {
-            for ( int i = 0; i < args->count(); i++ )
-            {
-                qDebug() << args->arg(i);
-                message += args->arg(i);
-                if ( i < ( args->count() - 1 ) )
-                    message += ";";
-            }
-        }
-    }
 
+    static bool first = true;
+
+    QStringList urls = urlsParam();
+    QRect rc = rectParam();
+    bool embedded = isEmbeddedParam();
+
+    m_viewer->setEmbedded( embedded );
+    m_viewer->setRectIcon( rc );
+    m_viewer->setUrls( urls );
 
     if ( m_viewer && !first )
     {
-        m_viewer->handleMessage( message );
+        m_viewer->restart();
     }
 
     first = false;
