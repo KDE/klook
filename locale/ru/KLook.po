@@ -17,7 +17,7 @@ msgstr "Открыть в..."
 
 #: src/declarativeviewer.cpp:175
 msgid "Artist:"
-msgstr "Артист:"
+msgstr "Исполнитель:"
 
 #: src/declarativeviewer.cpp:176
 msgid "Total time:"
