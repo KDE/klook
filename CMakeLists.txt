@@ -8,7 +8,7 @@ include( KDE4Defaults )
 find_package( Qt4 REQUIRED QtCore QtGui QtDeclarative )
 include( ${QT_USE_FILE} )
 qt4_automoc( ${qtproject_SRCS} )
-add_definitions( ${QT_DEFINITIONS} )
+add_definitions( ${QT_DEFINITIONS} -DQT_NO_DEBUG_OUTPUT )
 
 include_directories( ${KDE4_INCLUDES} ${QT_QDECLARATIVE_INCLUDE_DIR} )
 

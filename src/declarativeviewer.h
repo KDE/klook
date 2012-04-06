@@ -118,8 +118,6 @@ protected:
     QSize inscribedRectToRect( const QSize& sz1, const QSize& sz2 );
     void centerWidget( const QSize& sz );
 
-    int processArgs( const QStringList& args );
-
     void skipTaskBar();
     bool checkComposite();
 

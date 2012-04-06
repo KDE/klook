@@ -431,7 +431,6 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
             rootContext()->setContextProperty( "arrowY", rect.height() - arrowIconHeight);
             m_posArrow = TOP;            
             setGeometry(rect);
-            qDebug() << rect.bottomLeft();
         }
         else if ( leftArea > rightArea )
         {
@@ -829,67 +828,6 @@ void DeclarativeViewer::restart()
 
     m_fileModel->reset();
 
-}
-
-int DeclarativeViewer::processArgs( const QStringList& args )
-{    
-    setEmbedded( false );
-    m_urls.clear();
-
-    for ( int n = 0; n < args.count(); n++ )
-    {
-        QString argument = args[ n ];
-        qDebug() << argument;
-
-        if ( argument == "--embedded" )
-        {
-            if ( ( n + 6 ) < args.count() )
-            {
-                n++;
-                if ( QFile::exists( args[ n ] ) )
-                {
-                    bool ok_x, ok_y, ok_width, ok_height;
-
-                    setEmbedded( true );
-                    m_urls << args[ n ];
-                    n++;
-
-                    if ( args[ n ] != "-c" )
-                    {
-                        printf("Error: expected parameter for -c\r\n");
-                        return ( -1 );
-                    }
-
-                    n++;
-                    m_rcIcon.setX( args[ n ].toInt( &ok_x ) );
-                    n++;
-                    m_rcIcon.setY( args[ n ].toInt( &ok_y ) );
-                    n++;
-                    m_rcIcon.setWidth( args[ n ].toInt( &ok_width ) );
-                    n++;
-                    m_rcIcon.setHeight( args[ n ].toInt( &ok_height ) );
-
-                }
-                else
-                {
-                    printf("Error: file %s not exist\r\n", args[ n ].toLocal8Bit().data() );
-                    return ( -1 );
-                }
-            }
-            else
-            {
-                printf("Error: expected parameters for -embedded\r\n");
-                return ( -1 );
-            }
-        }
-    }
-
-    if ( !m_isEmbedded )
-    {
-        m_urls << args;
-    }
-
-    return 0;
 }
 
 void DeclarativeViewer::onSetGallery( bool isGallery )

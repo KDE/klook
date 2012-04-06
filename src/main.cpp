@@ -61,11 +61,11 @@ int main(int argc, char *argv[])
     KCmdLineArgs::init( argc, argv, &about );
 
     KCmdLineOptions options;
-    options.add( "embedded", ki18n( "turn on embedded mode" ), "0" );
-    options.add( "x <x>", ki18n( "X position of icon" ), "0" );
-    options.add( "y <y>", ki18n( "Y position of icon" ), "0" );
-    options.add( "w <width>", ki18n( "Width of icon" ), "0" );
-    options.add( "h <height>", ki18n( "Height of icon" ), "0" );
+    options.add( "embedded", ki18n( "Turn on embedded mode" ), "0" );
+    options.add( "x <x>", ki18n( "X position of the icon" ), "0" );
+    options.add( "y <y>", ki18n( "Y position of the icon" ), "0" );
+    options.add( "w <width>", ki18n( "Width of the icon" ), "0" );
+    options.add( "h <height>", ki18n( "Height of the icon" ), "0" );
     options.add( "+file", ki18n( "A required argument 'file'" ), 0 );
 
     KCmdLineArgs::addCmdLineOptions( options );

@@ -485,9 +485,11 @@ Rectangle {
                 Keys.onRightPressed:
                 {
                     if ( photosListView.focus === true )
+                    {
                         if ( photosListView.currentIndex === -1 )
                             photosListView.currentIndex = 0
-                    photosListView.incrementCurrentIndex()
+                        photosListView.incrementCurrentIndex()
+                    }
                 }
 
                 Connections {
