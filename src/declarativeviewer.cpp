@@ -33,7 +33,6 @@
 #include "previewprovider.h"
 #include "mimeprovider.h"
 #include "filemodel.h"
-#include "mimeprovider.h"
 #include "workerthread.h"
 
 #include "plasma/windoweffects.h"
@@ -122,13 +121,15 @@ DeclarativeViewer::~DeclarativeViewer()
 
 void DeclarativeViewer::init( const QStringList& urls, bool embedded, const QRect& rc )
 {
+    setEmbedded( false );
+    m_urls.clear();
+
     m_isEmbedded = embedded;
     m_rcIcon = rc;
     m_urls = urls;
 
     m_previewGenerator->setFiles( m_urls );
     rootContext()->setContextProperty( "embedded", m_isEmbedded );
-
 }
 
 //Check whether the KDE effects are included
@@ -860,7 +861,7 @@ void DeclarativeViewer::setViewMode( DeclarativeViewer::ViewMode mode )
 
 void DeclarativeViewer::restart()
 {
-    hide();
+//    hide();
 
     qDeleteAll( m_files );
     m_files.clear();
@@ -870,7 +871,6 @@ void DeclarativeViewer::restart()
     startWorkingThread();
 
     m_fileModel->reset();
-
 }
 
 void DeclarativeViewer::onSetGallery( bool isGallery )
