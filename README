@@ -1,0 +1,21 @@
+Klook is a quick preview feature based on Qt and Qt Quick, allows users to look 
+at the contents of a file in the Dolphin
+
+To build KLook you must have following programs and packages installed:
+1) CMake
+2) kde4libs-devel
+3) Qt 4
+
+To install it just do:
+1) mkdir build
+2) cd build
+3) cmake .. && make && make install
+
+If you want to use KLook from Dolphin you also have to apply Dolphin patches 
+that make Klook show up on pressing space. 
+You can download patch for Dolphin here: 
+https://abf.rosalinux.ru/projects/64429/blob/master/kdebase-4.8.1-dolphin-klook.patch
+
+You can also use it with StackFolder plasma applet, that can be downloaded here.
+StackFolder does has support for KLook built-in so you just have to install the package
+from https://abf.rosalinux.ru/projects/50034

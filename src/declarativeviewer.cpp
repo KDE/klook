@@ -33,7 +33,6 @@
 #include "previewprovider.h"
 #include "mimeprovider.h"
 #include "filemodel.h"
-#include "mimeprovider.h"
 #include "workerthread.h"
 
 #include "plasma/windoweffects.h"
@@ -53,7 +52,7 @@ static int arrowIconHeight = 16;
 static int min_width = 600;
 static int min_height = 427;
 
-DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent )
+DeclarativeViewer::DeclarativeViewer( QWidget* parent )
     : QDeclarativeView( parent )
     , m_lastMousePosition( 0, 0 )
     , m_isSingleMode( true )
@@ -68,11 +67,11 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     , m_videoWidget( 0 )
     , m_width( min_width )
     , m_height( min_height )
-    , m_thread( 0 )
     , m_compositing( false )
+    , m_thread( 0 )
 {
     setOptimizationFlags( QGraphicsView::DontSavePainterState );
-    setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate);
+    setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
 
     setMouseTracking( true );
 
@@ -86,13 +85,9 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     setMinimumWidth( m_width );
     setMinimumHeight( m_height );
 
-    // Process parameters
-    processArgs( params );
-
     m_previewGenerator = PreviewGenerator::createInstance();
-    m_previewGenerator->setFiles( m_urls );
 
-    ListItem *prototypeItem = new ListItem( this );
+    ListItem* prototypeItem = new ListItem( this );
     m_fileModel = new FileModel( prototypeItem, this );
     PreviewGenerator::createInstance()->setModel( m_fileModel );
 
@@ -104,17 +99,17 @@ DeclarativeViewer::DeclarativeViewer(const QStringList& params, QWidget* parent 
     setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint );
 
     setAttribute( Qt::WA_TranslucentBackground );
-    setAutoFillBackground(false);
+    setAutoFillBackground( false );
     setStyleSheet( "background:transparent;" );
 
     skipTaskBar();
 
     setViewMode( Single );
 
-    connect( qApp, SIGNAL( focusChanged( QWidget*, QWidget* ) ),this , SLOT( focusChanged( QWidget*, QWidget* ) ) );
+    connect( qApp, SIGNAL( focusChanged( QWidget*, QWidget* ) ), this, SLOT( focusChanged( QWidget*, QWidget* ) ) );
 
-    Plasma::WindowEffects::overrideShadow(this->winId(),   true);
-    Plasma::WindowEffects::enableBlurBehind	(winId());
+    Plasma::WindowEffects::overrideShadow( this->winId(), true );
+    Plasma::WindowEffects::enableBlurBehind( winId() );
 }
 
 DeclarativeViewer::~DeclarativeViewer()
@@ -122,6 +117,19 @@ DeclarativeViewer::~DeclarativeViewer()
     qDeleteAll( m_files );
 
     delete m_thread;
+}
+
+void DeclarativeViewer::init( const QStringList& urls, bool embedded, const QRect& rc )
+{
+    setEmbedded( false );
+    m_urls.clear();
+
+    m_isEmbedded = embedded;
+    m_rcIcon = rc;
+    m_urls = urls;
+
+    m_previewGenerator->setFiles( m_urls );
+    rootContext()->setContextProperty( "embedded", m_isEmbedded );
 }
 
 //Check whether the KDE effects are included
@@ -280,13 +288,13 @@ QSize DeclarativeViewer::getActualSize()
         sz.setHeight( sz.height() + ( m_isEmbedded ? 0 : height_offset ) );
         return sz;
     }
-    else if ( m_currentFile->type() == File::Audio)
-        return QSize(min_width, min_height);
-    else if(m_currentFile->type() == File::Directory)
-        return QSize(min_width + 100, min_height);
+    else if ( m_currentFile->type() == File::Audio )
+        return QSize( min_width, min_height );
+    else if ( m_currentFile->type() == File::Directory )
+        return QSize( min_width + 100, min_height );
     else
     {
-        QSize size = getTextWindowSize(m_currentFile->name());
+        QSize size = getTextWindowSize( m_currentFile->name() );
         return size;
     }
 
@@ -323,6 +331,21 @@ QSize DeclarativeViewer::inscribedRectToRect( const QSize& sz1, const QSize& sz2
     return sz;
 }
 
+
+void DeclarativeViewer::showWidget( const QSize& sz )
+{
+    if ( ( m_startFullScreen ) && ( sz == size() ) )
+    {
+        showFullScreen();
+        emit setFullScreenState();
+    }
+    else
+    {
+        centerWidget( sz );
+    }
+    m_startFullScreen = false;
+}
+
 void DeclarativeViewer::updateSize( const File* file )
 {    
     if ( file == 0 )
@@ -344,60 +367,33 @@ void DeclarativeViewer::updateSize( const File* file )
 
         QSize sz = calculateViewSize( QSize( m_width, m_height ) );
         sz.setHeight( sz.height() + ( m_isEmbedded ? 0 : height_offset ) );
-
-        if ( ( m_startFullScreen ) && ( sz == size() ) )
-        {
-            showFullScreen();
-            emit setFullScreenState();
-        }
-        else
-        {
-            centerWidget( sz );
-        }
-        m_startFullScreen = false;
+        showWidget( sz );
     }
     else if ( ( file->type() == File::Audio ) ||
               ( file->type() == File::Directory ) )
     {
         int width = min_width;
         int height = min_height;
-        if(file->type() == File::Directory)
+        if ( file->type() == File::Directory )
             width += 100;
 
-        QSize size( width, height );
-        if ( ( m_startFullScreen ) && ( size == this->size() ) )
-        {
-            showFullScreen();
-            emit setFullScreenState();
-        }
-        else
-        {
-            centerWidget( size );
-        }
-        m_startFullScreen = false;
+        QSize sz( width, height );
+        showWidget( sz );
     }
     else if ( file->type() == File::Txt )
     {
-        QSize size = getTextWindowSize( file->name() );
-        if ( ( m_startFullScreen ) && ( size == this->size() ) )
-        {
-            showFullScreen();
-            emit setFullScreenState();
-        }
-        else
-        {
-            centerWidget( size );
-        }
-        m_startFullScreen = false;
+        QSize sz = getTextWindowSize( file->name() );
+        showWidget( sz );
     }
 }
 
 void DeclarativeViewer::centerWidget( const QSize& sz )
 {
     QDesktopWidget dw;
-    QRect rectDesktop = dw.screenGeometry(this);
-    QSize sz1 = sz;    
-    if (m_isEmbedded)
+    QRect rectDesktop = dw.screenGeometry( this );
+    QSize sz1 = sz;
+
+    if ( m_isEmbedded )
     {
         int iconOffset = 5;
         int desktopMargin = 70;
@@ -420,10 +416,9 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
         int topArea = top.width()*top.height();
         int leftArea = left.width()*left.height();
         int rightArea = right.width()*right.height();
-        qDebug() << top << left << right;
-        qDebug() << topArea << leftArea << rightArea;
-        if ((topArea > leftArea)&&(topArea > rightArea))
-        {            
+
+        if ( ( topArea > leftArea ) && ( topArea > rightArea ) )
+        {
             sz1.setHeight(sz1.height() + arrowIconHeight);
             sz1 = inscribedRectToRect( sz1, top.size() );
             int x = m_rcIcon.x() + m_rcIcon.width()/2 - sz1.width()/2;
@@ -432,13 +427,15 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
             x = qMin(x, top.topRight().x() - sz1.width());
             QRect rect(x,y,sz1.width(),sz1.height());
             rootContext()->setContextProperty( "embeddedLayout", "top" );
-            rootContext()->setContextProperty( "arrowX", m_rcIcon.x() + m_rcIcon.width()/2 - arrowIconWidth/2 -rect.x());
-            rootContext()->setContextProperty( "arrowY", rect.height() - arrowIconHeight);
-            m_posArrow = TOP;            
+            //Set arrow icon coordinates
+            m_rcArrow.setX(m_rcIcon.x() + m_rcIcon.width()/2 - arrowIconWidth/2 -rect.x());
+            m_rcArrow.setY(rect.height() - arrowIconHeight);
+            m_rcArrow.setWidth(arrowIconWidth);
+            m_rcArrow.setHeight(arrowIconHeight);
+            m_posArrow = BOTTOM;
             setGeometry(rect);
-            qDebug() << rect.bottomLeft();
         }
-        else if (leftArea > rightArea )
+        else if ( leftArea > rightArea )
         {
             sz1.setWidth(sz1.width()+ arrowIconHeight);
             sz1 = inscribedRectToRect( sz1, left.size() );
@@ -448,8 +445,11 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
             y = qMin(y, left.bottomLeft().y() -sz1.height() );
             QRect rect(x,y,sz1.width(),sz1.height());
             rootContext()->setContextProperty( "embeddedLayout", "left" );
-            rootContext()->setContextProperty( "arrowX", rect.width() - arrowIconHeight);
-            rootContext()->setContextProperty( "arrowY", m_rcIcon.y() + m_rcIcon.height()/2 - arrowIconWidth/2 - rect.y());
+            //Set arrow icon coordinates
+            m_rcArrow.setX(rect.width() - arrowIconHeight);
+            m_rcArrow.setY(m_rcIcon.y() + m_rcIcon.height()/2 - arrowIconWidth/2 - rect.y());
+            m_rcArrow.setWidth(arrowIconHeight);
+            m_rcArrow.setHeight(arrowIconWidth );
             m_posArrow = RIGHT;
             setGeometry(rect);
         }
@@ -463,11 +463,16 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
             y = qMin(y, right.bottomLeft().y() - sz1.height() );
             QRect rect(x,y,sz1.width(),sz1.height());
             rootContext()->setContextProperty( "embeddedLayout", "right" );
-            rootContext()->setContextProperty( "arrowX", .0);
-            rootContext()->setContextProperty( "arrowY", m_rcIcon.y() + m_rcIcon.height()/2 - arrowIconWidth/2 - rect.y());
-            m_posArrow = LEFT;        
+            //Set arrow icon coordinates
+            m_rcArrow.setX(0);
+            m_rcArrow.setY(m_rcIcon.y() + m_rcIcon.height()/2 - arrowIconWidth/2 - rect.y());
+            m_rcArrow.setWidth(arrowIconHeight);
+            m_rcArrow.setHeight(arrowIconWidth );
+            m_posArrow = LEFT;
             setGeometry(rect);
         }
+        rootContext()->setContextProperty( "arrowX", m_rcArrow.x());
+        rootContext()->setContextProperty( "arrowY", m_rcArrow.y());
         emit setEmbeddedState();
     }
     else
@@ -522,13 +527,38 @@ void DeclarativeViewer::updateContent( int index )
 
 WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )
 {
-    /*
-      To do:
-      add embedded arrow regions
-    */
-
     QPointF pos;
     pos = mousePos;
+    if (m_isEmbedded)
+    {
+        QRegion region;
+        QRect r = rect();
+        if (m_posArrow == BOTTOM)
+        {
+            QRect r1(r.bottomLeft().x(), r.bottomLeft().y()-arrowIconHeight, r.width(),arrowIconHeight);
+            region.setRects( &r1,1);
+            region = region.subtracted(QRegion(m_rcArrow));
+        }
+        else if (m_posArrow == LEFT)
+        {
+            QRect r2(r.x(), r.y(), m_rcArrow.width(), r.height());
+            region.setRects( &r2,1);
+            region = region.subtracted(QRegion(m_rcArrow));
+        }
+        else if (m_posArrow == RIGHT)
+        {
+            QRect r3(r.topRight().x() - m_rcArrow.width(), r.y(), m_rcArrow.width(), r.height());
+            region.setRects( &r3,1);
+            region = region.subtracted(QRegion(m_rcArrow));
+        }
+        if (region.contains(pos.toPoint()))
+        {
+            return ARROW_NULL_REGION;
+        }
+        return FRAME_REGION;
+    }
+
+
     QRectF r = rect();
     QRectF headerTitle;
     QRectF header1( 6 + 42 * 2, border_width + 1, 60, header_height - border_width + 1 );
@@ -630,6 +660,14 @@ void DeclarativeViewer::mousePressEvent( QMouseEvent* event )
             event->accept();
         }
     }
+    else
+    {
+        if ( calculateWindowRegion( event->pos() ) == ARROW_NULL_REGION )
+        {
+            close();
+        }
+    }
+
     QDeclarativeView::mousePressEvent(event);
 }
 
@@ -810,18 +848,6 @@ void DeclarativeViewer::newFileProcessed( const File *file )
     emit fileData( QVariant( file->name() ), QVariant( file->type() ) );
 }
 
-void DeclarativeViewer::onCanShow()
-{
-    if (m_files.count() > 1)
-        return;
-    hide();
-    changeContent();
-    setActualSize();
-    show();
-    activateWindow();
-    raise();
-}
-
 void DeclarativeViewer::showNoFilesNotification()
 {
     close();
@@ -829,104 +855,22 @@ void DeclarativeViewer::showNoFilesNotification()
 
 void DeclarativeViewer::setViewMode( DeclarativeViewer::ViewMode mode )
 {
-    QString modeName;
-    if ( mode == Single )
-    {
-        modeName = "single";
-        m_isSingleMode = true;
-    }
-    else
-    {
-        modeName = "multi";
-        m_isSingleMode = false;
-    }
-    rootContext()->setContextProperty( "viewMode", modeName );
+    m_isSingleMode = ( mode == Single );
+    rootContext()->setContextProperty( "viewMode", ( ( mode == Single ) ? "single" : "multi" ) );
 }
 
-void DeclarativeViewer::handleMessage( const QString& message )
+void DeclarativeViewer::restart()
 {
-    hide();
+//    hide();
 
-    QStringList params = message.split( ";", QString::SkipEmptyParts );    
-    processArgs( params );
-
-
-    qDeleteAll(m_files);
+    qDeleteAll( m_files );
     m_files.clear();
+
+    m_previewGenerator->setFiles( m_urls );
 
     startWorkingThread();
 
     m_fileModel->reset();
-
-    m_previewGenerator->setFiles( m_urls );
-}
-
-int DeclarativeViewer::processArgs( const QStringList& args )
-{    
-    setEmbedded(false);
-    m_urls.clear();
-
-    for ( int n = 0; n < args.count(); n++ )
-    {
-        QString argument = args[ n ];
-        qDebug() << argument;
-
-        if ( argument == "--embedded" )
-        {
-            if ( ( n + 6 ) < args.count() )
-            {
-                n++;
-                if ( QFile::exists( args[ n ] ) )
-                {
-                    bool ok_x, ok_y, ok_width, ok_height;
-
-                    setEmbedded( true );
-                    m_urls << args[ n ];
-                    n++;
-
-                    if ( args[ n ] != "-c" )
-                    {
-                        printf("Error: expected parameter for -c\r\n");
-                        return ( -1 );
-                    }
-
-                    n++;
-                    m_rcIcon.setX( args[ n ].toInt( &ok_x ) );
-                    n++;
-                    m_rcIcon.setY( args[ n ].toInt( &ok_y ) );
-                    n++;
-                    m_rcIcon.setWidth( args[ n ].toInt( &ok_width ) );
-                    n++;
-                    m_rcIcon.setHeight( args[ n ].toInt( &ok_height ) );
-
-                }
-                else
-                {
-                    printf("Error: file %s not exist\r\n", args[ n ].toLocal8Bit().data() );
-                    return ( -1 );
-                }
-            }
-            else
-            {
-                printf("Error: expected parameters for -embedded\r\n");
-                return ( -1 );
-            }
-        }
-    }
-
-    if ( !m_isEmbedded )
-    {
-        m_urls << args;
-    }
-
-    return 0;
-}
-
-void DeclarativeViewer::init( const QStringList& urls, bool embedded, const QRect& rc )
-{
-    Q_UNUSED( urls )
-    Q_UNUSED( embedded )
-    Q_UNUSED( rc )
 }
 
 void DeclarativeViewer::onSetGallery( bool isGallery )
@@ -975,12 +919,12 @@ void DeclarativeViewer::focusChanged( QWidget*, QWidget* now )
     {
         if ( !now )
             this->close();
-    }   
+    }
 }
 
 void DeclarativeViewer::setEmbedded( bool state )
 {
-    if (state)
+    if ( state )
     {
         setMinimumSize( 50, 50 );
     }
@@ -990,5 +934,15 @@ void DeclarativeViewer::setEmbedded( bool state )
     }
 
     m_isEmbedded = state;
+}
+
+void DeclarativeViewer::setRectIcon( const QRect& rc )
+{
+    m_rcIcon = rc;
+}
+
+void DeclarativeViewer::setUrls( const QStringList& urls )
+{
+    m_urls = urls;
 }
 

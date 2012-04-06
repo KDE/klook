@@ -34,6 +34,7 @@ class QRect;
 class WorkerThread;
 class PreviewGenerator;
 class FileModel;
+class QPoint;
 
 typedef enum WidgetRegion
 {
@@ -46,7 +47,8 @@ typedef enum WidgetRegion
     TOP_LEFT_CORNER_REGION,
     TOP_RIGHT_CORNER_REGION,
     BOTTOM_LEFT_CORNER_REGION,
-    BOTTOM_RIGHT_CORNER_REGION
+    BOTTOM_RIGHT_CORNER_REGION,
+    ARROW_NULL_REGION
 
 } WidgetRegion;
 
@@ -64,7 +66,7 @@ class DeclarativeViewer : public QDeclarativeView
 {
     Q_OBJECT
 public:
-    explicit DeclarativeViewer( const QStringList& params, QWidget *parent = 0 );
+    explicit DeclarativeViewer( QWidget *parent = 0 );
     virtual ~DeclarativeViewer();
 
     void updateSize( const File* file );
@@ -87,10 +89,11 @@ public slots:
     void onSetGallery( bool );
 
     void onMetaDataChanged();
-    void handleMessage( const QString& message );
-    void setEmbedded(bool);
+    void restart();
 
-    void onCanShow();
+    void setEmbedded( bool );
+    void setRectIcon( const QRect& );
+    void setUrls( const QStringList& );
 
 private slots:
     void newFileProcessed(const File* file);
@@ -117,10 +120,10 @@ protected:
     QSize inscribedRectToRect( const QSize& sz1, const QSize& sz2 );
     void centerWidget( const QSize& sz );
 
-    int processArgs( const QStringList& args );
-
     void skipTaskBar();
     bool checkComposite();
+
+    void showWidget( const QSize& sz );
 
 private:
 
@@ -141,6 +144,7 @@ private:
     bool            m_isEmbedded;
     bool            m_isGallery;
     QRect           m_rcIcon;
+    QRect           m_rcArrow;
     QStringList     m_urls;
 
     const File*     m_currentFile;
@@ -160,7 +164,7 @@ private:
     WorkerThread*       m_thread;
     PreviewGenerator*   m_previewGenerator;
     FileModel*          m_fileModel;
-    ArrowPosition       m_posArrow;
+    ArrowPosition       m_posArrow;    
 
 };
 

@@ -48,8 +48,6 @@ Rectangle {
     signal appendItem( string path, int type )
     signal setGalleryView( bool isGallery )
 
-    signal canShow()
-
     function setFullScreen()
     {
         if ( mainWindow.state === 'fullscreen' )
@@ -487,9 +485,11 @@ Rectangle {
                 Keys.onRightPressed:
                 {
                     if ( photosListView.focus === true )
+                    {
                         if ( photosListView.currentIndex === -1 )
                             photosListView.currentIndex = 0
-                    photosListView.incrementCurrentIndex()
+                        photosListView.incrementCurrentIndex()
+                    }
                 }
 
                 Connections {
@@ -665,7 +665,7 @@ Rectangle {
                 target: drawerBorder
                 color: "#537492"
                 anchors.rightMargin: ( embeddedLayout === "left" ) ? 16 : 0
-                anchors.leftMargin: ( embeddedLayout === "right" ) ? 16 : 0
+                anchors.leftMargin: ( embeddedLayout === "right" ) ? 15 : 0
                 anchors.bottomMargin : (embeddedLayout === "top" ) ? 16 : 0
             }
             PropertyChanges {
