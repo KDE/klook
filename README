@@ -16,3 +16,6 @@ that make Klook show up on pressing space.
 You can download patch for Dolphin here: 
 https://abf.rosalinux.ru/projects/64429/blob/master/kdebase-4.8.1-dolphin-klook.patch
 
+You can also use it with StackFolder plasma applet, that can be downloaded here.
+StackFolder does has support for KLook built-in so you just have to install the package
+from https://abf.rosalinux.ru/projects/50034
