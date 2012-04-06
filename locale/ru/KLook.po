@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: KLook\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-04 09:29+0400\n"
+"POT-Creation-Date: 2012-04-06 14:51+0400\n"
 "PO-Revision-Date: 2012-03-23 15:10+0400\n"
 "Last-Translator: Julia Mineeva <julia.mineeva@osinit.ru>\n"
 "Language-Team: Russian <support@rosalab.ru>\n"
@@ -11,82 +11,94 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: klook/declarativeviewer.cpp:144 klook/declarativeviewer.cpp:468
+#: src/declarativeviewer.cpp:164 src/declarativeviewer.cpp:508
 msgid "Open in..."
 msgstr "Открыть в..."
 
-#: klook/declarativeviewer.cpp:152
+#: src/declarativeviewer.cpp:175
 msgid "Artist:"
-msgstr "Артист:"
+msgstr "Исполнитель:"
 
-#: klook/declarativeviewer.cpp:153
+#: src/declarativeviewer.cpp:176
 msgid "Total time:"
 msgstr "Длительность:"
 
-#: klook/declarativeviewer.cpp:154
+#: src/declarativeviewer.cpp:177
 msgid "Folder"
 msgstr "Папка"
 
-#: klook/declarativeviewer.cpp:155
+#: src/declarativeviewer.cpp:178
 msgid "Last Modified:"
 msgstr "Дата изменения:"
 
-#: klook/declarativeviewer.cpp:156
+#: src/declarativeviewer.cpp:179
 msgid "Size:"
 msgstr "Размер:"
 
-#: klook/declarativeviewer.cpp:157
+#: src/declarativeviewer.cpp:180
 msgid "Elements:"
 msgstr "Элементы:"
 
-#: klook/declarativeviewer.cpp:451
+#: src/declarativeviewer.cpp:491
 msgid "Open"
 msgstr "Открыть"
 
-#: klook/declarativeviewer.cpp:455
+#: src/declarativeviewer.cpp:495
 msgid "Open in "
 msgstr "Открыть в "
 
-#: klook/declarativeviewer.cpp:469
+#: src/declarativeviewer.cpp:509
 msgid "Elements: "
 msgstr "Элементы: "
 
-#: klook/main.cpp:30
+#: src/main.cpp:30
 msgid "KLook is a quick preview feature"
 msgstr "KLook - утилита предварительного просмотра файлов"
 
-#: klook/main.cpp:37
+#: src/main.cpp:45
 msgid "KLook"
 msgstr ""
 
-#: klook/main.cpp:39
+#: src/main.cpp:47
 msgid "(c) ROSA 2011-2012"
 msgstr ""
 
-#: klook/main.cpp:41
+#: src/main.cpp:49
 msgid "Julia Mineeva"
 msgstr "Юлия Минеева"
 
-#: klook/main.cpp:42 klook/main.cpp:46 klook/main.cpp:50
+#: src/main.cpp:50 src/main.cpp:54 src/main.cpp:58
 msgid "Developer"
 msgstr "Разработчик"
 
-#: klook/main.cpp:45
+#: src/main.cpp:53
 msgid "Evgeniy Auzhin"
 msgstr "Евгений Аужин"
 
-#: klook/main.cpp:49
+#: src/main.cpp:57
 msgid "Sergey Borovkov"
 msgstr "Сергей Боровков"
 
-#: klook/main.cpp:56
-msgid "A required argument 'file'"
-msgstr "Требуется параметр 'file'"
-
-#: klook/main.cpp:57
-msgid "turn on embedded mode"
+#: src/main.cpp:64
+msgid "Turn on embedded mode"
 msgstr "выключить встроенный режим"
 
-#: klook/main.cpp:58
-msgid "coordinates of icon"
-msgstr "координаты иконки"
+#: src/main.cpp:65
+msgid "X position of the icon"
+msgstr "Координата X пиктограммы"
+
+#: src/main.cpp:66
+msgid "Y position of the icon"
+msgstr "Координата Y пиктограммы"
+
+#: src/main.cpp:67
+msgid "Width of the icon"
+msgstr "Ширина пиктограммы"
+
+#: src/main.cpp:68
+msgid "Height of the icon"
+msgstr "Высота пиктограммы"
+
+#: src/main.cpp:69
+msgid "A required argument 'file'"
+msgstr "Требуется параметр 'file'"
