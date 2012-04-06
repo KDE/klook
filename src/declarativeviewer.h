@@ -66,7 +66,7 @@ class DeclarativeViewer : public QDeclarativeView
 {
     Q_OBJECT
 public:
-    explicit DeclarativeViewer( const QStringList& params, QWidget *parent = 0 );
+    explicit DeclarativeViewer( QWidget *parent = 0 );
     virtual ~DeclarativeViewer();
 
     void updateSize( const File* file );
@@ -89,10 +89,11 @@ public slots:
     void onSetGallery( bool );
 
     void onMetaDataChanged();
-    void handleMessage( const QString& message );
-    void setEmbedded(bool);
+    void restart();
 
-    void onCanShow();
+    void setEmbedded( bool );
+    void setRectIcon( const QRect& );
+    void setUrls( const QStringList& );
 
 private slots:
     void newFileProcessed(const File* file);
@@ -119,10 +120,10 @@ protected:
     QSize inscribedRectToRect( const QSize& sz1, const QSize& sz2 );
     void centerWidget( const QSize& sz );
 
-    int processArgs( const QStringList& args );
-
     void skipTaskBar();
     bool checkComposite();
+
+    void showWidget( const QSize& sz );
 
 private:
 

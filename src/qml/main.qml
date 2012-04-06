@@ -48,8 +48,6 @@ Rectangle {
     signal appendItem( string path, int type )
     signal setGalleryView( bool isGallery )
 
-    signal canShow()
-
     function setFullScreen()
     {
         if ( mainWindow.state === 'fullscreen' )
@@ -487,9 +485,11 @@ Rectangle {
                 Keys.onRightPressed:
                 {
                     if ( photosListView.focus === true )
+                    {
                         if ( photosListView.currentIndex === -1 )
                             photosListView.currentIndex = 0
-                    photosListView.incrementCurrentIndex()
+                        photosListView.incrementCurrentIndex()
+                    }
                 }
 
                 Connections {
