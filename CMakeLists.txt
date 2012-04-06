@@ -31,7 +31,7 @@ set( klook_SRCS src/main.cpp
                                 src/mimeprovider.cpp
                                 ${qml_files} )
 
-kde4_add_executable( klook ${klook_SRCS} )
+kde4_add_executable( klook ${klook_SRCS} ${QRC_SOURCES})
 
 target_link_libraries( klook ${KDE4_KIO_LIBS}
 							${KDE4_PHONON_LIBS}
