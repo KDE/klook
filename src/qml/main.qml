@@ -97,7 +97,15 @@ Rectangle {
         controlPanelTimer.stop()
         panel.opacity = 1
 
-        if ( ( mainWindow.state === "windowed" ) || ( mainWindow.state === "embedded" ) )
+        //Disable panel in embedded mode
+        if ( mainWindow.state === "embedded" )
+        {
+            console.log("disable panel")
+            panel.visible = false
+            return
+
+        }
+        if ( ( mainWindow.state === "windowed" ) )
         {
             if ( ( albumWrapper.state === 'fullscreen' ) &&
                     ( ( currentFileType === 2 ) || ( currentFileType === 5 ) ) )
@@ -181,7 +189,6 @@ Rectangle {
 
     Component.onCompleted:
     {
-        cppObject.startWorkingThread()
         if ( embedded )
             mainWindow.state = 'embedded'
         else
@@ -217,7 +224,6 @@ Rectangle {
         z:100
         visible: false
     }
-
 
     // Item 1: menu bar
     Rectangle {
@@ -613,7 +619,10 @@ Rectangle {
                 anchors.leftMargin: 2
                 anchors.bottomMargin: 2
                 anchors.topMargin: 1
-                color: ( ( ( mainWindow.currentFileType === 4 ) || ( mainWindow.currentFileType === 5 ) ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
+                color: ( ( ( mainWindow.currentFileType === 4 ) ||
+                          ( mainWindow.currentFileType === 5 )  ||
+                          ( mainWindow.currentFileType === 0 ) ) &&
+                        ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
             }
             PropertyChanges {
                 target: drawerBorder
@@ -652,12 +661,14 @@ Rectangle {
             PropertyChanges {target: mainWindow;  border.width: 0; }
 
             PropertyChanges { target: row; visible: false  }
-
+            /*
             PropertyChanges {
                 target: panel
-                opacity: 1
+                visible: false
+                opacity: 0
                 state: "videoPanel"
             }
+            */
             AnchorChanges   { target: drawerBorder; anchors.top: parent.top }
             PropertyChanges { target: drawerBorder; anchors.topMargin: 0 }
             PropertyChanges { target: drawer; anchors.topMargin: 1 }
@@ -665,8 +676,8 @@ Rectangle {
                 target: drawerBorder
                 color: "#537492"
                 anchors.rightMargin: ( embeddedLayout === "left" ) ? 16 : 0
-                anchors.leftMargin: ( embeddedLayout === "right" ) ? 15 : 0
-                anchors.bottomMargin : (embeddedLayout === "top" ) ? 16 : 0
+                anchors.leftMargin: ( embeddedLayout === "right" ) ? 16 : 0
+                anchors.bottomMargin : ( embeddedLayout === "top" ) ? 16 : 0
             }
             PropertyChanges {
                 target: arrow
@@ -681,7 +692,10 @@ Rectangle {
                 anchors.leftMargin: 1
                 anchors.bottomMargin: 1
                 anchors.topMargin: 1
-                color: ( ( ( mainWindow.currentFileType == 4 ) || ( mainWindow.currentFileType == 5 ) ) && ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
+                color: ( ( ( mainWindow.currentFileType == 4 ) ||
+                          ( mainWindow.currentFileType == 5 ) ||
+                          ( mainWindow.currentFileType === 0 ) ) &&
+                        ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
             }
         }
     ]

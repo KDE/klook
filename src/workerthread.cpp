@@ -41,9 +41,11 @@ WorkerThread::WorkerThread( const QStringList& urls, QObject *parent )
 void WorkerThread::run()
 {
     processUrl( urls );
+
     if ( !isFound )
         emit fail();
 }
+
 
 void WorkerThread::processUrl( const QStringList &urls )
 {
@@ -60,15 +62,11 @@ void WorkerThread::processUrl( const QStringList &urls )
         {
             QString mime = getMime( str );
             File::FileType type = getType( mime, path );
-            if ( type != File::Undefined )
-            {
-                const File *file = new File( path, type, mime );
-                emit fileProcessed(file);
-                isFound = true;
-            }
-            else
-                qWarning() << "Unsupported file " << str;
-        } else
+            const File *file = new File( path, type, mime );
+            emit fileProcessed(file);
+            isFound = true;
+        }
+        else
             qWarning() << "File not found " << str;
     }
 }
@@ -77,7 +75,6 @@ QString WorkerThread::getMime( const QString& st ) const
 {
     KMimeType::Ptr ptr =  KMimeType::findByFileContent( st );
     KMimeType* type = ptr.data();
-    qDebug() << "getMime(): " << type->name();
     return type->name();
 }
 
@@ -147,7 +144,6 @@ File::FileType WorkerThread::getType( const QString& mime, const QString& path )
         {
             type = File::Directory;
         }
-
     }
 
     if ( type == File::Undefined )

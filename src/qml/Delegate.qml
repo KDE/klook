@@ -73,6 +73,6 @@ Item {
         anchors.centerIn: parent
         width: gridDelegate.width - 20
         height: gridDelegate.height - 20
-        sourceComponent: bestDelegate( mimeType )
+        sourceComponent: bestDelegate( type )
     }
 }

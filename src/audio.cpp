@@ -64,11 +64,6 @@ void MyAudio::setReady( bool b )
 {
     m_isReady = b;
     emit ready();
-    qDebug() << "title: " << title();
-    qDebug() << "artist: " << artist();
-//    qDebug() << "album: " << album();
-//    qDebug() << "composer: " << composer();
-//    qDebug() << "genre: " << genre();
 }
 
 void MyAudio::onFinished()

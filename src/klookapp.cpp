@@ -28,6 +28,7 @@
 
 #include <kcmdlineargs.h>
 #include <kurl.h>
+#include <kicon.h>
 
 #include "declarativeviewer.h"
 
@@ -36,14 +37,7 @@ KLookApp::KLookApp()
     : KUniqueApplication()
     , m_viewer( 0 )
 {
-    KCmdLineArgs::setCwd( QDir::currentPath().toUtf8() );
-
-    QStringList urls = urlsParam();
-    QRect rc = rectParam();
-    bool embedded = isEmbeddedParam();
-
     m_viewer = new DeclarativeViewer();
-    m_viewer->init( urls, embedded, rc );
 
     QFileInfo fi( QCoreApplication::applicationFilePath() );
 
@@ -54,13 +48,6 @@ KLookApp::KLookApp()
     else
         qmlPath += "../src/qml/main.qml";
 
-    /*
-    if(!QFile::exists(qmlPath))
-    {
-    QMessageBox::information(0, ki18n("Warning"), ki18n("Application can't find all necessary files. Exiting now...")
-    quit();
-    }
-*/    
     m_viewer->setSource( QUrl::fromLocalFile( qmlPath) );
 
     QObject* rootObject = dynamic_cast<QObject*>( m_viewer->rootObject() );
@@ -83,7 +70,6 @@ bool KLookApp::isEmbeddedParam()
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
     bool embedded = args->isSet( "embedded" );
-    qDebug() << "KLookApp::isEmbeddedParam: embedded is " << embedded;
 
     return embedded;
 }
@@ -102,9 +88,7 @@ QRect KLookApp::rectParam()
         w = args->getOption( "w" ).toInt();
         h = args->getOption( "h" ).toInt();
         rc = QRect( x, y, w, h );
-        qDebug() << "rect is " << rc;
     }
-    qDebug() << "KLookApp::rectParam: rect is " << rc;
     return rc;
 }
 
@@ -116,7 +100,6 @@ QStringList KLookApp::urlsParam()
     for ( int i = 0; i < args->count(); i++ )
         urls << args->arg( i );
 
-    qDebug() << "KLookApp::urlsParam: urls is " << urls;
     return urls;
 }
 
@@ -125,22 +108,12 @@ int KLookApp::newInstance()
     KCmdLineArgs::setCwd( QDir::currentPath().toUtf8() );
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
-    static bool first = true;
-
     QStringList urls = urlsParam();
     QRect rc = rectParam();
     bool embedded = isEmbeddedParam();
 
-    m_viewer->setEmbedded( embedded );
-    m_viewer->setRectIcon( rc );
-    m_viewer->setUrls( urls );
+    m_viewer->init( urls, embedded, rc );
 
-    if ( m_viewer && !first )
-    {
-        m_viewer->restart();
-    }
-
-    first = false;
     args->clear();
 
     return 0;
@@ -149,5 +122,5 @@ int KLookApp::newInstance()
 bool KLookApp::isLocal() const
 {
     const QString appPath = applicationFilePath();
-    return appPath.startsWith("/usr/bin") || appPath.startsWith("/usr/local/bin");
+    return appPath.startsWith( "/usr/bin" ) || appPath.startsWith( "/usr/local/bin" );
 }

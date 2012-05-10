@@ -60,7 +60,7 @@ bool FileModel::setData( const QModelIndex &index, const QVariant &value, int ro
 
     if ( role == ListItem::FilePathRole )
         m_list[ index.row() ]->setPath( value.toString() );
-    else if ( role == ListItem::MimeTypeRole )
+    else if ( role == ListItem::TypeRole )
         m_list[ index.row() ]->setMimeType( value.toString() );
 
     emit dataChanged( index, index );
@@ -102,15 +102,17 @@ void FileModel::refreshItem(ListItem *item)
         }
 }
 
-void FileModel::append( QVariant path, QVariant type )
+void FileModel::append( QString path, File::FileType type, QString mime )
 {
+    QString t = QString::number(type);
     if ( type == File::Directory )
-    {
-        appendRow( new DirectoryItem( path.toString(), type.toString(), this) );
-    }
+        appendRow( new DirectoryItem( path, t, this) );
+    else if ( type == File::Undefined )
+        appendRow( new UnsupportedItem( path, t, mime, this ) );
     else
-        appendRow( new ListItem( path.toString(), type.toString(), this ) );
+        appendRow( new ListItem( path, t, mime, this ) );
 }
+
 
 void FileModel::scanDirectory(int index)
 {
@@ -129,7 +131,12 @@ QString ListItem::path() const
 
 QString ListItem::type() const
 {
-    return m_mimeType;
+    return m_type;
+}
+
+QString ListItem::mime() const
+{
+    return m_mime;
 }
 
 QVariant ListItem::data( int role )
@@ -138,11 +145,12 @@ QVariant ListItem::data( int role )
     {
     case FilePathRole:
         return path();
-        break;
 
-    case MimeTypeRole:
+    case TypeRole:
         return type();
-        break;
+
+    case MimeRole:
+        return mime();
 
     default:
         break;
@@ -154,10 +162,11 @@ QHash<int, QByteArray> ListItem::roleNames() const
 {
     QHash<int, QByteArray> names;
     names[ FilePathRole ] = "filePath";
-    names[ MimeTypeRole ] = "mimeType";
+    names[ TypeRole ] = "type";
     names[ LastModifiedRole ] = "lastModified";
     names[ ContentSizeRole ] = "contentSize";
     names[ CountRole ] = "countElements";
+    names[ MimeRole ] = "mime";
 
     return names;
 }
@@ -173,34 +182,42 @@ void ListItem::setLoaded( bool b )
     emit imageChanged();
 }
 
-DirectoryItem::DirectoryItem(QString filePath, QString type, QObject *parent)
-    : ListItem(filePath, type, parent),
-      isScanned( false ),
-      dir( filePath ),
-      sizeFinder( new DirectorySizeFinder( filePath ) ),
-      timer( new QTimer( this ) ),
-      size( 0 ),
-      count( 0 )
+DirectoryItem::DirectoryItem( QString filePath, QString type, QObject* parent )
+    : ListItem( filePath, type, "inode/directory", parent )
+    , isScanned( false )
+    , dir( filePath )
+    , sizeFinder( new DirectorySizeFinder( filePath ) )
+    , timer( new QTimer( this ) )
+    , size( 0 )
+    , count( 0 )
 {
+}
+
+DirectoryItem::~DirectoryItem()
+{
+    sizeFinder->exit();
+    sizeFinder->wait( 100 );
+    delete sizeFinder;
 }
 
 QVariant DirectoryItem::data( int role )
 {
-    if(role == LastModifiedRole)
+    switch ( role )
+    {
+    case LastModifiedRole:
     {
         QFileInfo fi( path() );
         return KGlobal::locale()->formatDate( fi.lastModified().date() );
     }
-    else if ( ( role == ContentSizeRole ) ||
-              ( role == CountRole ) )
-    {
-        if ( role == ContentSizeRole )
-            return KGlobal::locale()->formatByteSize( size );
-        else // CountRole
-            return QString::number( count );
+    case ContentSizeRole:
+        return KGlobal::locale()->formatByteSize( size );
+
+    case CountRole:
+        return QString::number( count );
+
+    default:
+        return ListItem::data( role );
     }
-    else
-        return ListItem::data(role);
 }
 
 void DirectoryItem::timeout()
@@ -217,42 +234,63 @@ void DirectoryItem::timeout()
 void DirectoryItem::notifyModel()
 {
     FileModel *model;
-    if((model = dynamic_cast<FileModel *>(parent())))
+    if ( ( model = dynamic_cast<FileModel *>( parent() ) ) )
     {
-        model->refreshItem(this);
+        model->refreshItem( this );
     }
 }
 
 void DirectoryItem::startScan()
 {
     // if it's not first time let's return
-    if(isScanned)        
+    if ( isScanned )
         return;
 
     isScanned = true;
-    sizeFinder->start(QThread::LowPriority);
-    connect(timer, SIGNAL(timeout()), SLOT(timeout()));
-    timer->start(100);
+    sizeFinder->start( QThread::LowPriority );
+    connect( timer, SIGNAL( timeout() ), SLOT( timeout() ) );
+    timer->start( 100 );
 }
-
 
 void DirectorySizeFinder::run()
 {
     QStack<QString> scan;
-    scan.push(path);
-    while(!scan.empty())
+    scan.push( path );
+    while ( !scan.empty() )
     {
         const QString topItem = scan.pop();
-        QDir dir(topItem);
-        QFileInfoList list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs);
+        QDir dir( topItem );
+        QFileInfoList list = dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs );
 
         count += list.size();
-        for(int i = 0; i < list.size(); i++)
-        {            
-            if(list[i].isDir())
-                scan.push(list[i].absoluteFilePath());
+        for ( int i = 0; i < list.size(); i++ )
+        {
+            if ( list[i].isDir() )
+                scan.push( list[i].absoluteFilePath() );
             else
-              m_size += list[i].size();
+                m_size += list[i].size();
         }
     }
+}
+
+
+UnsupportedItem::UnsupportedItem( QString filePath, QString type, QString mime, QObject *parent )
+    : ListItem( filePath, type, mime, parent )
+{
+}
+
+QVariant UnsupportedItem::data(int role)
+{
+    if ( role == LastModifiedRole )
+    {
+        QFileInfo fi( path() );
+        return KGlobal::locale()->formatDate( fi.lastModified().date() );
+    }
+    else if ( role == ContentSizeRole )
+    {
+        QFileInfo fi( path() );
+        return KGlobal::locale()->formatByteSize( fi.size() );
+    }
+
+    return ListItem::data( role );
 }

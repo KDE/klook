@@ -174,7 +174,7 @@ Item {
                 id: audioIcon
                 anchors.left: parent.left
                 clip: true
-                source: "image://mime/" + audio.source
+                source: "images/audio.png"
                 opacity: 0
                 fillMode: Image.PreserveAspectFit
                 asynchronous: true
@@ -309,10 +309,21 @@ Item {
                     {
                         mainWindow.currentFileType = 3;
                         mainWindow.updatePanel()
+                        //Disable scrolling in embedded mode
+                        if (mainWindow.state === 'embedded')
+                            txt.setPreview(true)
                     }
                 }
-            }
+            }                        
         }
+    }
+
+    function getName( path )
+    {
+        if ( path.substr( -1 ) === '/' && path.length !== 1 ) { // remove trailing slash if it's not root
+            path = path.substr( 0, path.length - 1 );
+        }
+        return path.substring( path.lastIndexOf( '/' ) + 1 );
     }
 
     Component {
@@ -337,14 +348,6 @@ Item {
                 Behavior on opacity { NumberAnimation { duration: 500 } }
             }
 
-            function getName( path )
-            {
-                if ( path.substr( -1 ) === '/' && path.length !== 1 ) { // remove trailing slash if it's not root
-                    path = path.substr( 0, path.length - 1 );
-                }
-                return path.substring( path.lastIndexOf( '/' ) + 1 );
-            }
-
             InfoItem {
                 id: name
                 anchors.top: folderIcon.top
@@ -354,7 +357,7 @@ Item {
             }
 
             InfoItem {
-                id: type
+                id: itemType
                 anchors.top: name.bottom
                 anchors.left: folderIcon.right
                 text: folderStr
@@ -362,7 +365,7 @@ Item {
 
             InfoItem {
                 id: modified
-                anchors.top: type.bottom
+                anchors.top: itemType.bottom
                 anchors.left: folderIcon.right
                 text: lastModifiedStr + " " + lastModified
             }
@@ -396,33 +399,97 @@ Item {
                 }
             }
         }
+    }
 
+    Component {
+        id: mimeDelegate
+
+        Item {
+            Image {
+                id: mimeIcon
+                source: "image://mime/" + filePath
+                clip: true
+                anchors.left: parent.left
+                anchors.leftMargin: 20
+                fillMode: Image.PreserveAspectFit
+                asynchronous: true
+                smooth: true;
+                visible: albumWrapper.state === "fullscreen"
+                height: getHeight( parent.height, 500 )
+                y: ( parent.height - panel.height - height ) / 2
+
+                Behavior on opacity { NumberAnimation { duration: 500 } }
+            }
+
+            InfoItem {
+                id: name
+                anchors.top: mimeIcon.top
+                anchors.left: mimeIcon.right
+                text: "<b>" + getName( filePath ) +"</b>"
+                font.pointSize: 15
+            }
+
+            InfoItem {
+                id: itemType
+                anchors.top: name.bottom
+                anchors.left: mimeIcon.right
+                text: mime
+            }
+
+            InfoItem {
+                id: modified
+                anchors.top: itemType.bottom
+                anchors.left: mimeIcon.right
+                text: lastModifiedStr + " " + lastModified
+            }
+
+            InfoItem {
+                id: size
+                anchors.top: modified.bottom
+                anchors.left: mimeIcon.right
+                text: sizeStr + " " + contentSize
+            }
+
+            Connections{
+                target: photosListView;
+                onCurrentIndexChanged: {
+                    if ( listItem.ListView.isCurrentItem )
+                    {
+                        mainWindow.currentFileType = 0;
+                        mimeIcon.opacity = 1
+                        mainWindow.updatePanel()
+                    } else
+                    {
+                        mimeIcon.opacity = 0
+                    }
+                }
+            }
+        }
     }
 
     // function for getting delegate of loader element
     function bestDelegate( t ) {
-
         if ( t == 1 )
             return imgDelegate;
         else if ( t == 2 )
             return videoDelegate;
         else if ( t == 3 )
             return txtDelegate;
-        else if (t == 4) {
-            fileModel.scanDirectory(index)
+        else if ( t == 4 ) {
+            fileModel.scanDirectory( index )
             return folderDelegate;
         }
         else if ( t == 5 )
             return audioDelegate;
         else
-            return txtDelegate;
+            return mimeDelegate;
     }
 
     Loader
     {
         id: componentLoader
         anchors.fill: parent;
-        sourceComponent: bestDelegate( mimeType )
+        sourceComponent: bestDelegate( type )
     }
 }
 

@@ -23,7 +23,10 @@
 
 #include <QPlainTextEdit>
 #include <QFile>
+#include <QTextCodec>
+#include <QDebug>
 
+#include <kencodingprober.h>
 
 MyText::MyText( QGraphicsItem* parent )
     : QGraphicsProxyWidget( parent )
@@ -57,7 +60,20 @@ void MyText::setSource( const QString& source )
     if ( !f.open( QIODevice::ReadOnly | QIODevice::Text) )
         return;
 
-    QString str = QString::fromUtf8( f.readAll().data() );
+    QByteArray data = f.readAll().data();
+
+    KEncodingProber prober(KEncodingProber::Universal);
+    prober.feed(data);
+    
+    QString str;
+
+    qDebug() << "confidence" << prober.confidence();
+
+    if (prober.confidence() > 0.7)
+        str = QTextCodec::codecForName(prober.encoding())->toUnicode(data);
+    else
+        str = QString::fromUtf8( data );
+
     m_viewer->setPlainText( str );
 
     emit sourceChanged();

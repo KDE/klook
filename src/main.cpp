@@ -58,6 +58,8 @@ int main(int argc, char *argv[])
                      ki18n( "Developer" ),
                      "sergey.borovkov@osinit.ru" );
 
+    about.setProgramIconName( "klook" );
+
     KCmdLineArgs::init( argc, argv, &about );
 
     KCmdLineOptions options;

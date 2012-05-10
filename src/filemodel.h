@@ -29,6 +29,8 @@
 #include <QDateTime>
 #include <QThread>
 
+#include <QDebug>
+#include "file.h"
 class ListItem;
 class DirectoryItem;
 
@@ -52,7 +54,7 @@ public:
     void refreshItem(ListItem *item);
 
 public slots:
-    void append(QVariant path, QVariant type);
+    void append(QString path, File::FileType type, QString mime);
     void scanDirectory(int index);
 
 private:
@@ -68,14 +70,15 @@ public:
     enum
     {
         FilePathRole = Qt::UserRole + 1,
-        MimeTypeRole,
+        TypeRole,
         LastModifiedRole,
-        ContentSizeRole,// size for folders
-        CountRole       // object count for folders
+        ContentSizeRole,
+        CountRole,       // object count for folders
+        MimeRole
     };
 
-    ListItem(QString filePath, QString fileType, QObject* parent = 0)
-        : QObject( parent ), m_path( filePath ), m_mimeType( fileType ) {}
+    ListItem(QString filePath, QString fileType, QString mime, QObject* parent = 0)
+        : QObject( parent ), m_path( filePath ), m_type( fileType ), m_mime(mime) {}
     ListItem(QObject *parent = 0)
         : QObject(parent) {}
     virtual ~ListItem() {}
@@ -87,9 +90,10 @@ public slots:
     virtual QVariant data( int role );
     virtual QString path() const;
     virtual QString type() const;
+    virtual QString mime() const;
 
     void setPath(QString path) { m_path = path; }
-    void setMimeType(QString type) { m_mimeType = type; }
+    void setMimeType(QString type) { m_type = type; }
 
 signals:
     void dataChanged();
@@ -97,8 +101,9 @@ signals:
 
 private:
     QString m_path;
-    QString m_mimeType;
+    QString m_type;
     bool m_isLoaded;
+    QString m_mime;
 };
 
 class DirectorySizeFinder : public QThread
@@ -124,6 +129,7 @@ class DirectoryItem : public ListItem
     Q_OBJECT
 public:
     DirectoryItem( QString filePath, QString type, QObject* parent = 0 );
+    ~DirectoryItem();
     QVariant data( int role );
     void startScan();
 private slots:
@@ -133,7 +139,6 @@ private:
     QString formatSize(qint64 size);
     void notifyModel();
 
-
     bool isScanned;
     QDir dir;
     DirectorySizeFinder *sizeFinder;
@@ -142,5 +147,12 @@ private:
     int count;
 };
 
+class UnsupportedItem : public ListItem
+{
+    Q_OBJECT
+public:
+    UnsupportedItem(QString filePath, QString type, QString mime, QObject* parent = 0);
+    QVariant data( int role );
+};
 
 #endif // FILEMODEL_H

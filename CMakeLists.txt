@@ -1,6 +1,5 @@
 project( klook )
-
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required( VERSION 2.8 )
 
 find_package( KDE4 REQUIRED )
 include( KDE4Defaults )
@@ -11,9 +10,10 @@ qt4_automoc( ${qtproject_SRCS} )
 add_definitions( ${QT_DEFINITIONS} -DQT_NO_DEBUG_OUTPUT )
 
 include_directories( ${KDE4_INCLUDES} ${QT_QDECLARATIVE_INCLUDE_DIR} )
+add_subdirectory( icons )
 
-set (RESOURCES src/resources.qrc)
-QT4_ADD_RESOURCES(QRC_SOURCES ${RESOURCES})
+set( RESOURCES src/resources.qrc )
+QT4_ADD_RESOURCES( QRC_SOURCES ${RESOURCES} )
 
 file( GLOB qml_files "${CMAKE_CURRENT_SOURCE_DIR}/src/qml/*.qml" )
 
@@ -31,7 +31,10 @@ set( klook_SRCS src/main.cpp
                                 src/mimeprovider.cpp
                                 ${qml_files} )
 
-kde4_add_executable( klook ${klook_SRCS} ${QRC_SOURCES})
+#set( KDE4_ICON_DIR  ${CMAKE_INSTALL_PREFIX}/share/icons )
+
+kde4_add_app_icon( klook_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/icons/hi*-apps-klook.png" )
+kde4_add_executable( klook ${klook_SRCS} ${QRC_SOURCES} )
 
 target_link_libraries( klook ${KDE4_KIO_LIBS}
 							${KDE4_PHONON_LIBS}
@@ -49,6 +52,7 @@ install( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/qml/images/
 		 DESTINATION share/${PROJECT_NAME}/images )
 
 #Translations
-find_package(Msgfmt REQUIRED)
-find_package(Gettext REQUIRED)
-add_subdirectory(locale)
+find_package( Msgfmt REQUIRED )
+find_package( Gettext REQUIRED )
+add_subdirectory( locale )
+

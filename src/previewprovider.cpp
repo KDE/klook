@@ -31,7 +31,10 @@ PreviewProvider::PreviewProvider()
 QPixmap PreviewProvider::requestPixmap( const QString& id, QSize* size, const QSize &requestedSize )
 {
     QString str = id.left( id.lastIndexOf( '%' ) );
-    QPixmap pixmap = previewGenerator->getPreviewPixmap( str );
+
+    QFileInfo fi(str);
+    QPixmap pixmap = previewGenerator->getPreviewPixmap( fi.absoluteFilePath() );
+
 
     if ( requestedSize.isValid() )
         pixmap = pixmap.scaled( requestedSize, Qt::KeepAspectRatio );

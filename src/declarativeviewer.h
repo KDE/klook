@@ -74,7 +74,7 @@ public:
     void init( const QStringList& urls, bool embedded = false, const QRect& rc = QRect( 0, 0, 0, 0 ) );
 
 signals:
-    void fileData( QVariant, QVariant );
+    void newItem(QString name, File::FileType type, QString mime);
     void sizeChanged();
     void setFullScreenState();
     void setEmbeddedState();
@@ -89,7 +89,6 @@ public slots:
     void onSetGallery( bool );
 
     void onMetaDataChanged();
-    void restart();
 
     void setEmbedded( bool );
     void setRectIcon( const QRect& );

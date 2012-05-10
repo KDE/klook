@@ -103,11 +103,13 @@ void PreviewGenerator::setFiles( const QStringList &list )
 {
     stop();
     m_fileList.clear();
+
     for ( int i = 0; i < list.size(); i++ )
     {
-        KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, list[ i ], false );
+        QFileInfo fi( list[i]  );
+        KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, list[i], false );
         m_fileList.append( fileItem );
-    }    
+    }
 }
 
 void PreviewGenerator::setModel( FileModel* model )
