@@ -76,12 +76,21 @@ Klook is a quick preview feature based on Qt and Qt Quick, allows users to look 
 %{_prefix}/share/klook/images/arrow/arrow-bottom.png
 %{_prefix}/share/klook/images/arrow/arrow-right.png
 %{_prefix}/share/klook/images/arrow/arrow-left.png
-/usr/bin/klook
-/usr/share/locale
+%{_prefix}/share/icons/hicolor/128x128/apps/klook.png
+%{_prefix}/share/icons/hicolor/16x16/apps/klook.png
+%{_prefix}/share/icons/hicolor/22x22/apps/klook.png
+%{_prefix}/share/icons/hicolor/24x24/apps/klook.png
+%{_prefix}/share/icons/hicolor/32x32/apps/klook.png
+%{_prefix}/share/icons/hicolor/48x48/apps/klook.png
+%{_prefix}/share/icons/hicolor/64x64/apps/klook.png
+%{_prefix}/share/icons/hicolor/72x72/apps/klook.png
+%{_prefix}/share/klook/images/audio.png
+%{_prefix}/bin/klook
+%{_prefix}/share/locale
 
 %changelog
 * Thu Mar 29 2012 Sergey Borovkov <sergey.borovkov@osinit.ru>
-- Move qml files and icons to /usr/share
+- Move qml files and icons to %{_prefix}/share
 
 * Tue Feb 21 2012 abf
 - The release updated by ABF
