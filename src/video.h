@@ -28,7 +28,7 @@
 
 class QHBoxLayout;
 
-class MyVideo : public QGraphicsProxyWidget
+class Video : public QGraphicsProxyWidget
 {
     Q_OBJECT
     Q_PROPERTY( QString source READ source WRITE setSource NOTIFY sourceChanged )
@@ -43,8 +43,8 @@ class MyVideo : public QGraphicsProxyWidget
     Q_PROPERTY( bool ready READ isReady WRITE setReady NOTIFY ready )
 
 public:
-    MyVideo( QGraphicsItem* parent = 0 );
-    ~MyVideo();
+    Video( QGraphicsItem* parent = 0 );
+    ~Video();
 
 public slots:
     QString source() const;

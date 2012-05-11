@@ -27,7 +27,7 @@
 #include <KDE/Phonon/VideoWidget>
 #include <KDE/Phonon/AudioOutput>
 
-MyAudio::MyAudio( QDeclarativeItem* parent )
+Audio::Audio( QDeclarativeItem* parent )
     : QDeclarativeItem( parent )
     , m_isPreview( false )
     , m_isReady( false )
@@ -42,12 +42,12 @@ MyAudio::MyAudio( QDeclarativeItem* parent )
                       SLOT( stateChanged( Phonon::State, Phonon::State ) ) );
 }
 
-MyAudio::~MyAudio()
+Audio::~Audio()
 {
     delete m_mediaObject;
 }
 
-void MyAudio::setPause()
+void Audio::setPause()
 {
     if ( !isVisible() )
         pause();
@@ -55,29 +55,29 @@ void MyAudio::setPause()
         play();
 }
 
-bool MyAudio::isReady()
+bool Audio::isReady()
 {
     return m_isReady;
 }
 
-void MyAudio::setReady( bool b )
+void Audio::setReady( bool b )
 {
     m_isReady = b;
     emit ready();
 }
 
-void MyAudio::onFinished()
+void Audio::onFinished()
 {
     emit playFinished();
     setPosition( 0 );
 }
 
-QString MyAudio::source() const
+QString Audio::source() const
 {
     return m_mediaObject->currentSource().url().toString();
 }
 
-void MyAudio::setSource( const QString& source )
+void Audio::setSource( const QString& source )
 {
     QUrl url( source );
 
@@ -85,61 +85,61 @@ void MyAudio::setSource( const QString& source )
     emit sourceChanged();
 }
 
-qlonglong MyAudio::position() const
+qlonglong Audio::position() const
 {
     return m_mediaObject->currentTime();
 }
 
-void MyAudio::setPosition( qlonglong pos )
+void Audio::setPosition( qlonglong pos )
 {
     m_mediaObject->seek( pos );
     emit positionChanged();
 }
 
-qlonglong MyAudio::totalTime() const
+qlonglong Audio::totalTime() const
 {
     return m_mediaObject->totalTime();
 }
 
-QTime MyAudio::duration()
+QTime Audio::duration()
 {
     QTime t;
     t = t.addMSecs( m_mediaObject->totalTime() );
     return t;
 }
 
-void MyAudio::onTotalTimeChanged( qint64 t )
+void Audio::onTotalTimeChanged( qint64 t )
 {
     Q_UNUSED( t )
     emit totalTimeChanged();
 }
 
-void MyAudio::onTicked( qint64 t )
+void Audio::onTicked( qint64 t )
 {
     emit ticked( QVariant( t ) );
 }
 
-bool MyAudio::playing() const
+bool Audio::playing() const
 {
     return ( m_mediaObject->state() == Phonon::PlayingState );
 }
 
-bool MyAudio::paused() const
+bool Audio::paused() const
 {
     return ( m_mediaObject->state() == Phonon::PausedState );
 }
 
-void MyAudio::play()
+void Audio::play()
 {
     m_mediaObject->play();
 }
 
-void MyAudio::pause()
+void Audio::pause()
 {
     m_mediaObject->pause();
 }
 
-void MyAudio::play_or_pause()
+void Audio::play_or_pause()
 {
     if ( playing() )
         pause();
@@ -147,17 +147,17 @@ void MyAudio::play_or_pause()
         play();
 }
 
-bool MyAudio::isPreview() const
+bool Audio::isPreview() const
 {
     return m_isPreview;
 }
 
-void MyAudio::setPreview( bool preview )
+void Audio::setPreview( bool preview )
 {
     m_isPreview = preview;
 }
 
-void MyAudio::stateChanged( Phonon::State newState, Phonon::State oldState )
+void Audio::stateChanged( Phonon::State newState, Phonon::State oldState )
 {
     Q_UNUSED( newState )
     if ( oldState == Phonon::LoadingState )
@@ -166,7 +166,7 @@ void MyAudio::stateChanged( Phonon::State newState, Phonon::State oldState )
     }
 }
 
-QString MyAudio::artist()
+QString Audio::artist()
 {
     QString artists;
     QStringList listArtists = m_mediaObject->metaData( "ARTIST" );
@@ -176,7 +176,7 @@ QString MyAudio::artist()
     return artists;
 }
 
-QString MyAudio::album()
+QString Audio::album()
 {
     QString albums;
     QStringList listAlbums = m_mediaObject->metaData( "ALBUM" );
@@ -186,7 +186,7 @@ QString MyAudio::album()
     return albums;
 }
 
-QString MyAudio::title()
+QString Audio::title()
 {
     QString titles;
     QStringList listTitles = m_mediaObject->metaData( "TITLE" );
@@ -202,7 +202,7 @@ QString MyAudio::title()
     return titles;
 }
 
-QString MyAudio::composer()
+QString Audio::composer()
 {
     QString composers;
     QStringList listcomposers = m_mediaObject->metaData( "COMPOSER" );
@@ -212,7 +212,7 @@ QString MyAudio::composer()
     return composers.toUtf8();
 }
 
-QString MyAudio::genre()
+QString Audio::genre()
 {
     QString genres;
     QStringList listgenres = m_mediaObject->metaData( "GENRE" );

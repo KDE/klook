@@ -156,8 +156,8 @@ bool DeclarativeViewer::checkComposite()
 
 void DeclarativeViewer::setRegisterTypes()
 {
-    qmlRegisterType<MyVideo>( "Widgets", 1, 0, "Video" );
-    qmlRegisterType<MyAudio>( "Widgets", 1, 0, "Audio" );
+    qmlRegisterType<Video>( "Widgets", 1, 0, "Video" );
+    qmlRegisterType<Audio>( "Widgets", 1, 0, "Audio" );
     qmlRegisterType<MyText>( "Widgets", 1, 0, "PlainText" );
 
     QDesktopWidget dw;

@@ -28,9 +28,9 @@
 #include <KDE/Phonon/VideoWidget>
 #include <KDE/Phonon/AudioOutput>
 
-Phonon::VideoPlayer* MyVideo::m_player = 0;
+Phonon::VideoPlayer* Video::m_player = 0;
 
-MyVideo::MyVideo( QGraphicsItem* parent )
+Video::Video( QGraphicsItem* parent )
     : QGraphicsProxyWidget( parent )
     , m_layout( 0 )
     , m_videoWidth( 640 )
@@ -60,7 +60,7 @@ MyVideo::MyVideo( QGraphicsItem* parent )
                       SLOT( stateChanged( Phonon::State,Phonon::State ) ) );
 }
 
-MyVideo::~MyVideo()
+Video::~Video()
 {
     QObjectList list = m_wid->children();
 
@@ -71,12 +71,12 @@ MyVideo::~MyVideo()
     }
 }
 
-void MyVideo::setPlayerParent()
+void Video::setPlayerParent()
 {
     m_layout->addWidget( m_player );
 }
 
-void MyVideo::setPause()
+void Video::setPause()
 {
     if ( !isVisible() )
         pause();
@@ -84,40 +84,40 @@ void MyVideo::setPause()
         play();
 }
 
-bool MyVideo::isReady()
+bool Video::isReady()
 {
     return m_isReady;
 }
 
-void MyVideo::setReady( bool b )
+void Video::setReady( bool b )
 {
     m_isReady = b;
     emit ready();
 }
 
-void MyVideo::onFinished()
+void Video::onFinished()
 {
     emit playFinished();
     setPosition( 0 );
 }
 
-bool MyVideo::muted() const
+bool Video::muted() const
 {
     return m_player->audioOutput()->isMuted();
 }
 
-void MyVideo::setMuted( bool m )
+void Video::setMuted( bool m )
 {
     // !!!! Doesnt't work in phonon !!!!!
     m_player->audioOutput()->setMuted( m );
 }
 
-QString MyVideo::source() const
+QString Video::source() const
 {
     return m_player->mediaObject()->currentSource().url().toString();
 }
 
-void MyVideo::setSource( const QString& source )
+void Video::setSource( const QString& source )
 {
     QUrl url( source );
 
@@ -125,7 +125,7 @@ void MyVideo::setSource( const QString& source )
     emit sourceChanged();
 }
 
-void MyVideo::onMetaDataChanged()
+void Video::onMetaDataChanged()
 {
     m_videoWidth = m_player->videoWidget()->sizeHint().width();
     m_videoHeight = m_player->videoWidget()->sizeHint().height();
@@ -133,54 +133,54 @@ void MyVideo::onMetaDataChanged()
     QObject::disconnect( m_player->mediaObject(), SIGNAL( metaDataChanged() ), this, SLOT( onMetaDataChanged() ) );
 }
 
-qlonglong MyVideo::position() const
+qlonglong Video::position() const
 {
     return m_player->mediaObject()->currentTime();
 }
 
-void MyVideo::setPosition( qlonglong pos )
+void Video::setPosition( qlonglong pos )
 {
     m_player->mediaObject()->seek( pos );
     emit positionChanged();
 }
 
-qlonglong MyVideo::totalTime() const
+qlonglong Video::totalTime() const
 {
     return m_player->mediaObject()->totalTime();
 }
 
-void MyVideo::onTotalTimeChanged( qint64 t )
+void Video::onTotalTimeChanged( qint64 t )
 {
     Q_UNUSED( t )
     emit totalTimeChanged();
 }
 
-void MyVideo::onTicked( qint64 t )
+void Video::onTicked( qint64 t )
 {
     emit ticked( QVariant( t ) );
 }
 
-bool MyVideo::playing() const
+bool Video::playing() const
 {
     return m_player->isPlaying();
 }
 
-bool MyVideo::paused() const
+bool Video::paused() const
 {
     return m_player->isPaused();
 }
 
-void MyVideo::play()
+void Video::play()
 {
     m_player->play();
 }
 
-void MyVideo::pause()
+void Video::pause()
 {
     m_player->pause();
 }
 
-void MyVideo::play_or_pause()
+void Video::play_or_pause()
 {
     if ( m_player->isPlaying() )
         m_player->pause();
@@ -188,7 +188,7 @@ void MyVideo::play_or_pause()
         m_player->play();
 }
 
-void MyVideo::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
+void Video::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget )
 {
     // It is workaround of bug that makes video colors output invereted
     // When using Phonon with the GStreamer backed on linux inside QGraphicsView, the colors are wrong, it is like being in BGR instead of RGB.
@@ -206,17 +206,17 @@ void MyVideo::paint( QPainter* painter, const QStyleOptionGraphicsItem* option, 
     delete painter_inverted;
 }
 
-bool MyVideo::isPreview() const
+bool Video::isPreview() const
 {
     return m_isPreview;
 }
 
-void MyVideo::setPreview( bool preview )
+void Video::setPreview( bool preview )
 {
     m_isPreview = preview;
 }
 
-void MyVideo::stateChanged( Phonon::State newState, Phonon::State oldState )
+void Video::stateChanged( Phonon::State newState, Phonon::State oldState )
 {
     Q_UNUSED( newState )
     if ( oldState == Phonon::LoadingState )

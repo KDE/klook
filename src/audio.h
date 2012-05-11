@@ -31,7 +31,7 @@
 
 class QHBoxLayout;
 
-class MyAudio : public QDeclarativeItem
+class Audio : public QDeclarativeItem
 {
     Q_OBJECT
     Q_PROPERTY( QString source READ source WRITE setSource NOTIFY sourceChanged )
@@ -50,8 +50,8 @@ class MyAudio : public QDeclarativeItem
     Q_PROPERTY( QString genre READ genre  NOTIFY genreChanged )
 
 public:
-    MyAudio( QDeclarativeItem* parent = 0 );
-    ~MyAudio();
+    Audio( QDeclarativeItem* parent = 0 );
+    ~Audio();
 
 public slots:
     QString source() const;
