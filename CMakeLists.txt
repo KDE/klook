@@ -1,5 +1,8 @@
 project( klook )
 cmake_minimum_required( VERSION 2.8 )
+if(COMMAND cmake_policy)
+  cmake_policy(SET CMP0017 NEW)
+endif(COMMAND cmake_policy)
 
 find_package( KDE4 REQUIRED )
 include( KDE4Defaults )
@@ -41,7 +44,8 @@ target_link_libraries( klook ${KDE4_KIO_LIBS}
  							${KDE4_PLASMA_LIBS}
 							${KDE4_KFILE_LIBS}
 							${QT_LIBRARIES}
-							${QT_QDECLARATIVE_LIBRARIES} )
+							${QT_QDECLARATIVE_LIBRARIES} 
+							${X11_LIBRARIES} )
 
 
 install( TARGETS klook ${INSTALL_TARGETS_DEFAULT_ARGS} )
