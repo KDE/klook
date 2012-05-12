@@ -466,8 +466,6 @@ Item {
         }
     }
 
-
-
     Component {
         id: okularDelegate
 
