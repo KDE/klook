@@ -314,7 +314,7 @@ Item {
                             txt.setPreview(true)
                     }
                 }
-            }                        
+            }
         }
     }
 
@@ -403,7 +403,6 @@ Item {
 
     Component {
         id: mimeDelegate
-
         Item {
             Image {
                 id: mimeIcon
@@ -467,6 +466,20 @@ Item {
         }
     }
 
+
+
+    Component {
+        id: okularDelegate
+
+        Item {
+            KPart {
+                url: filePath
+                width: parent.width
+                height: parent.height
+            }
+        }
+    }
+
     // function for getting delegate of loader element
     function bestDelegate( t ) {
         if ( t == 1 )
@@ -481,7 +494,9 @@ Item {
         }
         else if ( t == 5 )
             return audioDelegate;
-        else
+        else if ( t == 6)
+            return okularDelegate;
+        else if(t == 0)
             return mimeDelegate;
     }
 

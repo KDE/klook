@@ -27,6 +27,7 @@
 class File : public QObject
 {
     Q_OBJECT
+    Q_ENUMS(FileType)
     Q_PROPERTY( QString name READ name WRITE setName )
     Q_PROPERTY( FileType type READ type WRITE setType )
 
@@ -38,10 +39,11 @@ public:
         Video,
         Txt,
         Directory,
-        Audio
+        Audio,
+        OkularFile
     };
 
-    File( QObject* parent = 0 );
+    File( QObject* parent );
     File( const QString& name = "", FileType type = Undefined, const QString& mime = "", QObject* parent = 0 );
 
     QString name() const;

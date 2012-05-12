@@ -34,6 +34,7 @@
 #include "mimeprovider.h"
 #include "filemodel.h"
 #include "workerthread.h"
+#include "kpartsdeclarativeitem.h"
 
 #include "plasma/windoweffects.h"
 
@@ -159,6 +160,9 @@ void DeclarativeViewer::setRegisterTypes()
     qmlRegisterType<Video>( "Widgets", 1, 0, "Video" );
     qmlRegisterType<Audio>( "Widgets", 1, 0, "Audio" );
     qmlRegisterType<MyText>( "Widgets", 1, 0, "PlainText" );
+    qmlRegisterType<KPartsDeclarativeItem>("Widgets", 1, 0, "KPart");
+
+    qmlRegisterType<File>("Widgets", 1, 0, "File"); // to use File::FileType enum
 
     QDesktopWidget dw;
     QRect r = dw.screenGeometry( this );
@@ -191,7 +195,6 @@ void DeclarativeViewer::setRegisterTypes()
 void DeclarativeViewer::startWorkingThread()
 {
     delete m_thread;
-
 
     // leave only unique entries
     QList<QString> results;
@@ -874,8 +877,6 @@ void DeclarativeViewer::newFileProcessed( const File *file )
         changeContent();
         setActualSize();
 
-        //show();
-        //activateWindow();
 
         rootContext()->setContextProperty( "viewMode", ( ( m_urls.count() == 1 ) ? "single" : "multi" ) );
         emit setStartWindow();

@@ -80,6 +80,9 @@ QString WorkerThread::getMime( const QString& st ) const
 
 File::FileType WorkerThread::getType( const QString& mime, const QString& path ) const
 {
+    // this method is a complete mess right now
+    // information about supported types should not be hardcoded
+
     int delimiter = mime.indexOf( '/' );
 
     File::FileType type = File::Undefined;
@@ -144,6 +147,13 @@ File::FileType WorkerThread::getType( const QString& mime, const QString& path )
         {
             type = File::Directory;
         }
+    }
+
+    if(mime == "application/pdf" || mime == "application/vnd.oasis.opendocument.text" ||
+            mime == "application/x-vnd.oasis.opendocument.text" || mime == "image/x-djvu" ||
+            mime == "application/x-chm" || mime == "application/x-fictionbook+xml")
+    {
+        type = File::OkularFile;
     }
 
     if ( type == File::Undefined )
