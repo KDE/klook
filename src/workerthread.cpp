@@ -171,6 +171,5 @@ File::FileType WorkerThread::getType( const QString& mime, const QString& path )
                 type = File::Audio;
         }
     }
-
     return type;
 }
