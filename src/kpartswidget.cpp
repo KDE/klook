@@ -3,9 +3,14 @@
 #include <kservice.h>
 #include <ktoolbar.h>
 
+#include <QKeyEvent>
+#include <QDebug>
+#include <QApplication>
+
 KPartsWidget::KPartsWidget(QWidget *parent)
-    : KParts::MainWindow(parent, KDE_DEFAULT_WINDOWFLAGS)
+    //: KParts::MainWindow(parent, KDE_DEFAULT_WINDOWFLAGS)
 {
+    setAttribute(Qt::WA_DeleteOnClose);
     KService::Ptr service = KService::serviceByDesktopPath("okular_part.desktop");
 
     if( service )
@@ -31,7 +36,12 @@ KPartsWidget::~KPartsWidget()
 void KPartsWidget::setUrl(const QString &url)
 {
     m_part->openUrl(url);
-    show();
+}
+
+void KPartsWidget::keyPressEvent(QKeyEvent *event)
+{
+    qDebug() << event->key();
+    event->ignore();
 }
 
 QStringList KPartsWidget::supportedMimeTypes() const

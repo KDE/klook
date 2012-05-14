@@ -10,8 +10,10 @@ public:
     KPartsWidget(QWidget *parent = 0);
     ~KPartsWidget();
 
-    QString url() const { return m_part->url().url(); }
+    QString url() const { return "";m_part->url().url(); }
     void setUrl(const QString &url);
+
+    void keyPressEvent(QKeyEvent *);
 
     QStringList supportedMimeTypes() const;
 

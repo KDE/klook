@@ -3,7 +3,7 @@
 
 #include <QGraphicsProxyWidget>
 
-class KPartsWidget;
+#include "kpartswidget.h"
 
 class KPartsDeclarativeItem : public QGraphicsProxyWidget
 {
@@ -21,8 +21,9 @@ signals:
 public slots:
     QString url() const;
     void setUrl(QString url);
+
 private:
-    KPartsWidget *m_partWidget;
+    QPointer<KPartsWidget> m_partWidget;
 };
 
 #endif // KPARTSDECLARATIVEITEM_H

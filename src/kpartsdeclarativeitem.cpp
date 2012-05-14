@@ -1,11 +1,11 @@
 #include "kpartsdeclarativeitem.h"
-#include "kpartswidget.h"
 
-#include <QVBoxLayout>
+#include <QDebug>
 
 KPartsDeclarativeItem::KPartsDeclarativeItem(QGraphicsItem * parent, Qt::WindowFlags wFlags   ) :
     QGraphicsProxyWidget(parent, wFlags)
 {
+    setFlag(QGraphicsItem::ItemIsFocusable);
     m_partWidget = new KPartsWidget;
     m_partWidget->setSizePolicy ( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
@@ -14,8 +14,12 @@ KPartsDeclarativeItem::KPartsDeclarativeItem(QGraphicsItem * parent, Qt::WindowF
 
 KPartsDeclarativeItem::~KPartsDeclarativeItem()
 {
-    delete m_partWidget;
-}
+    // set widget to null
+    // for some reason when m_partWidgets is deleted segfault occurs
+    // need to fix it later - it's memory leak
+
+    setWidget(NULL);
+ }
 
 QString KPartsDeclarativeItem::url() const
 {

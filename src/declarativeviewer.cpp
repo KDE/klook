@@ -141,7 +141,7 @@ void DeclarativeViewer::init( const QStringList& urls, bool embedded, const QRec
 }
 
 //Check whether the KDE effects are included
-bool DeclarativeViewer::checkComposite()
+bool DeclarativeViewer:: checkComposite()
 {
     QDBusInterface remoteApp( "org.kde.kwin", "/KWin", "org.kde.KWin" );
     QDBusReply<bool> reply = remoteApp.call( "compositingActive" );
@@ -423,6 +423,27 @@ void DeclarativeViewer::updateSize( const File* file )
         QSize sz = getTextWindowSize( file->name() );
         showWidget( sz );
     }
+    else if( file->type() == File::OkularFile)
+    {
+        QDesktopWidget dw;
+        int width, height;
+
+        if(dw.height() < dw.width())
+        {
+            height = dw.height() * 0.8;
+            width = ( height / 1.4142 + 40 ) * 1.4142;
+        }
+        else
+        {
+            width = dw.width() * 0.8;
+            height = width * 1.4142;
+
+            width += 40; // caption
+        }
+
+        QSize sz( width, height );
+        showWidget( sz );
+    }
 }
 
 void DeclarativeViewer::centerWidget( const QSize& sz )
@@ -432,7 +453,7 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
     QSize sz1 = sz;
 
     if ( m_isEmbedded )
-    {        
+    {
         int iconOffset = 5;
         int desktopMargin = 70;
 
@@ -471,7 +492,7 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
             m_rcArrow.setWidth(arrowIconWidth);
             m_rcArrow.setHeight(arrowIconHeight);
             m_posArrow = BOTTOM;
-            setGeometry(rect);            
+            setGeometry(rect);
         }
         else if ( leftArea > rightArea )
         {
@@ -489,7 +510,7 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
             m_rcArrow.setWidth(arrowIconHeight);
             m_rcArrow.setHeight(arrowIconWidth );
             m_posArrow = RIGHT;
-            setGeometry(rect);            
+            setGeometry(rect);
         }
         else
         {
@@ -507,16 +528,16 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
             m_rcArrow.setWidth(arrowIconHeight);
             m_rcArrow.setHeight(arrowIconWidth );
             m_posArrow = LEFT;
-            setGeometry(rect);            
+            setGeometry(rect);
         }
         rootContext()->setContextProperty( "arrowX", m_rcArrow.x());
         rootContext()->setContextProperty( "arrowY", m_rcArrow.y());
         emit setEmbeddedState();
     }
     else
-    {        
+    {
         int w = sz.width();
-        int h = sz.height();        
+        int h = sz.height();
         QRect rect( ( rectDesktop.width() - w ) / 2,
                     ( rectDesktop.height() - h ) / 2,
                     w , h  );
@@ -893,6 +914,7 @@ void DeclarativeViewer::newFileProcessed( const File *file )
 
 void DeclarativeViewer::showNoFilesNotification()
 {
+    qDebug() << "No files!";
     close();
 }
 
@@ -954,7 +976,7 @@ void DeclarativeViewer::focusChanged( QWidget*, QWidget* now )
 void DeclarativeViewer::setEmbedded( bool state )
 {
     if ( state )
-    {        
+    {
         setWindowFlags( windowFlags() | Qt::ToolTip);
         setMinimumSize( 50, 50 );
     }
