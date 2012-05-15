@@ -638,8 +638,9 @@ Rectangle {
             PropertyChanges {
                 target: panel;
                 state: updatePanelState()
-                y: albumWrapper.height - panel.height - 19
+                y: albumWrapper.height - panel.height - 32
             }
+
             PropertyChanges { target: row; visible: false }
             ParentChange { target: drawer; parent: mainWindow }
             PropertyChanges {
@@ -655,6 +656,8 @@ Rectangle {
                 color: "#3feaeaea"
                 visible: false
             }
+
+
         },
         State {
             name: "embedded"
