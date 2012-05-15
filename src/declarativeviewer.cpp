@@ -898,7 +898,6 @@ void DeclarativeViewer::newFileProcessed( const File *file )
         changeContent();
         setActualSize();
 
-
         rootContext()->setContextProperty( "viewMode", ( ( m_urls.count() == 1 ) ? "single" : "multi" ) );
         emit setStartWindow();
 
