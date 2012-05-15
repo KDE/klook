@@ -1,25 +1,31 @@
 #include "kpartsdeclarativeitem.h"
 
-#include <QDebug>
+#include <QVBoxLayout>
 
-KPartsDeclarativeItem::KPartsDeclarativeItem(QGraphicsItem * parent, Qt::WindowFlags wFlags   ) :
+KPartsDeclarativeItem::KPartsDeclarativeItem(QGraphicsItem * parent, Qt::WindowFlags wFlags) :
     QGraphicsProxyWidget(parent, wFlags)
-{
-    setFlag(QGraphicsItem::ItemIsFocusable);
-    m_partWidget = new KPartsWidget;
-    m_partWidget->setSizePolicy ( QSizePolicy::Expanding, QSizePolicy::Expanding );
+{    
+    setWidget(NULL);
 
-    setWidget(m_partWidget);
+    m_dummy = new QWidget;
+    m_partWidget = KPartsWidget::instance();
+
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->setMargin( 0 );
+    m_dummy->setLayout(layout);
+
+    setWidget(m_dummy);
 }
 
 KPartsDeclarativeItem::~KPartsDeclarativeItem()
 {
-    // set widget to null
-    // for some reason when m_partWidgets is deleted segfault occurs
-    // need to fix it later - it's memory leak
+    // for some reason when I try to delete KPartsWidget it just crashes
+    // so delete only part and reuse widget object
+    QObjectList list = m_dummy->children();
+    if(list.size() > 1)
+        m_partWidget->setParent(0);
+}
 
-    setWidget(NULL);
- }
 
 QString KPartsDeclarativeItem::url() const
 {
@@ -30,4 +36,9 @@ void KPartsDeclarativeItem::setUrl(QString url)
 {
     m_partWidget->setUrl(url);
     emit urlChanged();
+}
+
+void KPartsDeclarativeItem::setPartParent()
+{
+    m_dummy->layout()->addWidget(m_partWidget);
 }

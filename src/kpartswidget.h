@@ -3,22 +3,26 @@
 
 #include <kparts/mainwindow.h>
 
+#include <QPointer>
+#include <kservice.h>
+
 class KPartsWidget : public KParts::MainWindow
 {
     Q_OBJECT
 public:
-    KPartsWidget(QWidget *parent = 0);
-    ~KPartsWidget();
-
-    QString url() const { return "";m_part->url().url(); }
+    static KPartsWidget *instance();
+    QString url() const { return m_part->url().url(); }
     void setUrl(const QString &url);
-
-    void keyPressEvent(QKeyEvent *);
 
     QStringList supportedMimeTypes() const;
 
 private:
-    KParts::ReadOnlyPart *m_part;
+    KPartsWidget(QWidget *parent = 0);
+    ~KPartsWidget();
+
+    static KPartsWidget *m_instance;
+    QPointer<KParts::ReadOnlyPart> m_part;
+    KService::Ptr m_service;
 };
 
 #endif // KPARTSWIDGET_H

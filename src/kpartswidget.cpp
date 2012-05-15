@@ -1,21 +1,17 @@
 #include "kpartswidget.h"
 
-#include <kservice.h>
 #include <ktoolbar.h>
 
-#include <QKeyEvent>
-#include <QDebug>
-#include <QApplication>
+KPartsWidget *KPartsWidget::m_instance = 0;
 
 KPartsWidget::KPartsWidget(QWidget *parent)
-    //: KParts::MainWindow(parent, KDE_DEFAULT_WINDOWFLAGS)
+    : KParts::MainWindow(parent, KDE_DEFAULT_WINDOWFLAGS)
 {
-    setAttribute(Qt::WA_DeleteOnClose);
-    KService::Ptr service = KService::serviceByDesktopPath("okular_part.desktop");
+    m_service = KService::serviceByDesktopPath("okular_part.desktop");
 
-    if( service )
+    if( m_service )
     {
-        m_part = service->createInstance<KParts::ReadOnlyPart>(0, QVariantList() << "Print/Preview");
+        m_part = m_service->createInstance<KParts::ReadOnlyPart>(0, QVariantList() << "Print/Preview");
 
         if(m_part)
         {
@@ -26,6 +22,7 @@ KPartsWidget::KPartsWidget(QWidget *parent)
                 toolbar->hide();
         }
     }
+
 }
 
 KPartsWidget::~KPartsWidget()
@@ -33,15 +30,18 @@ KPartsWidget::~KPartsWidget()
 
 }
 
-void KPartsWidget::setUrl(const QString &url)
+KPartsWidget *KPartsWidget::instance()
 {
-    m_part->openUrl(url);
+    if(!m_instance)
+        m_instance = new KPartsWidget;
+
+    return m_instance;
 }
 
-void KPartsWidget::keyPressEvent(QKeyEvent *event)
+void KPartsWidget::setUrl(const QString &url)
 {
-    qDebug() << event->key();
-    event->ignore();
+    if(m_part)
+        m_part->openUrl(url);
 }
 
 QStringList KPartsWidget::supportedMimeTypes() const

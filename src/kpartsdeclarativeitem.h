@@ -21,9 +21,11 @@ signals:
 public slots:
     QString url() const;
     void setUrl(QString url);
+    void setPartParent();
 
 private:
-    QPointer<KPartsWidget> m_partWidget;
+    KPartsWidget* m_partWidget;
+    QWidget *m_dummy;    
 };
 
 #endif // KPARTSDECLARATIVEITEM_H
