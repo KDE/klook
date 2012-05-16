@@ -150,8 +150,8 @@ File::FileType WorkerThread::getType( const QString& mime, const QString& path )
     }
 
     if(mime == "application/pdf" || mime == "application/vnd.oasis.opendocument.text" ||
-            mime == "application/x-vnd.oasis.opendocument.text" || mime == "image/x-djvu" ||
-            mime == "application/x-chm" || mime == "application/x-fictionbook+xml" || mime == "application/xhtml+xml")
+       mime == "application/x-vnd.oasis.opendocument.text" || mime == "image/x-djvu" || mime == "type-image/vnd.djvu" ||
+       mime == "application/x-chm" || mime == "application/x-fictionbook+xml" || mime == "application/xhtml+xml")
     {
         type = File::OkularFile;
     }
