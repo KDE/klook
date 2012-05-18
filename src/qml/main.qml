@@ -394,6 +394,7 @@ Rectangle {
 
                 GridView {
                     id: photosGridView; model: fileModel; delegate: Delegate{}
+
                     width: drawer.width; height: drawer.height
                     anchors.fill: parent ; anchors.margins: 10
                     cellWidth: getCellSize( photosGridView.count ).width
@@ -413,6 +414,7 @@ Rectangle {
                         id: mouseAreaGrid
                         anchors.fill: parent
                         anchors.rightMargin: 20
+                        anchors.bottomMargin: 30
                         hoverEnabled: true
                         z: 20
 
@@ -576,6 +578,7 @@ Rectangle {
             MouseArea {
                 id: mouseControl
                 z: 0
+                enabled: false
                 anchors.fill: panel
                 hoverEnabled: true
 
@@ -604,6 +607,7 @@ Rectangle {
                 color: "transparent"
             }
             PropertyChanges { target: row; visible: true }
+            PropertyChanges { target: mouseControl; enabled: false }
             PropertyChanges { target: photosListView; highlightMoveSpeed: 5000 }
             PropertyChanges {
                 target: panel
@@ -635,6 +639,7 @@ Rectangle {
             PropertyChanges { target: mainWindow; border.width: 0 }
 
             PropertyChanges { target: photosListView; highlightMoveSpeed: 7000 }
+            PropertyChanges { target: mouseControl; enabled: true }
             PropertyChanges {
                 target: panel;
                 state: updatePanelState()
@@ -649,7 +654,7 @@ Rectangle {
                 anchors.leftMargin: 0
                 anchors.bottomMargin: 0
                 anchors.topMargin: 0
-//                color: "#333333"
+                //                color: "#333333"
             }
             PropertyChanges {
                 target: drawerBorder;
