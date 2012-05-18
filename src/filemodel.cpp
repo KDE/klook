@@ -139,7 +139,7 @@ QString ListItem::mime() const
     return m_mime;
 }
 
-QVariant ListItem::data( int role )
+QVariant ListItem::data( int role ) const
 {
     switch ( role )
     {
@@ -200,7 +200,7 @@ DirectoryItem::~DirectoryItem()
     delete sizeFinder;
 }
 
-QVariant DirectoryItem::data( int role )
+QVariant DirectoryItem::data( int role ) const
 {
     switch ( role )
     {
@@ -279,7 +279,7 @@ UnsupportedItem::UnsupportedItem( QString filePath, QString type, QString mime, 
 {
 }
 
-QVariant UnsupportedItem::data(int role)
+QVariant UnsupportedItem::data(int role) const
 {
     if ( role == LastModifiedRole )
     {

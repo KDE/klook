@@ -87,7 +87,7 @@ public:
 public slots:
     bool loaded();
     void setLoaded( bool b );
-    virtual QVariant data( int role );
+    virtual QVariant data( int role ) const;
     virtual QString path() const;
     virtual QString type() const;
     virtual QString mime() const;
@@ -130,7 +130,7 @@ class DirectoryItem : public ListItem
 public:
     DirectoryItem( QString filePath, QString type, QObject* parent = 0 );
     ~DirectoryItem();
-    QVariant data( int role );
+    QVariant data( int role ) const;
     void startScan();
 private slots:
     void timeout();
@@ -152,7 +152,7 @@ class UnsupportedItem : public ListItem
     Q_OBJECT
 public:
     UnsupportedItem(QString filePath, QString type, QString mime, QObject* parent = 0);
-    QVariant data( int role );
+    QVariant data( int role ) const;
 };
 
 #endif // FILEMODEL_H
