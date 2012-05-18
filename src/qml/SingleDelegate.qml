@@ -67,10 +67,8 @@ Item {
         id: mimeDelegate
     }
 
-    Item {
-        OkularDelegate {
-            id: okularDelegate
-        }
+    OkularDelegate {
+        id: okularDelegate
     }
 
     // function for getting delegate of loader element
@@ -101,4 +99,3 @@ Item {
         sourceComponent: bestDelegate( type )
     }
 }
-
