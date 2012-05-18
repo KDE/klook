@@ -22,7 +22,6 @@ KPartsWidget::KPartsWidget(QWidget *parent)
                 toolbar->hide();
         }
     }
-
 }
 
 KPartsWidget::~KPartsWidget()
