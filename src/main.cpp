@@ -29,20 +29,10 @@
 
 static const char description[] = I18N_NOOP( "KLook is a quick preview feature" );
 static const char version[] = "0.1";
-/*
-static KCmdLineOptions options[] =
-{
-  { "+[File]", I18N_NOOP("file to open"), 0 },
-  { 0, 0, 0 }
-  // INSERT YOUR COMMANDLINE OPTIONS HERE
-};
-*/
 
 int main(int argc, char *argv[])
 {
-    //QApplication::setGraphicsSystem( "raster" );
-
-    KAboutData about( "KLook", 0, ki18n( "KLook" ),
+    KAboutData about( "klook", "klook", ki18n( "KLook" ),
                       version, ki18n( description ), KAboutData::License_GPL_V3,
                       ki18n( "(c) ROSA 2011-2012" ) );
 
@@ -71,7 +61,6 @@ int main(int argc, char *argv[])
     options.add( "+file", ki18n( "A required argument 'file'" ), 0 );
 
     KCmdLineArgs::addCmdLineOptions( options );
-
     if ( !KUniqueApplication::start() )
     {
         fprintf( stderr, "KLook is already running!\n" );
