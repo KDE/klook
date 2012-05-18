@@ -29,6 +29,7 @@
 #include <kcmdlineargs.h>
 #include <kurl.h>
 #include <kicon.h>
+#include <KStandardDirs>
 
 #include "declarativeviewer.h"
 
@@ -41,12 +42,16 @@ KLookApp::KLookApp()
 
     QFileInfo fi( QCoreApplication::applicationFilePath() );
 
-    QString qmlPath;
+    QString qmlPath = KStandardDirs::locate("appdata", "main.qml");
 
     if ( isLocal() )
-        qmlPath += "/usr/share/" + fi.baseName() + "/main.qml";
-    else
-        qmlPath += "../src/qml/main.qml";
+        qmlPath = "../src/qml/main.qml";
+
+    if(!QFile::exists(qmlPath))
+    {
+        qDebug() << "QML file not found";
+        exit();
+    }
 
     m_viewer->setSource( QUrl::fromLocalFile( qmlPath) );
 
@@ -122,5 +127,5 @@ int KLookApp::newInstance()
 bool KLookApp::isLocal() const
 {
     const QString appPath = applicationFilePath();
-    return appPath.startsWith( "/usr/bin" ) || appPath.startsWith( "/usr/local/bin" );
+    return !(appPath.startsWith( "/usr/bin" ) || appPath.startsWith( "/usr/local/bin" ));
 }

@@ -52,10 +52,10 @@ target_link_libraries( klook ${KDE4_KIO_LIBS}
 
 install( TARGETS klook ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
-install( FILES ${qml_files} DESTINATION share/${PROJECT_NAME}/ )
+install( FILES ${qml_files} DESTINATION ${DATA_INSTALL_DIR}/${PROJECT_NAME}/ )
 
 install( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/qml/images/
-                 DESTINATION share/${PROJECT_NAME}/images )
+                 DESTINATION ${DATA_INSTALL_DIR}/${PROJECT_NAME}/images )
 
 #Translations
 find_package( Msgfmt REQUIRED )
