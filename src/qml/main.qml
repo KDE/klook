@@ -22,8 +22,6 @@
 import QtQuick 1.0
 import Widgets 1.0
 
-
-
 Rectangle {
     id: mainWindow
     width: 600
