@@ -26,7 +26,6 @@ Component {
             Behavior on opacity { NumberAnimation { duration: 500 } }
         }
 
-
         function getMaxTextWidth()
         {
             var w = name.paintedWidth

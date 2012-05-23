@@ -96,31 +96,28 @@ Rectangle {
         panel.opacity = 1
 
         //Disable panel in embedded mode
-        if ( mainWindow.state === "embedded" )
-        {
+        if ( mainWindow.state === "embedded" ) {
             console.log("disable panel")
             panel.visible = false
             return
 
         }
-        if ( ( mainWindow.state === "windowed" ) )
-        {
+
+        if ( ( mainWindow.state === "windowed" ) ) {
             if ( ( albumWrapper.state === 'fullscreen' ) &&
                     ( ( currentFileType === 2 ) || ( currentFileType === 5 ) ) )
                 panel.visible = true
             else
                 panel.visible = false
         }
-        else
-        {
+        else {
             if ( albumWrapper.state === 'inGrid' )
                 panel.visible = false
             else
                 panel.visible = true
         }
 
-        if ( !mouseControl.containsMouse )
-        {
+        if ( !mouseControl.containsMouse ) {
             controlPanelTimer.start()
         }
     }
@@ -551,7 +548,7 @@ Rectangle {
 
             ControlPanel {
                 id: panel
-                z: 1;
+                z: 1
                 y: albumWrapper.height - 70
 
                 Connections{
@@ -565,7 +562,7 @@ Rectangle {
                 }
             }
 
-            Timer{
+            Timer {
                 id : controlPanelTimer
                 interval: 2000; running: false;
                 repeat: false
@@ -576,17 +573,17 @@ Rectangle {
             MouseArea {
                 id: mouseControl
                 z: 0
-                enabled: false
                 anchors.fill: panel
                 hoverEnabled: true
 
-                onEntered:
-                {
+                onEntered: {
                     controlPanelTimer.stop()
                     panel.opacity = 1
                 }
 
-                onExited: controlPanelTimer.start()
+                onExited: {
+                    controlPanelTimer.start()
+                }
             }
 
             Item {
@@ -605,7 +602,6 @@ Rectangle {
                 color: "transparent"
             }
             PropertyChanges { target: row; visible: true }
-            PropertyChanges { target: mouseControl; enabled: false }
             PropertyChanges { target: photosListView; highlightMoveSpeed: 5000 }
             PropertyChanges {
                 target: panel
@@ -637,7 +633,6 @@ Rectangle {
             PropertyChanges { target: mainWindow; border.width: 0 }
 
             PropertyChanges { target: photosListView; highlightMoveSpeed: 7000 }
-            PropertyChanges { target: mouseControl; enabled: true }
             PropertyChanges {
                 target: panel;
                 state: updatePanelState()
