@@ -6,26 +6,43 @@ Component {
     Item {
         Image {
             id: mimeIcon
+            anchors.left: parent.left
+            anchors.leftMargin: leftItemMargin
+            anchors.top: parent.top
+            anchors.topMargin: iconHeightMargin
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: iconHeightMargin + panel.height
             source: "image://mime/" + filePath
             clip: true
-            anchors.left: parent.left
-            anchors.leftMargin: 20
             fillMode: Image.PreserveAspectFit
             asynchronous: true
             smooth: true;
             visible: albumWrapper.state === "fullscreen"
-            height: getHeight( parent.height, 500 )
-            y: ( parent.height - panel.height - height ) / 2
-            
+            width: getIconWidth( paintedWidth, paintedHeight, getMaxTextWidth() )
+
             Behavior on opacity { NumberAnimation { duration: 500 } }
         }
         
+        function getMaxTextWidth()
+        {
+            var w = name.paintedWidth
+
+            if ( w < itemType.paintedWidth )
+                w = itemType.paintedWidth
+            if ( w < modified.paintedWidth )
+                w = modified.paintedWidth
+            if ( w < size.paintedWidth )
+                w = size.paintedWidth
+
+            return w
+        }
+
         InfoItem {
             id: name
-            anchors.top: mimeIcon.top
             anchors.left: mimeIcon.right
             text: "<b>" + getName( filePath ) +"</b>"
             font.pointSize: 15
+            y: ( mimeIcon.height - mimeIcon.paintedHeight ) / 2 + iconHeightMargin
         }
         
         InfoItem {
@@ -40,6 +57,8 @@ Component {
             anchors.top: itemType.bottom
             anchors.left: mimeIcon.right
             text: lastModifiedStr + " " + lastModified
+            elide: Text.ElideNone
+            wrapMode: Text.NoWrap
         }
         
         InfoItem {
@@ -48,7 +67,7 @@ Component {
             anchors.left: mimeIcon.right
             text: sizeStr + " " + contentSize
         }
-        
+
         Connections{
             target: photosListView;
             onCurrentIndexChanged: {
