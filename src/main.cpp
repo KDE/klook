@@ -53,6 +53,7 @@ int main(int argc, char *argv[])
     KCmdLineArgs::init( argc, argv, &about );
 
     KCmdLineOptions options;
+    options.add( "i <i>", ki18n( "File index " ), "0" );
     options.add( "embedded", ki18n( "Turn on embedded mode" ), "0" );
     options.add( "x <x>", ki18n( "X position of the icon" ), "0" );
     options.add( "y <y>", ki18n( "Y position of the icon" ), "0" );

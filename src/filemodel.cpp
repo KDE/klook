@@ -124,6 +124,11 @@ void FileModel::scanDirectory(int index)
     }
 }
 
+int FileModel::count()
+{
+    return rowCount();
+}
+
 QString ListItem::path() const
 {
     return m_path;
@@ -294,3 +299,5 @@ QVariant UnsupportedItem::data(int role) const
 
     return ListItem::data( role );
 }
+
+

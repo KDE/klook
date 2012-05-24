@@ -70,6 +70,7 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
     , m_height( min_height )
     , m_compositing( false )
     , m_thread( 0 )
+    , m_indexToShow( 0 )
 {
     setOptimizationFlags( QGraphicsView::DontSavePainterState );
     setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
@@ -121,12 +122,13 @@ DeclarativeViewer::~DeclarativeViewer()
     delete m_thread;
 }
 
-void DeclarativeViewer::init( const QStringList& urls, bool embedded, const QRect& rc )
+void DeclarativeViewer::init(const QStringList& urls, bool embedded, const QRect& rc, const int indexToShow )
 {
     qDeleteAll( m_files );
     m_files.clear();
     m_urls.clear();
     m_currentFile = 0;
+    m_indexToShow = indexToShow;
 
     m_rcIcon = rc;
     m_urls = urls;
@@ -183,7 +185,7 @@ void DeclarativeViewer::setRegisterTypes()
     rootContext()->setContextProperty( "arrowX", .0 );
     rootContext()->setContextProperty( "arrowY", .0 );
     rootContext()->setContextProperty( "effects", ( checkComposite() ) ? "on" : "off" );
-
+    rootContext()->setContextProperty( "indexToShow", m_indexToShow );
     rootContext()->setContextProperty( "artistStr", ki18n( "Artist:" ).toString() );
     rootContext()->setContextProperty( "totalTimeStr", ki18n( "Total time:" ).toString() );
     rootContext()->setContextProperty( "folderStr", ki18n( "Folder" ).toString() );
@@ -571,6 +573,7 @@ void DeclarativeViewer::changeContent()
 
     QFileInfo fi( m_currentFile->name() );
     rootContext()->setContextProperty( "fileName", fi.fileName() );
+    rootContext()->setContextProperty( "indexToShow", m_indexToShow );
     rootContext()->setContextProperty( "fileUrl", m_currentFile->name() );
     rootContext()->setContextProperty( "fileType", File::fileTypeToString( m_currentFile->type() ) );
 }
@@ -895,8 +898,6 @@ void DeclarativeViewer::newFileProcessed( const File *file )
     if ( m_files.empty() )
     {
         m_currentFile = const_cast<File *>( file );
-        changeContent();
-        setActualSize();
 
         rootContext()->setContextProperty( "viewMode", ( ( m_urls.count() == 1 ) ? "single" : "multi" ) );
         emit setStartWindow();
@@ -906,8 +907,12 @@ void DeclarativeViewer::newFileProcessed( const File *file )
     else {
         setViewMode( Multi );
     }
-
     m_files.append( file );
+    if (m_files.count()-1 == m_indexToShow)
+    {
+        changeContent();
+        setActualSize();
+    }
     emit newItem(file->name(), file->type(), file->mime());
 }
 
