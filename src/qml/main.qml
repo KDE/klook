@@ -500,9 +500,11 @@ Rectangle {
 
                 Connections {
                     target: fileModel
-                    onRowsInserted: {
-                        if ( fileModel.count !== 0 )
+                    onRowsInserted: {                        
+                        if ( fileModel.count() !== 0 )
                             updateMenuButtons()
+                        if ((fileModel.count() - 1) === indexToShow)
+                            photosListView.positionViewAtIndex(indexToShow, ListView.Contain)
                     }
                 }
                 states: [

@@ -117,7 +117,11 @@ int KLookApp::newInstance()
     QRect rc = rectParam();
     bool embedded = isEmbeddedParam();
 
-    m_viewer->init( urls, embedded, rc );
+    int index = args->getOption("i").toInt();
+    if (index >= urls.count()) { //check if index out of range
+        index = 0;
+    }
+    m_viewer->init( urls, embedded, rc, index );
 
     args->clear();
 
