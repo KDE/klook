@@ -18,7 +18,10 @@ Component {
                 if ( listItem.ListView.isCurrentItem ) {
 
                     //t.forceActiveFocus()
+                    mainWindow.currentFileType = 6;
+
                     part.setPartParent()
+                    mainWindow.updatePanel()
                 }
             }
         }

@@ -13,25 +13,44 @@ Component {
         Image {
             id: audioIcon
             anchors.left: parent.left
-            clip: true
+            anchors.leftMargin: leftItemMargin
+            anchors.top: parent.top
+            anchors.topMargin: iconHeightMargin
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: iconHeightMargin + panel.height
             source: "images/audio.png"
+            clip: true
             opacity: 0
             fillMode: Image.PreserveAspectFit
             asynchronous: true
             smooth: true;
             visible: albumWrapper.state === "fullscreen"
-            height: getHeight( parent.height, 500 ) //parent.height * 3 / 5
-            y: ( parent.height - panel.height - height ) / 2
-            
+            width: getIconWidth( paintedWidth, paintedHeight, getMaxTextWidth() )
+
             Behavior on opacity { NumberAnimation { duration: 500 } }
+
         }
         
+        // getting of maximum width of text info
+        function getMaxTextWidth()
+        {
+            var w = title.paintedWidth
+
+            if ( w < artist.paintedWidth ) {
+                w = artist.paintedWidth
+            }
+            if ( w < totalTime.paintedWidth ) {
+                w = totalTime.paintedWidth
+            }
+
+            return w
+        }
+
         InfoItem {
             id : title
             font.pointSize: 15
-            anchors.top: audioIcon.top
             anchors.left: audioIcon.right
-            anchors.right: parent.right
+            y: ( audioIcon.height - audioIcon.paintedHeight ) / 2 + iconHeightMargin
         }
         
         InfoItem {
@@ -44,6 +63,7 @@ Component {
             id : totalTime
             anchors.top: artist.bottom
             anchors.left: audioIcon.right
+            wrapMode: Text.NoWrap
         }
         
         Binding { target: totalTime; property: "anchors.top"; value: artist.visible ? artist.bottom : title.bottom }

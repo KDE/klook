@@ -56,6 +56,7 @@ public:
 public slots:
     void append(QString path, File::FileType type, QString mime);
     void scanDirectory(int index);
+    int count();
 
 private:
     ListItem* m_prototype;

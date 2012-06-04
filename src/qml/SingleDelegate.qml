@@ -27,12 +27,26 @@ Item {
     id: listItem
     width: photosListView.width; height: photosListView.height
 
-    function getHeight( parentHeight, iconHeight)
+    property int iconHeightMargin: ( height - panel.height ) / 10 // icon height is 4/5 of item height minus panel height
+    property int leftItemMargin: 20    // before icon
+    property int rightItemMargin: 10   // after text info
+    property int middleItemMargin: 20  // middle icon and text info
+
+    // getting of icon width for audio, mime, folder delegate.
+    // width must be less 500.
+    function getIconWidth( iconWidth, iconHeight, textWidth )
     {
-        var h = ( parentHeight - panel.height ) * 4 / 5
-        if ( h > iconHeight )
-            h = iconHeight
-        return h
+        var w = listItem.width - textWidth - ( leftItemMargin + rightItemMargin + middleItemMargin )
+        var h = listItem.height - iconHeightMargin * 2 - panel.height
+        if ( w > h ) {
+            w = h
+        }
+
+        if ( w > 500 ) {
+            w = 500
+        }
+
+        return w
     }
 
     function getName( path )
@@ -73,23 +87,28 @@ Item {
 
     // function for getting delegate of loader element
     function bestDelegate( t ) {
-        if ( t == 1 )
+        if ( t == 1 ) {
             return imgDelegate;
-        else if ( t == 2 )
+        }
+        else if ( t == 2 ) {
             return videoDelegate;
-        else if ( t == 3 )
+        }
+        else if ( t == 3 ) {
             return txtDelegate;
+        }
         else if ( t == 4 ) {
             fileModel.scanDirectory( index )
             return folderDelegate;
         }
-        else if ( t == 5 )
+        else if ( t == 5 ) {
             return audioDelegate;
-        else if ( t == 6) {
+        }
+        else if ( t == 6 ) {
             return okularDelegate;
         }
-        else if(t == 0)
+        else if ( t == 0 ) {
             return mimeDelegate;
+        }
     }
 
     Loader

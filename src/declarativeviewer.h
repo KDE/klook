@@ -71,7 +71,7 @@ public:
 
     void updateSize( const File* file );
 
-    void init( const QStringList& urls, bool embedded = false, const QRect& rc = QRect( 0, 0, 0, 0 ) );
+    void init(const QStringList& urls, bool embedded = false, const QRect& rc = QRect( 0, 0, 0, 0 ), const int indexToShow = 0 );
 
 signals:
     void newItem(QString name, File::FileType type, QString mime);
@@ -164,7 +164,7 @@ private:
     PreviewGenerator*   m_previewGenerator;
     FileModel*          m_fileModel;
     ArrowPosition       m_posArrow;    
-
+    int                 m_indexToShow;
 };
 
 QApplication *createApplication( int& argc, char** argv );

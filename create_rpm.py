@@ -5,7 +5,7 @@ import tarfile
 import shutil
 import subprocess
 
-version = '0.1'
+version = '1.0'
 name = 'klook'
 
 files = ['src', 'CMakeLists.txt', 'locale', 'icons']

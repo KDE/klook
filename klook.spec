@@ -2,8 +2,8 @@
 
 Summary:	Klook is a quick preview feature
 Name:		klook
-Version:	0.1
-Release:	92
+Version:	1.0
+Release:	1
 License:	GPL v.3
 Group:		Graphical desktop
 Source:		%{name}-%{version}.tar.gz
