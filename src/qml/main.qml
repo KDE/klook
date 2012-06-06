@@ -497,7 +497,7 @@ Rectangle {
 
                 Connections {
                     target: fileModel
-                    onRowsInserted: {                        
+                    onRowsInserted: {
                         if ( fileModel.count() !== 0 )
                             updateMenuButtons()
                         if ((fileModel.count() - 1) === indexToShow)
@@ -574,7 +574,8 @@ Rectangle {
 
             MouseArea {
                 id: mouseControl
-                z: 0
+                width:panel.width
+                height: panel.height
                 anchors.fill: panel
                 hoverEnabled: true
 
@@ -624,15 +625,26 @@ Rectangle {
                           ( mainWindow.currentFileType === 0 ) ) &&
                         ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
             }
+
             PropertyChanges {
                 target: drawerBorder
                 color: "#dadada"
                 visible: true
             }
+
+            PropertyChanges {
+                target: panel;
+                state: updatePanelState()
+                y: albumWrapper.height - panel.height - 32
+            }
+
         },
         State {
             name: "fullscreen"
             PropertyChanges { target: mainWindow; border.width: 0 }
+
+            // this is just for a case when okular delegate was displayed in windowed mode
+            PropertyChanges { target: mouseControl; enabled: true }
 
             PropertyChanges { target: photosListView; highlightMoveSpeed: 7000 }
             PropertyChanges {
@@ -656,9 +668,7 @@ Rectangle {
                 color: "#3feaeaea"
                 visible: false
             }
-
-
-        },
+      },
         State {
             name: "embedded"
             PropertyChanges {target: mainWindow;  border.width: 0; }

@@ -16,13 +16,14 @@ Component {
             target: photosListView
             onCurrentIndexChanged: {
                 if ( listItem.ListView.isCurrentItem ) {
-
-                    //t.forceActiveFocus()
+                    mouseControl.enabled = mainWindow.state == 'fullscreen' ? true : false
                     mainWindow.currentFileType = 6;
 
                     part.setPartParent()
                     mainWindow.updatePanel()
                 }
+                else
+                    mouseControl.enabled = true
             }
         }
     }
