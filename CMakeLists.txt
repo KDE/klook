@@ -45,9 +45,10 @@ target_link_libraries( klook ${KDE4_KIO_LIBS}
                                                         ${KDE4_PHONON_LIBS}
                                                         ${KDE4_PLASMA_LIBS}
                                                         ${KDE4_KFILE_LIBS}
+                                                        kparts
                                                         ${QT_LIBRARIES}
                                                         ${QT_QDECLARATIVE_LIBRARIES}
-                                                        ${X11_LIBRARIES} )
+                                                        )
 
 
 install( TARGETS klook ${INSTALL_TARGETS_DEFAULT_ARGS} )
