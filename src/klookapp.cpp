@@ -36,11 +36,9 @@
 
 KLookApp::KLookApp()
     : KUniqueApplication()
-    , m_viewer( 0 )
+    , m_viewer(new DeclarativeViewer())
 {
-    m_viewer = new DeclarativeViewer();
-
-    QFileInfo fi( QCoreApplication::applicationFilePath() );
+    QFileInfo fi(QCoreApplication::applicationFilePath());
 
     QString qmlPath = KStandardDirs::locate("appdata", "main.qml");
 
@@ -52,17 +50,16 @@ KLookApp::KLookApp()
         qDebug() << "QML file not found";
         exit();
     }
-
     m_viewer->setSource( QUrl::fromLocalFile( qmlPath) );
 
-    QObject* rootObject = dynamic_cast<QObject*>( m_viewer->rootObject() );
+    QObject* rootObject = dynamic_cast<QObject*>(m_viewer->rootObject());
 
     QObject::connect( m_viewer, SIGNAL( setFullScreenState() ), rootObject, SLOT( setFullScreenState() ) );
     QObject::connect( m_viewer, SIGNAL( setEmbeddedState() ), rootObject, SLOT( setEmbeddedState() ) );
     QObject::connect( m_viewer, SIGNAL( setStartWindow() ), rootObject, SLOT( setStartWindow() ) );
     QObject::connect( rootObject, SIGNAL( setGalleryView( bool ) ), m_viewer, SLOT( onSetGallery( bool ) ) );
 
-    m_viewer->setAttribute( Qt::WA_QuitOnClose );
+    m_viewer->setAttribute(Qt::WA_DeleteOnClose);
 }
 
 KLookApp::~KLookApp()
