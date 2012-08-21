@@ -70,7 +70,7 @@ KLookApp::~KLookApp()
     delete m_viewer;
 }
 
-bool KLookApp::isEmbeddedParam()
+bool KLookApp::isEmbeddedParam() const
 {
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
@@ -79,7 +79,7 @@ bool KLookApp::isEmbeddedParam()
     return embedded;
 }
 
-QRect KLookApp::rectParam()
+QRect KLookApp::rectParam() const
 {
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 
@@ -97,7 +97,7 @@ QRect KLookApp::rectParam()
     return rc;
 }
 
-QStringList KLookApp::urlsParam()
+QStringList KLookApp::urlsParam() const
 {
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
 

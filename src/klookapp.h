@@ -33,16 +33,15 @@ class KLookApp : public KUniqueApplication
 public:
     KLookApp();
     ~KLookApp();
-
     virtual int newInstance();
 
 private:
     bool isLocal() const;
+    bool isEmbeddedParam() const;
 
-    QStringList urlsParam();
-    QRect rectParam();
-    bool isEmbeddedParam();
-    
+    QStringList urlsParam() const;
+    QRect rectParam() const;
+
     DeclarativeViewer* m_viewer;
 
 };
