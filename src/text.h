@@ -38,10 +38,10 @@ public:
 
 public slots:
     QString source() const;
-    void setSource( const QString& source );
+    void setSource(const QString& source);
 
     bool isPreview() const;
-    void setPreview( bool preview );
+    void setPreview(bool preview);
 
 Q_SIGNALS:
     void sourceChanged();

@@ -35,11 +35,6 @@ FileModel::FileModel( ListItem *prototype, QObject *parent )
     setRoleNames( prototype->roleNames() ) ;
 }
 
-FileModel::~FileModel()
-{
-}
-
-
 int FileModel::rowCount( const QModelIndex &parent ) const
 {
     Q_UNUSED( parent )

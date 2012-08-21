@@ -23,22 +23,21 @@
 #include "previewgenerator.h"
 
 PreviewProvider::PreviewProvider()
-    : QDeclarativeImageProvider( Pixmap )
-    , previewGenerator( PreviewGenerator::createInstance() )
+    : QDeclarativeImageProvider(Pixmap)
+    , previewGenerator(PreviewGenerator::createInstance())
 {
 }
 
-QPixmap PreviewProvider::requestPixmap( const QString& id, QSize* size, const QSize &requestedSize )
+QPixmap PreviewProvider::requestPixmap(const QString& id, QSize* size, const QSize &requestedSize)
 {
-    QString str = id.left( id.lastIndexOf( '%' ) );
+    QString str = id.left(id.lastIndexOf( '%' ));
 
     QFileInfo fi(str);
-    QPixmap pixmap = previewGenerator->getPreviewPixmap( fi.absoluteFilePath() );
-
-
-    if ( requestedSize.isValid() )
+    QPixmap pixmap = previewGenerator->getPreviewPixmap(fi.absoluteFilePath());
+    if (requestedSize.isValid())
         pixmap = pixmap.scaled( requestedSize, Qt::KeepAspectRatio );
-    *size = pixmap.size();
+    if(size)
+        *size = pixmap.size();
 
     return pixmap;
 }

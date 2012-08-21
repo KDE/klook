@@ -37,7 +37,7 @@ PreviewGenerator::PreviewGenerator(QObject *parent)
     : QObject( parent )
     , m_model( 0 )
     , m_job( 0 )
-{    
+{
     defaultPreview.load( ":images/pla-empty-box.png" );
     videoPixmap.load( ":images/play-empty.png" );
     m_plugins = KIO::PreviewJob::availablePlugins();
@@ -49,52 +49,50 @@ PreviewGenerator::PreviewGenerator(QObject *parent)
 }
 
 void PreviewGenerator::notifyModel( const QString& filePath )
-{    
+{
     if ( m_model )
     {
-        for ( int i = 0; i < m_model->rowCount(); i++ )
+        for (int i = 0; i < m_model->rowCount(); i++)
         {
             QModelIndex index = m_model->indexFromRowNumber( i );
-            if ( m_model->data( index, ListItem::FilePathRole).toString() == filePath )
-            {
+            if (m_model->data( index, ListItem::FilePathRole).toString() == filePath)
                 m_model->refreshRow( index );
-            }
         }
     }
 }
 
 void PreviewGenerator::setPreview( const KFileItem &item, const QPixmap &pixmap )
-{    
+{
     QPixmap pict = pixmap;
-    m_fileList.removeAll( item );
+    m_fileList.removeAll(item);
 
-    if ( item.mimetype().startsWith( "video/" ) )
+    if ( item.mimetype().startsWith("video/") )
     {
-        QPainter p(&pict);        
+        QPainter p(&pict);
         QPixmap scaledPixmap = videoPixmap.scaled(pict.width() / 2, pict.height() / 2,  Qt::KeepAspectRatio, Qt::SmoothTransformation );
         p.drawPixmap( pict.width() / 2 - scaledPixmap.width() / 2, pict.height() / 2 - scaledPixmap.height() / 2 ,  scaledPixmap );
     }
-    previews.insert( item.localPath(), pict );
-    notifyModel( item.localPath() );
+    previews.insert(item.localPath(), pict);
+    notifyModel(item.localPath());
 }
 
 void PreviewGenerator::deleteJob()
 {
-    delete m_job;    
+    delete m_job;
     m_job = 0;
 }
 
-QPixmap PreviewGenerator::getPreviewPixmap( QString filePath )
-{    
-    if ( previews.contains( filePath ) )
-        return previews[ filePath ];
+QPixmap PreviewGenerator::getPreviewPixmap(QString filePath)
+{
+    if (previews.contains(filePath))
+        return previews[filePath];
 
     return defaultPreview;
 }
 
 PreviewGenerator * PreviewGenerator::createInstance()
 {
-    if ( !instance )
+    if (!instance)
         instance = new PreviewGenerator;
     return instance;
 }
@@ -106,9 +104,9 @@ void PreviewGenerator::setFiles( const QStringList &list )
 
     for ( int i = 0; i < list.size(); i++ )
     {
-        QFileInfo fi( list[i]  );
-        KFileItem fileItem( KFileItem::Unknown, KFileItem::Unknown, list[i], false );
-        m_fileList.append( fileItem );
+        QFileInfo fi(list[i]);
+        KFileItem fileItem(KFileItem::Unknown, KFileItem::Unknown, fi.absoluteFilePath(), false);
+        m_fileList.append(fileItem);
     }
 }
 
@@ -119,18 +117,11 @@ void PreviewGenerator::setModel( FileModel* model )
 
 void PreviewGenerator::start()
 {
-    if ( m_fileList.isEmpty() )
+    if (m_fileList.isEmpty())
         return;
 
-    if ( m_job && m_job->isSuspended() )
-    {
-        m_job->resume();
-        return;
-    }
-    else if ( m_job )
-    {
+    if(m_job)
         m_job->kill();
-    }
 
     m_job = KIO::filePreview( m_fileList, 1000, 0, 0, 0, true, false, &m_plugins );
     m_job->setIgnoreMaximumSize();
@@ -142,9 +133,9 @@ void PreviewGenerator::start()
 }
 
 void PreviewGenerator::stop()
-{    
-    if ( m_job )
-       m_job->suspend();
+{
+    if (m_job)
+        m_job->suspend();
 }
 
 void PreviewGenerator::previewFailed( KFileItem item )

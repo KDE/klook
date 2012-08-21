@@ -75,9 +75,7 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
     setOptimizationFlags( QGraphicsView::DontSavePainterState );
     setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
 
-    setMouseTracking( true );
-
-    connect( engine(), SIGNAL( quit() ), SLOT( close() ) );
+    setMouseTracking(true);
 
     engine()->addImageProvider( "preview", new PreviewProvider );
     engine()->addImageProvider( "mime", new MimeProvider );
@@ -109,7 +107,8 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
 
     setViewMode( Single );
 
-    connect( qApp, SIGNAL( focusChanged( QWidget*, QWidget* ) ), this, SLOT( focusChanged( QWidget*, QWidget* ) ) );
+    connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), SLOT(focusChanged(QWidget*, QWidget*)));
+    connect(engine(), SIGNAL(quit()), SLOT(close()));
 
     Plasma::WindowEffects::overrideShadow( this->winId(), true );
     Plasma::WindowEffects::enableBlurBehind( winId() );
@@ -117,14 +116,17 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
 
 DeclarativeViewer::~DeclarativeViewer()
 {
-    qDeleteAll( m_files );
+    qDeleteAll(m_files);
+
+    if(m_thread)
+        m_thread->exit();
 
     delete m_thread;
 }
 
 void DeclarativeViewer::init(const QStringList& urls, bool embedded, const QRect& rc, const int indexToShow )
 {
-    qDeleteAll( m_files );
+    qDeleteAll(m_files);
     m_files.clear();
     m_urls.clear();
     m_currentFile = 0;
@@ -134,10 +136,10 @@ void DeclarativeViewer::init(const QStringList& urls, bool embedded, const QRect
     m_urls = urls;
 
     m_fileModel->reset();
-    m_previewGenerator->setFiles( m_urls );
 
-    setEmbedded( embedded );
-    rootContext()->setContextProperty( "embedded", m_isEmbedded );
+    m_previewGenerator->setFiles(m_urls);
+    rootContext()->setContextProperty("embedded", m_isEmbedded);
+    setEmbedded(embedded);
 
     startWorkingThread();
 }
@@ -544,14 +546,14 @@ void DeclarativeViewer::changeContent()
     setViewMode( mode );
 
     KService::Ptr ptr = KMimeTypeTrader::self()->preferredService( m_currentFile->mime() );
-    if ( ptr.isNull() )
+/*    if ( ptr.isNull() )
         rootContext()->setContextProperty( "openText", ki18n( "Open" ).toString() );
     else
     {
         KService *serv = ptr.data();
         rootContext()->setContextProperty( "openText",  ( ki18n( "Open in " ).toString() + serv->name() ) );
     }
-
+*/
     QFileInfo fi( m_currentFile->name() );
     rootContext()->setContextProperty( "fileName", fi.fileName() );
     rootContext()->setContextProperty( "indexToShow", m_indexToShow );

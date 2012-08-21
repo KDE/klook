@@ -34,8 +34,7 @@ QPixmap MimeProvider::requestPixmap( const QString& id, QSize* size, const QSize
     KFileItem fi( id, KMimeType::iconNameForUrl( id ), KFileItem::Unknown );
     KIcon icon( fi.iconName() );
 
-    QPixmap pixmap;
-    pixmap = icon.isNull() ? QPixmap( ":images/pla-empty-box.png" ) : icon.pixmap( 1000 );
+    QPixmap pixmap = icon.isNull() ? QPixmap( ":images/pla-empty-box.png" ) : icon.pixmap( 1000 );
     if ( requestedSize.isValid() )
         pixmap = pixmap.scaled( requestedSize, Qt::KeepAspectRatio, Qt::SmoothTransformation );
     *size = pixmap.size();

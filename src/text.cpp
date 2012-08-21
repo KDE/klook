@@ -29,8 +29,8 @@
 #include <kencodingprober.h>
 
 MyText::MyText( QGraphicsItem* parent )
-    : QGraphicsProxyWidget( parent )
-    , m_isPreview( false )
+    : QGraphicsProxyWidget(parent)
+    , m_isPreview(false)
 {
     m_viewer = new QPlainTextEdit();
     m_viewer->setReadOnly( true );
@@ -53,15 +53,13 @@ void MyText::setSource( const QString& source )
 {
     if ( m_source == source )
         return;
-
     m_source = source;
 
     QFile f( m_source );
-    if ( !f.open( QIODevice::ReadOnly | QIODevice::Text) )
+    if (!f.open( QIODevice::ReadOnly | QIODevice::Text))
         return;
 
     QByteArray data = f.readAll().data();
-
     KEncodingProber prober(KEncodingProber::Universal);
     prober.feed(data);
 
@@ -82,11 +80,10 @@ bool MyText::isPreview() const
     return m_isPreview;
 }
 
-void MyText::setPreview( bool preview )
+void MyText::setPreview(bool preview)
 {
     m_isPreview = preview;
-
-    if ( m_isPreview )
+    if (m_isPreview)
     {
         m_viewer->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
         m_viewer->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
