@@ -73,16 +73,16 @@ void WorkerThread::processUrl( const QStringList &urls )
 
 QString WorkerThread::getMime( const QString& st ) const
 {
-    KMimeType::Ptr ptr =  KMimeType::findByFileContent( st );
-    KMimeType* type = ptr.data();
-    return type->name();
+    KMimeType::Ptr ptr =  KMimeType::findByFileContent(st);
+    QString mime = ptr.isNull() ? QString() : ptr->name();
+    qDebug() << mime;
+    return mime;
 }
 
 File::FileType WorkerThread::getType( const QString& mime, const QString& path ) const
 {
     // this method is a complete mess right now
     // information about supported types should not be hardcoded
-
     int delimiter = mime.indexOf( '/' );
 
     File::FileType type = File::Undefined;
