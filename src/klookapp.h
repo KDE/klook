@@ -32,7 +32,6 @@ class KLookApp : public KUniqueApplication
 
 public:
     KLookApp();
-    ~KLookApp();
     virtual int newInstance();
 
 private:
@@ -43,7 +42,6 @@ private:
     QRect rectParam() const;
 
     DeclarativeViewer* m_viewer;
-
 };
 
 #endif // KLOOK_APP_H

@@ -38,11 +38,8 @@ KLookApp::KLookApp()
     : KUniqueApplication()
     , m_viewer(new DeclarativeViewer())
 {
-    QFileInfo fi(QCoreApplication::applicationFilePath());
-
     QString qmlPath = KStandardDirs::locate("appdata", "main.qml");
-
-    if ( isLocal() )
+    if (isLocal()) // this is hack for developers. should replace it with something better I guess
         qmlPath = "../src/qml/main.qml";
 
     if(!QFile::exists(qmlPath))
@@ -50,6 +47,7 @@ KLookApp::KLookApp()
         qDebug() << "QML file not found";
         exit();
     }
+
     m_viewer->setSource( QUrl::fromLocalFile( qmlPath) );
 
     QObject* rootObject = dynamic_cast<QObject*>(m_viewer->rootObject());
@@ -58,13 +56,6 @@ KLookApp::KLookApp()
     QObject::connect( m_viewer, SIGNAL( setEmbeddedState() ), rootObject, SLOT( setEmbeddedState() ) );
     QObject::connect( m_viewer, SIGNAL( setStartWindow() ), rootObject, SLOT( setStartWindow() ) );
     QObject::connect( rootObject, SIGNAL( setGalleryView( bool ) ), m_viewer, SLOT( onSetGallery( bool ) ) );
-
-    m_viewer->setAttribute(Qt::WA_DeleteOnClose);
-}
-
-KLookApp::~KLookApp()
-{
-    delete m_viewer;
 }
 
 bool KLookApp::isEmbeddedParam() const
@@ -79,7 +70,6 @@ bool KLookApp::isEmbeddedParam() const
 QRect KLookApp::rectParam() const
 {
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
     QRect rc;
     if ( args->isSet( "x" ) && args->isSet( "y" ) &&
          args->isSet( "w" ) && args->isSet( "h" ) )
@@ -97,11 +87,9 @@ QRect KLookApp::rectParam() const
 QStringList KLookApp::urlsParam() const
 {
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
     QStringList urls;
     for ( int i = 0; i < args->count(); i++ )
         urls << args->arg( i );
-
     return urls;
 }
 
@@ -115,13 +103,10 @@ int KLookApp::newInstance()
     bool embedded = isEmbeddedParam();
 
     int index = args->getOption("i").toInt();
-    if (index >= urls.count()) { //check if index out of range
+    if (index >= urls.count())
         index = 0;
-    }
     m_viewer->init( urls, embedded, rc, index );
-
     args->clear();
-
     return 0;
 }
 
