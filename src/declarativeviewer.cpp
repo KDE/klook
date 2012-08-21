@@ -196,27 +196,15 @@ void DeclarativeViewer::setRegisterTypes()
 
 void DeclarativeViewer::startWorkingThread()
 {
-    delete m_thread;
-
     // leave only unique entries
-    QList<QString> results;
+    QSet<QString>  results;
+    foreach(QString url, m_urls)
+        results.insert(url);
+    m_urls = results.toList();
 
-    for(int i = 0; i < m_urls.size(); i++)
-    {
-        bool isFound = false;
-        for( int j = 0; j < results.size(); j++)
-            if(results[j] == m_urls[i])
-            {
-                isFound = true;
-                break;
-            }
-
-        if(!isFound)
-            results.append(m_urls[i]);
-    }
-    
-    m_urls = results;
-    
+    if(m_thread)
+        m_thread->exit();
+    delete m_thread;
     m_thread = new WorkerThread( m_urls );
     connect(m_thread, SIGNAL(fileProcessed(const File*)), SLOT(newFileProcessed(const File*)));
     connect(m_thread, SIGNAL(fail()), SLOT(showNoFilesNotification()));
