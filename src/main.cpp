@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     options.add( "+file", ki18n( "A required argument 'file'" ), 0 );
 
     KCmdLineArgs::addCmdLineOptions( options );
-    if ( !KUniqueApplication::start() )
+    if (!KUniqueApplication::start())
     {
         fprintf( stderr, "KLook is already running!\n" );
         return 0;

@@ -299,5 +299,3 @@ QVariant UnsupportedItem::data(int role) const
 
     return ListItem::data( role );
 }
-
-

@@ -55,22 +55,22 @@ static int min_height = 427;
 
 DeclarativeViewer::DeclarativeViewer( QWidget* parent )
     : QDeclarativeView( parent )
-    , m_lastMousePosition( 0, 0 )
-    , m_isSingleMode( true )
-    , m_moving( false )
-    , m_resize( false )
-    , m_startFullScreen( false )
-    , m_isEmbedded( false )
-    , m_isGallery( false )
-    , m_currentFile( 0 )
-    , m_region( FRAME_REGION )
-    , m_mediaObject( 0 )
-    , m_videoWidget( 0 )
-    , m_width( min_width )
-    , m_height( min_height )
-    , m_compositing( false )
-    , m_thread( 0 )
-    , m_indexToShow( 0 )
+    , m_lastMousePosition(0, 0)
+    , m_isSingleMode(true)
+    , m_moving(false)
+    , m_resize(false)
+    , m_startFullScreen(false)
+    , m_isEmbedded(false)
+    , m_isGallery(false)
+    , m_currentFile(0)
+    , m_region(FRAME_REGION)
+    , m_mediaObject(0)
+    , m_videoWidget(0)
+    , m_width(min_width)
+    , m_height(min_height)
+    , m_compositing(false)
+    , m_thread(0)
+    , m_indexToShow(0)
 {
     setOptimizationFlags( QGraphicsView::DontSavePainterState );
     setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
@@ -147,7 +147,7 @@ bool DeclarativeViewer:: checkComposite()
 {
     QDBusInterface remoteApp( "org.kde.kwin", "/KWin", "org.kde.KWin" );
     QDBusReply<bool> reply = remoteApp.call( "compositingActive" );
-    if ( reply.isValid() )
+    if (reply.isValid())
     {
         m_compositing = reply.value();
         return reply.value();
@@ -218,10 +218,8 @@ void DeclarativeViewer::startWorkingThread()
     m_urls = results;
     
     m_thread = new WorkerThread( m_urls );
-
-    connect( m_thread, SIGNAL( fileProcessed( const File* ) ), SLOT( newFileProcessed( const File* ) ) );
-    connect( m_thread, SIGNAL( fail() ), SLOT( showNoFilesNotification() ) );
-
+    connect(m_thread, SIGNAL(fileProcessed(const File*)), SLOT(newFileProcessed(const File*)));
+    connect(m_thread, SIGNAL(fail()), SLOT(showNoFilesNotification()));
     m_thread->start();
 }
 
@@ -305,11 +303,10 @@ void DeclarativeViewer::setFullScreen()
 }
 
 QSize DeclarativeViewer::getActualSize()
-{    
-    if ( m_currentFile == 0 )
-    {
+{
+    if (!m_currentFile)
         return QSize();
-    }
+
     if ( m_currentFile->type() == File::Video )
     {
         return QSize();
@@ -342,12 +339,12 @@ QSize DeclarativeViewer::calculateViewSize( const QSize& sz )
 {
     QSize szItem = sz;
     QDesktopWidget dw;
-    QRect rectDesktop = dw.screenGeometry( this );
+    QRect rectDesktop = dw.screenGeometry(this);
 
     int wDesktop = rectDesktop.width() * 8 / 10;
     int hDesktop = rectDesktop.height() * 8 / 10;
 
-    szItem = inscribedRectToRect( sz, QSize( wDesktop, hDesktop ) );
+    szItem = inscribedRectToRect(sz, QSize(wDesktop, hDesktop));
 
     szItem.setWidth(qMax(szItem.width(), minimumWidth()));
     szItem.setHeight(qMax(szItem.height(), minimumHeight()));
@@ -359,12 +356,8 @@ QSize DeclarativeViewer::calculateViewSize( const QSize& sz )
 QSize DeclarativeViewer::inscribedRectToRect( const QSize& sz1, const QSize& sz2 )
 {
     QSize sz = sz1;
-
-    if ( ( sz.height() > sz2.height() ) || ( sz.width() > sz2.width() ) )
-    {
+    if ((sz.height() > sz2.height()) || (sz.width() > sz2.width()))
         sz.scale( sz2, Qt::KeepAspectRatio );
-    }
-
     return sz;
 }
 
@@ -384,7 +377,7 @@ void DeclarativeViewer::showWidget( const QSize& sz )
 }
 
 void DeclarativeViewer::updateSize( const File* file )
-{    
+{
     if ( file == 0 )
     {
         m_startFullScreen = false;
@@ -969,7 +962,7 @@ QSize DeclarativeViewer::getTextWindowSize(QString url)
 }
 
 void DeclarativeViewer::focusChanged( QWidget*, QWidget* now )
-{    
+{
     if ( m_isEmbedded )
     {
         if ( !now )

@@ -64,11 +64,8 @@ void MyText::setSource( const QString& source )
 
     KEncodingProber prober(KEncodingProber::Universal);
     prober.feed(data);
-    
+
     QString str;
-
-    qDebug() << "confidence" << prober.confidence();
-
     if (prober.confidence() > 0.7)
         str = QTextCodec::codecForName(prober.encoding())->toUnicode(data);
     else

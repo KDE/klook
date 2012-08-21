@@ -29,10 +29,13 @@
 #include <QDateTime>
 #include <QThread>
 
-#include <QDebug>
 #include "file.h"
+
 class ListItem;
 class DirectoryItem;
+class QTimer;
+
+
 
 class FileModel : public QAbstractListModel
 {
@@ -122,8 +125,6 @@ private:
     qint64 m_size;
     int count;
 };
-
-class QTimer;
 
 class DirectoryItem : public ListItem
 {

@@ -163,7 +163,7 @@ private:
     WorkerThread*       m_thread;
     PreviewGenerator*   m_previewGenerator;
     FileModel*          m_fileModel;
-    ArrowPosition       m_posArrow;    
+    ArrowPosition       m_posArrow;
     int                 m_indexToShow;
 };
 
