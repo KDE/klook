@@ -27,9 +27,7 @@
 
 class PreviewGenerator;
 
-class PreviewProvider
-        : public QObject
-        , public QDeclarativeImageProvider
+class PreviewProvider : public QDeclarativeImageProvider
 {
 public:
     PreviewProvider();

@@ -27,13 +27,11 @@
 #include <QtCore>
 
 class MimeProvider
-        : public QObject
-        , public QDeclarativeImageProvider
+        : public QDeclarativeImageProvider
 {
 public:
     MimeProvider();
     QPixmap requestPixmap( const QString& id, QSize* size, const QSize& requestedSize );
-
 };
 
 #endif // MIMEPROVIDER_H
