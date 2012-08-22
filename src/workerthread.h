@@ -24,8 +24,10 @@
 
 #include "file.h"
 
-#include <QThread>
-#include <QStringList>
+#include <QtCore/QThread>
+#include <QtCore/QList>
+#include <QtCore/QStringList>
+#include <QtCore/QUrl>
 
 class WorkerThread : public QThread
 {
@@ -40,15 +42,13 @@ signals:
     void fileProcessed( const File *file );
     void fail();
 
-public slots:
-    void processUrl( const QStringList& urls );
-
 private:
-    QString getMime( const QString &st ) const;
-    File::FileType getType( const QString&, const QString& ) const;
+    QString getMime(const QUrl &url) const;
+    File::FileType getType(const QString&, const QString&) const;
+    void processUrl();
 
     bool isFound; // found at least one supported file
-    const QStringList& urls;
+    QList<QUrl> m_urls;
     QList<QByteArray> supportedImageFormats;
     QStringList m_mimeTypes;
 };

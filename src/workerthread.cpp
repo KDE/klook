@@ -32,51 +32,40 @@
 WorkerThread::WorkerThread( const QStringList& urls, QObject *parent )
     : QThread( parent )
     , isFound( false )
-    , urls( urls )
     , supportedImageFormats( QImageReader::supportedImageFormats() )
 {
     m_mimeTypes = Phonon::BackendCapabilities::availableMimeTypes();
+
+    foreach(QString url, urls)
+        m_urls.append(QUrl(url));
 }
 
 void WorkerThread::run()
 {
-    processUrl( urls );
-
-    if ( !isFound )
+    processUrl();
+    if (!isFound)
         emit fail();
 }
 
 
-void WorkerThread::processUrl( const QStringList &urls )
+void WorkerThread::processUrl()
 {
     QString path;
 
-    foreach ( const QString& str, urls )
+    foreach (QUrl url, m_urls )
     {
-        if ( !QDir::isAbsolutePath( str ) )
-            path = QDir::currentPath() + "/" + str;
-        else
-            path = str;
-
-        if ( QFile::exists( path ) )
-        {
-            QString mime = getMime( str );
-            File::FileType type = getType( mime, path );
-            const File *file = new File( path, type, mime );
-            emit fileProcessed(file);
-            isFound = true;
-        }
-        else
-            qWarning() << "File not found " << str;
+        QString mime = getMime(url);
+        File::FileType type = getType( mime, url.toString() );
+        const File *file = new File( url.toString(), type, mime );
+        emit fileProcessed(file);
+        isFound = true;
     }
 }
 
-QString WorkerThread::getMime( const QString& st ) const
+QString WorkerThread::getMime( const QUrl& url ) const
 {
-    KMimeType::Ptr ptr =  KMimeType::findByFileContent(st);
-    QString mime = ptr.isNull() ? QString() : ptr->name();
-    qDebug() << mime;
-    return mime;
+    KMimeType::Ptr ptr =  KMimeType::findByUrl(url);
+    return ptr->name();
 }
 
 File::FileType WorkerThread::getType( const QString& mime, const QString& path ) const
