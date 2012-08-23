@@ -86,35 +86,37 @@ Item {
     }
 
     // function for getting delegate of loader element
-    function bestDelegate( t ) {
-        if ( t == 1 ) {
+    function bestDelegate(t) {
+        // for some reason '===' does not work here
+        if (t == File.Image) {
             return imgDelegate;
         }
-        else if ( t == 2 ) {
+        else if (t == File.Video) {
             return videoDelegate;
         }
-        else if ( t == 3 ) {
+        else if (t == File.Txt) {
             return txtDelegate;
         }
-        else if ( t == 4 ) {
+        else if (t === File.Directory) {
             fileModel.scanDirectory( index )
             return folderDelegate;
         }
-        else if ( t == 5 ) {
+        else if (t == File.Audio) {
             return audioDelegate;
         }
-        else if ( t == 6 ) {
+        else if (t == File.OkularFile) {
             return okularDelegate;
         }
-        else if ( t == 0 ) {
+        else if(t == File.Undefined) {
             return mimeDelegate;
         }
+        console.log("MASAKA")
     }
 
     Loader
     {
         id: componentLoader
         anchors.fill: parent;
-        sourceComponent: bestDelegate( type )
+        sourceComponent: bestDelegate(type)
     }
 }

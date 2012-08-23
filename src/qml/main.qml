@@ -38,7 +38,7 @@ Rectangle {
     anchors.rightMargin: 0
     anchors.bottomMargin: 0
 
-    property int currentFileType: 3
+    property int currentFileType
 
     property alias mainState: mainWindow.state
     property alias wrapperState: albumWrapper.state
@@ -79,12 +79,12 @@ Rectangle {
             return 'videoPanel'
 
         if ( viewMode === "multi" )
-            if ( ( mainWindow.currentFileType === 2 ) || ( mainWindow.currentFileType === 5 ) )
+            if ((mainWindow.currentFileType === File.Video) || (mainWindow.currentFileType === File.Audio))
                 return 'fullscreenVideoPanelMulti'
             else
                 return 'fullscreenPanelMulti'
         else
-            if ( ( mainWindow.currentFileType === 2 ) || ( mainWindow.currentFileType === 5 ) )
+            if ((mainWindow.currentFileType === File.Video) || (mainWindow.currentFileType === File.Audio))
                 return 'fullscreenVideoPanelSingle'
             else
                 return 'fullscreenPanelSingle'
@@ -105,7 +105,7 @@ Rectangle {
 
         if ( ( mainWindow.state === "windowed" ) ) {
             if ( ( albumWrapper.state === 'fullscreen' ) &&
-                    ( ( currentFileType === 2 ) || ( currentFileType === 5 ) ) )
+                    ( ( currentFileType === File.Video ) || ( currentFileType === File.Audio ) ) )
                 panel.visible = true
             else
                 panel.visible = false
@@ -620,9 +620,9 @@ Rectangle {
                 anchors.leftMargin: 2
                 anchors.bottomMargin: 2
                 anchors.topMargin: 1
-                color: ( ( ( mainWindow.currentFileType === 4 ) ||
-                          ( mainWindow.currentFileType === 5 )  ||
-                          ( mainWindow.currentFileType === 0 ) ) &&
+                color: ( ( ( mainWindow.currentFileType === File.Directory ) ||
+                          ( mainWindow.currentFileType === File.Audio )  ||
+                          ( mainWindow.currentFileType === File.Undefined ) ) &&
                         ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
             }
 
@@ -705,10 +705,10 @@ Rectangle {
                 anchors.leftMargin: 1
                 anchors.bottomMargin: 1
                 anchors.topMargin: 1
-                color: ( ( ( mainWindow.currentFileType == 4 ) ||
-                          ( mainWindow.currentFileType == 5 ) ||
-                          ( mainWindow.currentFileType === 0 ) ) &&
-                        ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
+                color: (((mainWindow.currentFileType == File.Directory) ||
+                          (mainWindow.currentFileType == File.Audio ) ||
+                          (mainWindow.currentFileType === File.Undefined)) &&
+                        (albumWrapper.state == "fullscreen")) ? "#dadada" : "#333333"
             }
         }
     ]

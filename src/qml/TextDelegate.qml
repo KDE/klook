@@ -18,7 +18,7 @@ Component {
             onCurrentIndexChanged: {
                 if ( listItem.ListView.isCurrentItem )
                 {
-                    mainWindow.currentFileType = 3;
+                    mainWindow.currentFileType = File.Txt
                     mainWindow.updatePanel()
                     //Disable scrolling in embedded mode
                     if (mainWindow.state === 'embedded')

@@ -83,7 +83,7 @@ Component {
             target: photosListView;
             onCurrentIndexChanged: {
                 if ( listItem.ListView.isCurrentItem ) {
-                    mainWindow.currentFileType = 4;
+                    mainWindow.currentFileType = File.Directory;
                     folderIcon.opacity = 1
                     mainWindow.updatePanel()
                 } else {

@@ -73,7 +73,7 @@ Component {
             onCurrentIndexChanged: {
                 if ( listItem.ListView.isCurrentItem )
                 {
-                    mainWindow.currentFileType = 0;
+                    mainWindow.currentFileType = File.Undefined;
                     mimeIcon.opacity = 1
                     mainWindow.updatePanel()
                 } else

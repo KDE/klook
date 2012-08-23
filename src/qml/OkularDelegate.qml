@@ -17,8 +17,7 @@ Component {
             onCurrentIndexChanged: {
                 if ( listItem.ListView.isCurrentItem ) {
                     mouseControl.enabled = mainWindow.state == 'fullscreen' ? true : false
-                    mainWindow.currentFileType = 6;
-
+                    mainWindow.currentFileType = File.OkularFile
                     part.setPartParent()
                     mainWindow.updatePanel()
                 }
