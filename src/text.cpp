@@ -25,7 +25,7 @@
 #include <QFile>
 #include <QTextCodec>
 #include <QDebug>
-
+#include <KImageCache>
 #include <kencodingprober.h>
 
 MyText::MyText( QGraphicsItem* parent )
@@ -33,11 +33,11 @@ MyText::MyText( QGraphicsItem* parent )
     , m_isPreview(false)
 {
     m_viewer = new QPlainTextEdit();
-    m_viewer->setReadOnly( true );
+    m_viewer->setReadOnly(true);
     m_viewer->viewport()->setCursor( Qt::ArrowCursor );
-    m_viewer->setSizePolicy ( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_viewer->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    setWidget( m_viewer );
+    setWidget(m_viewer);
 }
 
 MyText::~MyText()

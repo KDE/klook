@@ -24,7 +24,7 @@
 #include <QtDBus/QDBusInterface>
 #include <QtDBus/QDBusReply>
 
-#include <kmimetypetrader.h>
+#include <KMimeTypeTrader>
 
 #include "video.h"
 #include "audio.h"

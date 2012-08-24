@@ -61,10 +61,7 @@ KLookApp::KLookApp()
 bool KLookApp::isEmbeddedParam() const
 {
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
-    bool embedded = args->isSet( "embedded" );
-
-    return embedded;
+    return args->isSet("embedded");
 }
 
 QRect KLookApp::rectParam() const

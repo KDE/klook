@@ -43,7 +43,7 @@ class Video : public QGraphicsProxyWidget
     Q_PROPERTY( bool ready READ isReady WRITE setReady NOTIFY ready )
 
 public:
-    Video( QGraphicsItem* parent = 0 );
+    Video(QGraphicsItem* parent = 0);
     ~Video();
 
 public slots:

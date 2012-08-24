@@ -2,7 +2,6 @@ import QtQuick 1.1
 import Widgets 1.0
 
 Component {
-    id: mimeDelegate
     Item {
         Image {
             id: mimeIcon
@@ -22,7 +21,7 @@ Component {
 
             Behavior on opacity { NumberAnimation { duration: 500 } }
         }
-        
+
         function getMaxTextWidth()
         {
             var w = name.paintedWidth
@@ -40,18 +39,18 @@ Component {
         InfoItem {
             id: name
             anchors.left: mimeIcon.right
-            text: "<b>" + getName( filePath ) +"</b>"
+            text: "<b>" + getName(filePath) +"</b>"
             font.pointSize: 15
             y: ( mimeIcon.height - mimeIcon.paintedHeight ) / 2 + iconHeightMargin
         }
-        
+
         InfoItem {
             id: itemType
             anchors.top: name.bottom
             anchors.left: mimeIcon.right
             text: mime
         }
-        
+
         InfoItem {
             id: modified
             anchors.top: itemType.bottom
@@ -60,7 +59,7 @@ Component {
             elide: Text.ElideNone
             wrapMode: Text.NoWrap
         }
-        
+
         InfoItem {
             id: size
             anchors.top: modified.bottom

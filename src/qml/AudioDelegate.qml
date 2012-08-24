@@ -3,13 +3,13 @@ import Widgets 1.0
 
 Component {
     id: audioDelegate
-    
+
     Item
     {
         id: audioItem
-        
+
         signal ready()
-        
+
         Image {
             id: audioIcon
             anchors.left: parent.left
@@ -30,7 +30,7 @@ Component {
             Behavior on opacity { NumberAnimation { duration: 500 } }
 
         }
-        
+
         // getting of maximum width of text info
         function getMaxTextWidth()
         {
@@ -52,25 +52,25 @@ Component {
             anchors.left: audioIcon.right
             y: ( audioIcon.height - audioIcon.paintedHeight ) / 2 + iconHeightMargin
         }
-        
+
         InfoItem {
             id : artist
             anchors.top: title.bottom
             anchors.left: audioIcon.right
         }
-        
+
         InfoItem {
             id : totalTime
             anchors.top: artist.bottom
             anchors.left: audioIcon.right
             wrapMode: Text.NoWrap
         }
-        
+
         Binding { target: totalTime; property: "anchors.top"; value: artist.visible ? artist.bottom : title.bottom }
-        
+
         Audio {
             id: audio
-            
+
             onTicked:
             {
                 if ( playing )
@@ -78,26 +78,26 @@ Component {
                     panel.videoSlider.value = tick * 1000 / audio.totalTime; // tick and totalTime in msec
                 }
             }
-            
+
             onPlayFinished:
             {
                 panel.playButtonState = 'Play'
                 panel.videoSlider.value = 0
             }
-            
+
             onReady:
             {
                 title.text = "<b>" + audio.title + "</b>"
                 artist.text = artistStr + " <b>" + audio.artist + "</b>"
                 artist.visible = ( audio.artist != "" )
-                
+
                 var h = audio.totalTime / ( 1000 * 3600 )
                 var strFmt = ( h >= 1 ) ? "hh:mm:ss" : "m:ss"
-                
+
                 totalTime.text = totalTimeStr + " <b>" + Qt.formatTime( audio.duration, strFmt ) + "</b>"
             }
         }
-        
+
         Connections{
             target: panel.playItemBtn;
             onButtonClick:
@@ -112,9 +112,9 @@ Component {
                 }
             }
         }
-        
+
         Connections{ target: panel.videoSlider; onPosChanged: audio.setPosition( panel.videoSlider.value * audio.totalTime / 1000 ) }
-        
+
         Connections{
             target: albumWrapper;
             onStateChanged:
@@ -125,7 +125,7 @@ Component {
                     audio.play()
             }
         }
-        
+
         Connections{
             target: photosListView;
             onCurrentIndexChanged: {
@@ -137,7 +137,7 @@ Component {
                     mainWindow.updatePanel()
                     if ( albumWrapper.state === "fullscreen" )
                         audio.play()
-                    
+
                     if ( audio.playing )
                         panel.playButtonState = 'Play'
                     else
