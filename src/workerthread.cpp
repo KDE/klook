@@ -50,8 +50,6 @@ void WorkerThread::run()
 
 void WorkerThread::processUrl()
 {
-    QString path;
-
     foreach (QUrl url, m_urls )
     {
         QString mime = getMime(url);
