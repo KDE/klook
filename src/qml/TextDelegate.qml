@@ -3,7 +3,7 @@ import Widgets 1.0
 
 Component {
     id: txtDelegate
-    
+
     Item {
         id: txtItem
         PlainText {
@@ -12,7 +12,7 @@ Component {
             anchors.fill: parent
             preview: false
         }
-        
+
         Connections{
             target: photosListView;
             onCurrentIndexChanged: {

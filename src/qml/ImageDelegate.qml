@@ -2,11 +2,9 @@ import QtQuick 1.1
 import Widgets 1.0
 
 Component {
-    id: imgDelegate
-    
     Item {
         id: imageItem
-        
+
         Image {
             id: img
             opacity: 0
@@ -18,14 +16,14 @@ Component {
             visible: albumWrapper.state === "fullscreen"
             width: Math.min( sourceSize.width, parent.width )
             height: Math.min( sourceSize.height, parent.height )
-            
+
             signal ready()
-            
+
             onStatusChanged: if ( img.status === Image.Ready ) { ready(); opacity = 1; }
-            
+
             Behavior on opacity { NumberAnimation { duration: 500 } }
         }
-        
+
         Connections{
             target: photosListView;
             onCurrentIndexChanged: {

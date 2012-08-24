@@ -2,7 +2,6 @@ import QtQuick 1.1
 import Widgets 1.0
 
 Component {
-    id: okularDelegate
     Item {
         id: t
         KPart {
@@ -11,7 +10,6 @@ Component {
             width: parent.width
             height: parent.height
         }
-
         Connections {
             target: photosListView
             onCurrentIndexChanged: {

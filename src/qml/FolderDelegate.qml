@@ -2,11 +2,7 @@ import QtQuick 1.1
 import Widgets 1.0
 
 Component {
-    id: folderDelegate
-    
     Item {
-        //        id: folderItem
-
         Image {
             id: folderIcon
             anchors.left: parent.left
@@ -78,7 +74,7 @@ Component {
             anchors.left: folderIcon.right
             text: elementsStr + " " + countElements
         }
-        
+
         Connections{
             target: photosListView;
             onCurrentIndexChanged: {

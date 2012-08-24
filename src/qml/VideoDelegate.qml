@@ -3,19 +3,19 @@ import Widgets 1.0
 
 Component {
     id: videoDelegate
-    
+
     Item
     {
         id: videoItem
-        
+
         signal ready()
-        
+
         Video {
             id: video
             opacity: 0
             anchors.fill: parent
             visible: albumWrapper.state === 'fullscreen' && video.ready
-            
+
             onTicked:
             {
                 if ( playing )
@@ -23,7 +23,7 @@ Component {
                     panel.videoSlider.value = tick * 1000 / video.totalTime; // tick and totalTime in msec
                 }
             }
-            
+
             onPlayFinished:
             {
                 panel.playButtonState = 'Play'
@@ -31,7 +31,7 @@ Component {
             }
             Behavior on opacity { NumberAnimation { duration: 500} }
         }
-        
+
         Connections{
             target: panel.playItemBtn;
             onButtonClick:
@@ -46,7 +46,7 @@ Component {
                 }
             }
         }
-        
+
         Connections{ target: panel.videoSlider; onPosChanged: video.setPosition( panel.videoSlider.value * video.totalTime / 1000 ) }
         Connections
         {
@@ -59,7 +59,7 @@ Component {
                     video.play()
             }
         }
-        
+
         Connections{
             target: photosListView;
             onCurrentIndexChanged: {
@@ -72,7 +72,7 @@ Component {
                     mainWindow.updatePanel()
                     if ( albumWrapper.state === "fullscreen" )
                         video.play()
-                    
+
                     if ( video.playing )
                         panel.playButtonState = 'Play'
                     else
