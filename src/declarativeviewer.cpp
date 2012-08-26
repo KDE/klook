@@ -199,10 +199,17 @@ void DeclarativeViewer::setRegisterTypes()
 void DeclarativeViewer::startWorkingThread()
 {
     // leave only unique entries
-    QSet<QString>  results;
-    foreach(QString url, m_urls)
-        results.insert(url);
-    m_urls = results.toList();
+    QSet<QString>  set;
+    for(int i = 0; i < m_urls.size(); i++)
+    {
+        if(set.contains(m_urls[i]))
+        {
+            m_urls.removeAt(i);
+            i--;
+        }
+        else
+            set.insert(m_urls[i]);
+    }
 
     if(m_thread)
         m_thread->exit();
