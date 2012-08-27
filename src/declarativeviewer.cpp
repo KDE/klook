@@ -272,11 +272,6 @@ void DeclarativeViewer::setActualSize()
     updateSize( m_currentFile );
 }
 
-void DeclarativeViewer::setActualSizeParam( bool value )
-{
-    Q_UNUSED( value )
-}
-
 void DeclarativeViewer::setFullScreen()
 {
     if ( isFullScreen() )
