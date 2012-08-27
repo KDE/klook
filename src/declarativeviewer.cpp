@@ -89,7 +89,6 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
 
     m_fileModel = new FileModel(this);
     m_fileModel->setRoleNames(ListItem::roleNames());
-    connect(this, SIGNAL(newItem(File*)) , m_fileModel, SLOT(append(File*)) );
 
     PreviewGenerator::createInstance()->setModel(m_fileModel);
 
@@ -559,14 +558,14 @@ void DeclarativeViewer::changeContent()
 
 void DeclarativeViewer::updateContent( int index )
 {
-    if ( index == -1 )
+    if (index == -1)
     {
-        rootContext()->setContextProperty( "openText",  ki18n( "Open in..." ).toString() );
-        rootContext()->setContextProperty( "fileName",  ki18n( "Elements: " ).toString() + QString::number( m_files.count() ) );
+        rootContext()->setContextProperty("openText",  ki18n( "Open in..." ).toString() );
+        rootContext()->setContextProperty("fileName",  ki18n( "Elements: " ).toString() + QString::number(m_fileModel->rowCount()));
     }
     else
     {
-        m_currentFile = m_files.at( index );
+        m_currentFile = m_fileModel->file(index);
         changeContent();
     }
 }
@@ -874,21 +873,20 @@ void DeclarativeViewer::skipTaskBar()
 
 void DeclarativeViewer::newFileProcessed( const File *file )
 {
-    if ( m_files.empty() )
+    if (!m_fileModel->rowCount())
     {
-        m_currentFile = const_cast<File *>( file );
+        m_currentFile = const_cast<File *>(file);
         emit setStartWindow();
         skipTaskBar();
     }
 
-    m_files.append( file );
+    m_fileModel->append(const_cast<File *>(file));
 
-    if (m_files.count() - 1 == m_indexToShow)
+    if (m_fileModel->rowCount() - 1 == m_indexToShow)
     {
         changeContent();
         setActualSize();
     }
-    emit newItem(const_cast<File *>(file));
 }
 
 void DeclarativeViewer::showNoFilesNotification()

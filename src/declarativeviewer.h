@@ -74,15 +74,13 @@ public:
     void init(const QStringList& urls, bool embedded = false, const QRect& rc = QRect( 0, 0, 0, 0 ), const int indexToShow = 0 );
 
 signals:
-    void newItem(File *file);
     void sizeChanged();
     void setFullScreenState();
     void setEmbeddedState();
     void setStartWindow();
 
 public slots:
-    void startWorkingThread();
-    void updateContent(int );
+    void updateContent(int index);
     void setActualSize();
     void setFullScreen();
     void onSetGallery(bool );
@@ -92,6 +90,9 @@ public slots:
     void setEmbedded(bool);
     void setRectIcon(const QRect&);
     void setUrls(const QStringList&);
+
+private:
+    void startWorkingThread();
 
 private slots:
     void newFileProcessed(const File* file);
@@ -145,8 +146,6 @@ private:
 
     const File*     m_currentFile;
 
-    QList<const File*>    m_files;
-
     bool            m_isActualSize;
     WidgetRegion    m_region;
 
@@ -163,7 +162,5 @@ private:
     ArrowPosition       m_posArrow;
     int                 m_indexToShow;
 };
-
-QApplication *createApplication( int& argc, char** argv );
 
 #endif // DECLARATIVEVIEWER_H

@@ -115,6 +115,11 @@ int FileModel::count()
     return rowCount();
 }
 
+File *FileModel::file(int index)
+{
+    return m_list[index]->file();
+}
+
 ListItem *ListItem::newItem(File *file, QObject *parent)
 {
     if(file->type() == File::Directory)

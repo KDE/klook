@@ -60,6 +60,7 @@ public slots:
     void append(File *file);
     void scanDirectory(int index);
     int count();
+    File *file(int index);
 
 private:
     ListItem* m_prototype;
@@ -95,6 +96,8 @@ public:
 
     void setPath(QString path) { m_file->setUrl(QUrl(path)); }
     void setMimeType(int type) { m_file->setType(static_cast<File::FileType>(type)); }
+
+    File *file() { return m_file; }
 
 signals:
     void dataChanged();
