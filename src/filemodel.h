@@ -89,13 +89,15 @@ public:
     static ListItem *newItem(File *file, QObject *parent);
     static QHash<int, QByteArray> roleNames();
 
-    virtual QVariant data( int role ) const;
+    virtual QVariant data(int role) const;
+
     virtual QString path() const;
-    virtual int type() const;
+    void setPath(QString path) { m_file->setUrl(QUrl(path)); }
+
     virtual QString mime() const;
 
-    void setPath(QString path) { m_file->setUrl(QUrl(path)); }
-    void setMimeType(int type) { m_file->setType(static_cast<File::FileType>(type)); }
+    virtual int type() const;
+    void setType(int type) { m_file->setType(static_cast<File::FileType>(type)); }
 
     File *file() { return m_file; }
 

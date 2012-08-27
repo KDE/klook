@@ -53,7 +53,7 @@ bool FileModel::setData( const QModelIndex &index, const QVariant &value, int ro
     if ( role == ListItem::FilePathRole )
         m_list[ index.row() ]->setPath( value.toString() );
     else if ( role == ListItem::TypeRole )
-        m_list[ index.row() ]->setMimeType( value.toInt() );
+        m_list[ index.row() ]->setType( value.toInt() );
 
     emit dataChanged( index, index );
 
