@@ -87,11 +87,12 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
 
     m_previewGenerator = PreviewGenerator::createInstance();
 
-    ListItem* prototypeItem = new ListItem( this );
-    m_fileModel = new FileModel( prototypeItem, this );
-    PreviewGenerator::createInstance()->setModel( m_fileModel );
+    m_fileModel = new FileModel(this);
+    m_fileModel->setRoleNames(ListItem::roleNames());
+    connect(this, SIGNAL(newItem(File*)) , m_fileModel, SLOT(append(File*)) );
 
-    connect( this, SIGNAL( newItem( QString, File::FileType, QString ) ) , m_fileModel, SLOT( append(QString, File::FileType,QString ) ) );
+    PreviewGenerator::createInstance()->setModel(m_fileModel);
+
 
     setRegisterTypes();
 

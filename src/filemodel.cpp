@@ -29,10 +29,9 @@
 #include <kglobal.h>
 #include <klocale.h>
 
-FileModel::FileModel( ListItem *prototype, QObject *parent )
+FileModel::FileModel(QObject *parent)
     : QAbstractListModel( parent )
 {
-    setRoleNames( prototype->roleNames() ) ;
 }
 
 int FileModel::rowCount( const QModelIndex &parent ) const

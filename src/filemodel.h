@@ -42,7 +42,7 @@ class FileModel : public QAbstractListModel
   Q_OBJECT
 
 public:
-    explicit FileModel( ListItem* prototype, QObject* parent = 0 );
+    explicit FileModel(QObject* parent = 0);
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const;
 
@@ -56,6 +56,7 @@ public:
     void reset();
 
     void refreshItem(ListItem *item);
+    void setRoleNames(const QHash<int,QByteArray> &roleNames) { QAbstractItemModel::setRoleNames(roleNames); }
 
 public slots:
     void append(QString path, File::FileType type, QString mime);
@@ -88,9 +89,7 @@ public:
         : QObject(parent) {}
     virtual ~ListItem() {}
 
-    QHash<int, QByteArray> roleNames() const;
-
-public slots:
+    static QHash<int, QByteArray> roleNames();
     bool loaded();
     void setLoaded( bool b );
     virtual QVariant data( int role ) const;
