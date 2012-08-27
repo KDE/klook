@@ -110,7 +110,7 @@ Item {
         else if(t == File.Undefined) {
             return mimeDelegate;
         }
-        console.log("MASAKA")
+        console.debug("Should never be here")
     }
 
     Loader
