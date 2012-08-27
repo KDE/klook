@@ -259,10 +259,9 @@ void DeclarativeViewer::onMetaDataChanged()
     }
 
     m_startFullScreen = false;
-    if ( m_mediaObject )
+    if (m_mediaObject)
     {
         QObject::disconnect( m_mediaObject, SIGNAL( metaDataChanged() ), this, SLOT( onMetaDataChanged() ) );
-
         delete m_mediaObject;
         m_mediaObject = 0;
     }
@@ -302,11 +301,11 @@ QSize DeclarativeViewer::getActualSize()
     if (!m_currentFile)
         return QSize();
 
-    if ( m_currentFile->type() == File::Video )
+    if (m_currentFile->type() == File::Video)
     {
         return QSize();
     }
-    else if ( m_currentFile->type() == File::Image )
+    else if (m_currentFile->type() == File::Image)
     {
         QPixmap pixmap(m_currentFile->url().toLocalFile());
         m_width = pixmap.width();
@@ -315,12 +314,12 @@ QSize DeclarativeViewer::getActualSize()
         sz.setHeight( sz.height() + ( m_isEmbedded ? 0 : height_offset ) );
         return sz;
     }
-    else if ( m_currentFile->type() == File::Audio )
-        return QSize( min_width, min_height );
-    else if ( m_currentFile->type() == File::Directory )
-        return QSize( min_width + 100, min_height );
-    else if ( m_currentFile->type() == File::Undefined )
-        return QSize( min_width + 100, min_height );
+    else if (m_currentFile->type() == File::Audio)
+        return QSize(min_width, min_height);
+    else if (m_currentFile->type() == File::Directory)
+        return QSize(min_width + 100, min_height);
+    else if (m_currentFile->type() == File::Undefined)
+        return QSize(min_width + 100, min_height);
     else
     {
         QSize size = getTextWindowSize( m_currentFile->url().toLocalFile() );
@@ -385,7 +384,7 @@ void DeclarativeViewer::updateSize( const File* file )
     }
     else if ( file->type() == File::Image )
     {
-        QPixmap pixmap( file->name() );
+        QPixmap pixmap(file->url().toLocalFile());
 
         m_width = pixmap.width();
         m_height = pixmap.height();
@@ -393,7 +392,7 @@ void DeclarativeViewer::updateSize( const File* file )
         QSize sz = calculateViewSize( QSize( m_width, m_height ) );
         sz.setWidth(sz.width() + ( m_isEmbedded ? 0 : 6 )) ;
         sz.setHeight( sz.height() + ( m_isEmbedded ? 0 : height_offset +4 ) );
-        showWidget( sz );
+        showWidget(sz);
     }
     else if ( ( file->type() == File::Audio ) ||
               ( file->type() == File::Directory ) ||
@@ -548,14 +547,13 @@ void DeclarativeViewer::changeContent()
     if ( !m_currentFile  ) return;
 
     KService::Ptr ptr = KMimeTypeTrader::self()->preferredService( m_currentFile->mime() );
-/*    if ( ptr.isNull() )
+    if ( ptr.isNull() )
         rootContext()->setContextProperty( "openText", ki18n( "Open" ).toString() );
     else
     {
         KService *serv = ptr.data();
         rootContext()->setContextProperty( "openText",  ( ki18n( "Open in " ).toString() + serv->name() ) );
     }
-*/
 
     QFileInfo fi(m_currentFile->url().toString());
     rootContext()->setContextProperty( "fileName", fi.fileName() );
@@ -885,11 +883,12 @@ void DeclarativeViewer::newFileProcessed( const File *file )
     {
         m_currentFile = const_cast<File *>( file );
         emit setStartWindow();
-
         skipTaskBar();
     }
+
     m_files.append( file );
-    if (m_files.count()-1 == m_indexToShow)
+
+    if (m_files.count() - 1 == m_indexToShow)
     {
         changeContent();
         setActualSize();

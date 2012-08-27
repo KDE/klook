@@ -81,18 +81,17 @@ signals:
     void setStartWindow();
 
 public slots:
-
     void startWorkingThread();
-    void updateContent( int );
+    void updateContent(int );
     void setActualSize();
     void setFullScreen();
-    void onSetGallery( bool );
+    void onSetGallery(bool );
 
     void onMetaDataChanged();
 
-    void setEmbedded( bool );
-    void setRectIcon( const QRect& );
-    void setUrls( const QStringList& );
+    void setEmbedded(bool);
+    void setRectIcon(const QRect&);
+    void setUrls(const QStringList&);
 
 private slots:
     void newFileProcessed(const File* file);
