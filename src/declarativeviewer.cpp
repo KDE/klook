@@ -66,8 +66,7 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
     , m_region(FRAME_REGION)
     , m_mediaObject(0)
     , m_videoWidget(0)
-    , m_width(min_width)
-    , m_height(min_height)
+    , m_size(min_width, min_height)
     , m_compositing(false)
     , m_thread(0)
     , m_indexToShow(0)
@@ -82,8 +81,7 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
 
     setResizeMode( QDeclarativeView::SizeRootObjectToView );
 
-    setMinimumWidth( m_width );
-    setMinimumHeight( m_height );
+    setMinimumSize(m_size);
 
     m_previewGenerator = PreviewGenerator::createInstance();
 
@@ -235,13 +233,12 @@ void DeclarativeViewer::onMetaDataChanged()
 {
     if ( m_videoWidget )
     {
-        m_width = m_videoWidget->sizeHint().width();
-        m_height = m_videoWidget->sizeHint().height();
+        m_size = m_videoWidget->sizeHint();
 
         delete m_videoWidget;
         m_videoWidget = 0;
 
-        QSize sz = calculateViewSize( QSize( m_width, m_height ) );
+        QSize sz = calculateViewSize(m_size);
         // + margins values in windowed mode
         sz.setWidth(sz.width() + ( m_isEmbedded ? 0 : 6 )) ;
         sz.setHeight( sz.height() + ( m_isEmbedded ? 0 : height_offset +4 ) );
@@ -301,11 +298,10 @@ QSize DeclarativeViewer::getActualSize()
     }
     else if (m_currentFile->type() == File::Image)
     {
-        QPixmap pixmap(m_currentFile->url().toLocalFile());
-        m_width = pixmap.width();
-        m_height = pixmap.height();
-        QSize sz = calculateViewSize( QSize( m_width, m_height ) );
-        sz.setHeight( sz.height() + ( m_isEmbedded ? 0 : height_offset ) );
+        QPixmap pixmap(m_currentFile->url().toString());
+        m_size = pixmap.size();
+        QSize sz = calculateViewSize(m_size);
+        sz.setHeight(sz.height() + ( m_isEmbedded ? 0 : height_offset ));
         return sz;
     }
     else if (m_currentFile->type() == File::Audio)
@@ -379,11 +375,8 @@ void DeclarativeViewer::updateSize( const File* file )
     else if ( file->type() == File::Image )
     {
         QPixmap pixmap(file->url().toString());
-
-        m_width = pixmap.width();
-        m_height = pixmap.height();
-
-        QSize sz = calculateViewSize( QSize( m_width, m_height ) );
+        m_size = pixmap.size();
+        QSize sz = calculateViewSize(m_size);
         sz.setWidth(sz.width() + ( m_isEmbedded ? 0 : 6 )) ;
         sz.setHeight( sz.height() + ( m_isEmbedded ? 0 : height_offset +4 ) );
         showWidget(sz);
@@ -916,21 +909,21 @@ QSize DeclarativeViewer::getTextWindowSize(QString url)
     QTextDocument* doc = new QTextDocument( text );
     QSize size =  doc->documentLayout()->documentSize().toSize();
     delete doc;
+
     size.setWidth( size.width() + 34 );
     size.setHeight( size.height() + 10 );
 
     QDesktopWidget dw;
     QRect rectDesktop = dw.screenGeometry( this );
-    m_width = rectDesktop.width();
-    m_height = rectDesktop.height();
+    m_size = rectDesktop.size();
 
-    if ( size.width() > m_width * 0.8 )
+    if (size.width() > m_size.width() * 0.8)
     {
-        size.setWidth( m_width * 0.8 );
+        size.setWidth( m_size.width() * 0.8 );
     }
-    if ( size.height() > m_height * 0.8 )
+    if ( size.height() > m_size.height() * 0.8 )
     {
-        size.setHeight( m_height * 0.8 );
+        size.setHeight( m_size.height() * 0.8 );
     }
 
     size.setHeight( size.height() + ( m_isEmbedded ? 0 : height_offset ) );

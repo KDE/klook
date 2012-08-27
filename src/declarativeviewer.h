@@ -152,8 +152,7 @@ private:
     Phonon::MediaObject* m_mediaObject;
     Phonon::VideoWidget* m_videoWidget;
 
-    int m_width;
-    int m_height;
+    QSize m_size;
 
     bool                m_compositing;
     WorkerThread*       m_thread;
