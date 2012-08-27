@@ -74,7 +74,7 @@ public:
     void init(const QStringList& urls, bool embedded = false, const QRect& rc = QRect( 0, 0, 0, 0 ), const int indexToShow = 0 );
 
 signals:
-    void newItem(QString name, File::FileType type, QString mime);
+    void newItem(File *file);
     void sizeChanged();
     void setFullScreenState();
     void setEmbeddedState();
@@ -113,7 +113,7 @@ protected:
 
     void setRegisterTypes();
 
-    void createVideoObject( const QString& filePath );
+    void createVideoObject( QUrl url );
     QSize calculateViewSize( const QSize& sz );
 
     QSize inscribedRectToRect( const QSize& sz1, const QSize& sz2 );

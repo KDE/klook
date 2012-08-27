@@ -22,15 +22,13 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include <QObject>
+#include <QtCore/QObject>
+#include <QtCore/QUrl>
 
 class File : public QObject
 {
     Q_OBJECT
     Q_ENUMS(FileType)
-    Q_PROPERTY( QString name READ name WRITE setName )
-    Q_PROPERTY( FileType type READ type WRITE setType )
-
 public:
     enum FileType
     {
@@ -44,23 +42,23 @@ public:
     };
 
     File( QObject* parent );
-    File( const QString& name = "", FileType type = Undefined, const QString& mime = "", QObject* parent = 0 );
+    File( QUrl url = QUrl(), FileType type = Undefined, const QString& mime = "", QObject* parent = 0 );
 
-    QString name() const;
-    void setName( const QString& );
+    QUrl url() const;
+    void setUrl( QUrl url );
 
     File::FileType type() const;
-    void setType( FileType );
+    void setType(FileType type);
 
     QString mime() const;
-    void setMime( const QString& );
+    void setMime(const QString &mime);
 
     static QString fileTypeToString( FileType );
 
 private:
-    QString     m_name;
-    FileType    m_type;
-    QString     m_mime;
+    QUrl m_url;
+    FileType m_type;
+    QString m_mime;
 
 };
 

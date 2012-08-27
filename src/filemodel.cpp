@@ -22,12 +22,10 @@
 #include "filemodel.h"
 #include "file.h"
 
-#include <QStack>
-#include <QTimer>
-#include <QMessageBox>
-
-#include <kglobal.h>
-#include <klocale.h>
+#include <KGlobal>
+#include <KLocale>
+#include <QtCore/QStack>
+#include <QtCore/QTimer>
 
 FileModel::FileModel(QObject *parent)
     : QAbstractListModel( parent )
@@ -55,7 +53,7 @@ bool FileModel::setData( const QModelIndex &index, const QVariant &value, int ro
     if ( role == ListItem::FilePathRole )
         m_list[ index.row() ]->setPath( value.toString() );
     else if ( role == ListItem::TypeRole )
-        m_list[ index.row() ]->setMimeType( value.toString() );
+        m_list[ index.row() ]->setMimeType( value.toInt() );
 
     emit dataChanged( index, index );
 
@@ -76,7 +74,7 @@ void FileModel::refreshRow( const QModelIndex & index )
 
 QModelIndex FileModel::indexFromRowNumber( int row )
 {
-    return index( row );
+    return index(row);
 }
 
 void FileModel::reset()
@@ -96,24 +94,18 @@ void FileModel::refreshItem(ListItem *item)
         }
 }
 
-void FileModel::append( QString path, File::FileType type, QString mime )
+void FileModel::append(File *file)
 {
-    QString t = QString::number(type);
-    if ( type == File::Directory )
-        appendRow( new DirectoryItem( path, t, this) );
-    else if ( type == File::Undefined )
-        appendRow( new UnsupportedItem( path, t, mime, this ) );
-    else
-        appendRow( new ListItem( path, t, mime, this ) );
+    appendRow(ListItem::newItem(file, this));
 }
 
 
 void FileModel::scanDirectory(int index)
 {
-    if ( index >= 0 && index < rowCount() )
+    if (index >= 0 && index < rowCount())
     {
-        DirectoryItem *item = static_cast<DirectoryItem *>( m_list[ index ] );
-        if ( item )
+        DirectoryItem *item = static_cast<DirectoryItem *>(m_list[index]);
+        if (item)
             item->startScan();
     }
 }
@@ -123,19 +115,28 @@ int FileModel::count()
     return rowCount();
 }
 
-QString ListItem::path() const
+ListItem *ListItem::newItem(File *file, QObject *parent)
 {
-    return m_path;
+    if(file->type() == File::Directory)
+        return new DirectoryItem(file, parent);
+    else if(file->type() == File::Undefined)
+        return new UnsupportedItem(file, parent);
+    return new ListItem(file, parent);
 }
 
-QString ListItem::type() const
+QString ListItem::path() const
 {
-    return m_type;
+    return m_file->url().toString();
+}
+
+int ListItem::type() const
+{
+    return m_file->type();
 }
 
 QString ListItem::mime() const
 {
-    return m_mime;
+    return m_file->mime();
 }
 
 QVariant ListItem::data( int role ) const
@@ -157,35 +158,24 @@ QVariant ListItem::data( int role ) const
     return QVariant();
 }
 
-QHash<int, QByteArray> ListItem::roleNames() const
+QHash<int, QByteArray> ListItem::roleNames()
 {
     QHash<int, QByteArray> names;
-    names[ FilePathRole ] = "filePath";
-    names[ TypeRole ] = "type";
-    names[ LastModifiedRole ] = "lastModified";
-    names[ ContentSizeRole ] = "contentSize";
-    names[ CountRole ] = "countElements";
-    names[ MimeRole ] = "mime";
+    names[FilePathRole] = "filePath";
+    names[TypeRole] = "type";
+    names[LastModifiedRole] = "lastModified";
+    names[ContentSizeRole] = "contentSize";
+    names[CountRole] = "countElements";
+    names[MimeRole] = "mime";
 
     return names;
 }
 
-bool ListItem::loaded()
-{
-    return m_isLoaded;
-}
-
-void ListItem::setLoaded( bool b )
-{
-    m_isLoaded = b;
-    emit imageChanged();
-}
-
-DirectoryItem::DirectoryItem( QString filePath, QString type, QObject* parent )
-    : ListItem( filePath, type, "inode/directory", parent )
+DirectoryItem::DirectoryItem( File *file, QObject* parent )
+    : ListItem( file, parent )
     , isScanned( false )
-    , dir( filePath )
-    , sizeFinder( new DirectorySizeFinder( filePath ) )
+    , dir( file->url().toString() )
+    , sizeFinder(new DirectorySizeFinder(file->url().toString()))
     , timer( new QTimer( this ) )
     , size( 0 )
     , count( 0 )
@@ -253,19 +243,20 @@ void DirectoryItem::startScan()
 
 void DirectorySizeFinder::run()
 {
+    // TODO: replace with dir iterator
     QStack<QString> scan;
     scan.push( path );
-    while ( !scan.empty() )
+    while (!scan.empty())
     {
         const QString topItem = scan.pop();
-        QDir dir( topItem );
-        QFileInfoList list = dir.entryInfoList( QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs );
+        QDir dir(topItem);
+        QFileInfoList list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files | QDir::Dirs);
 
         count += list.size();
         for ( int i = 0; i < list.size(); i++ )
         {
-            if ( list[i].isDir() )
-                scan.push( list[i].absoluteFilePath() );
+            if (list[i].isDir())
+                scan.push(list[i].absoluteFilePath());
             else
                 m_size += list[i].size();
         }
@@ -273,8 +264,8 @@ void DirectorySizeFinder::run()
 }
 
 
-UnsupportedItem::UnsupportedItem( QString filePath, QString type, QString mime, QObject *parent )
-    : ListItem( filePath, type, mime, parent )
+UnsupportedItem::UnsupportedItem(File *file, QObject *parent )
+    : ListItem( file, parent )
 {
 }
 
@@ -291,5 +282,5 @@ QVariant UnsupportedItem::data(int role) const
         return KGlobal::locale()->formatByteSize( fi.size() );
     }
 
-    return ListItem::data( role );
+    return ListItem::data(role);
 }

@@ -22,20 +22,18 @@
 #ifndef FILEMODEL_H
 #define FILEMODEL_H
 
-#include <QAbstractListModel>
-#include <QList>
-#include <QObject>
-#include <QDir>
-#include <QDateTime>
-#include <QThread>
+#include <QtCore/QAbstractListModel>
+#include <QtCore/QList>
+#include <QtCore/QObject>
+#include <QtCore/QDir>
+#include <QtCore/QDateTime>
+#include <QtCore/QThread>
 
 #include "file.h"
 
 class ListItem;
 class DirectoryItem;
 class QTimer;
-
-
 
 class FileModel : public QAbstractListModel
 {
@@ -59,7 +57,7 @@ public:
     void setRoleNames(const QHash<int,QByteArray> &roleNames) { QAbstractItemModel::setRoleNames(roleNames); }
 
 public slots:
-    void append(QString path, File::FileType type, QString mime);
+    void append(File *file);
     void scanDirectory(int index);
     int count();
 
@@ -83,32 +81,26 @@ public:
         MimeRole
     };
 
-    ListItem(QString filePath, QString fileType, QString mime, QObject* parent = 0)
-        : QObject( parent ), m_path( filePath ), m_type( fileType ), m_mime(mime) {}
-    ListItem(QObject *parent = 0)
-        : QObject(parent) {}
+    ListItem(File *file, QObject *parent)
+        : QObject(parent), m_file(file) {}
     virtual ~ListItem() {}
 
+    static ListItem *newItem(File *file, QObject *parent);
     static QHash<int, QByteArray> roleNames();
-    bool loaded();
-    void setLoaded( bool b );
+
     virtual QVariant data( int role ) const;
     virtual QString path() const;
-    virtual QString type() const;
+    virtual int type() const;
     virtual QString mime() const;
 
-    void setPath(QString path) { m_path = path; }
-    void setMimeType(QString type) { m_type = type; }
+    void setPath(QString path) { m_file->setUrl(QUrl(path)); }
+    void setMimeType(int type) { m_file->setType(static_cast<File::FileType>(type)); }
 
 signals:
     void dataChanged();
-    void imageChanged();
 
 private:
-    QString m_path;
-    QString m_type;
-    bool m_isLoaded;
-    QString m_mime;
+    File *m_file;
 };
 
 class DirectorySizeFinder : public QThread
@@ -131,9 +123,9 @@ class DirectoryItem : public ListItem
 {
     Q_OBJECT
 public:
-    DirectoryItem( QString filePath, QString type, QObject* parent = 0 );
+    DirectoryItem(File *file, QObject* parent = 0);
     ~DirectoryItem();
-    QVariant data( int role ) const;
+    QVariant data(int role) const;
     void startScan();
 private slots:
     void timeout();
@@ -154,7 +146,7 @@ class UnsupportedItem : public ListItem
 {
     Q_OBJECT
 public:
-    UnsupportedItem(QString filePath, QString type, QString mime, QObject* parent = 0);
+    UnsupportedItem(File *file, QObject* parent = 0);
     QVariant data( int role ) const;
 };
 

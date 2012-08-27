@@ -23,28 +23,26 @@
 
 File::File( QObject* parent )
     : QObject( parent )
-    , m_name( "name" )
     , m_type( Undefined )
-    , m_mime( "" )
 {
 }
 
-File::File( const QString& name, FileType type, const QString& mime,QObject* parent )
+File::File( QUrl url, FileType type, const QString& mime,QObject* parent )
     : QObject( parent )
-    , m_name( name )
+    , m_url( url )
     , m_type( type )
     , m_mime( mime )
 {
 }
 
-QString File::name() const
+QUrl File::url() const
 {
-    return m_name;
+    return m_url;
 }
 
-void File::setName( const QString & name )
+void File::setUrl(QUrl url)
 {
-    m_name = name;
+    m_url = url;
 }
 
 File::FileType File::type() const
@@ -52,17 +50,17 @@ File::FileType File::type() const
     return m_type;
 }
 
-void File::setType( FileType type )
+void File::setType(FileType type)
 {
     m_type = type;
 }
 
-QString File::mime( ) const
+QString File::mime() const
 {
     return m_mime;
 }
 
-void File::setMime( const QString & mime )
+void File::setMime(const QString &mime)
 {
     m_mime = mime;
 }

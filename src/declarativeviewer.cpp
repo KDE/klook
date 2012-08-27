@@ -125,9 +125,6 @@ DeclarativeViewer::~DeclarativeViewer()
 
 void DeclarativeViewer::init(const QStringList& urls, bool embedded, const QRect& rc, const int indexToShow )
 {
-    qDeleteAll(m_files);
-    m_files.clear();
-    m_urls.clear();
     m_currentFile = 0;
     m_indexToShow = indexToShow;
 
@@ -221,13 +218,13 @@ void DeclarativeViewer::startWorkingThread()
     m_thread->start();
 }
 
-void DeclarativeViewer::createVideoObject( const QString& filePath )
+void DeclarativeViewer::createVideoObject( QUrl url )
 {
     delete m_videoWidget;
     delete m_mediaObject;
 
     m_mediaObject = new Phonon::MediaObject();
-    m_mediaObject->setCurrentSource( QUrl( filePath ) );
+    m_mediaObject->setCurrentSource(url);
     m_videoWidget = new Phonon::VideoWidget();
     m_videoWidget->hide();
 
@@ -311,7 +308,7 @@ QSize DeclarativeViewer::getActualSize()
     }
     else if ( m_currentFile->type() == File::Image )
     {
-        QPixmap pixmap( m_currentFile->name() );
+        QPixmap pixmap(m_currentFile->url().toLocalFile());
         m_width = pixmap.width();
         m_height = pixmap.height();
         QSize sz = calculateViewSize( QSize( m_width, m_height ) );
@@ -326,7 +323,7 @@ QSize DeclarativeViewer::getActualSize()
         return QSize( min_width + 100, min_height );
     else
     {
-        QSize size = getTextWindowSize( m_currentFile->name() );
+        QSize size = getTextWindowSize( m_currentFile->url().toLocalFile() );
         return size;
     }
 
@@ -376,7 +373,7 @@ void DeclarativeViewer::showWidget( const QSize& sz )
 
 void DeclarativeViewer::updateSize( const File* file )
 {
-    if ( file == 0 )
+    if (!file)
     {
         m_startFullScreen = false;
         return;
@@ -384,7 +381,7 @@ void DeclarativeViewer::updateSize( const File* file )
 
     if ( file->type() == File::Video )
     {
-        createVideoObject( file->name() );
+        createVideoObject( file->url() );
     }
     else if ( file->type() == File::Image )
     {
@@ -413,7 +410,7 @@ void DeclarativeViewer::updateSize( const File* file )
     }
     else if ( file->type() == File::Txt )
     {
-        QSize sz = getTextWindowSize( file->name() );
+        QSize sz = getTextWindowSize( file->url().toLocalFile() );
         showWidget( sz );
     }
     else if( file->type() == File::OkularFile)
@@ -559,10 +556,11 @@ void DeclarativeViewer::changeContent()
         rootContext()->setContextProperty( "openText",  ( ki18n( "Open in " ).toString() + serv->name() ) );
     }
 */
-    QFileInfo fi( m_currentFile->name() );
+
+    QFileInfo fi(m_currentFile->url().toString());
     rootContext()->setContextProperty( "fileName", fi.fileName() );
     rootContext()->setContextProperty( "indexToShow", m_indexToShow );
-    rootContext()->setContextProperty( "fileUrl", m_currentFile->name() );
+    rootContext()->setContextProperty( "fileUrl", m_currentFile->url() );
     rootContext()->setContextProperty( "fileType", File::fileTypeToString( m_currentFile->type() ) );
 }
 
@@ -896,7 +894,7 @@ void DeclarativeViewer::newFileProcessed( const File *file )
         changeContent();
         setActualSize();
     }
-    emit newItem(file->name(), file->type(), file->mime());
+    emit newItem(const_cast<File *>(file));
 }
 
 void DeclarativeViewer::showNoFilesNotification()
