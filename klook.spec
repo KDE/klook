@@ -97,7 +97,7 @@ Klook is a quick preview feature based on Qt and Qt Quick, allows users to look 
 
 %changelog
 * Thu Mar 29 2012 Sergey Borovkov <sergey.borovkov@osinit.ru>
-- Move qml files and icons to %_kde_appsdir
+- Move qml files and icons to kde_appsdir
 
 * Tue Feb 21 2012 abf
 - The release updated by ABF
