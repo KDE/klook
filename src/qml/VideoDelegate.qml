@@ -50,7 +50,7 @@ Component {
         Connections{ target: panel.videoSlider; onPosChanged: video.setPosition( panel.videoSlider.value * video.totalTime / 1000 ) }
         Connections
         {
-            target: albumWrapper;
+            target: albumWrapper
             onStateChanged:
             {
                 if ( albumWrapper.state === "inGrid" )
