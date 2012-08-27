@@ -315,8 +315,8 @@ QSize DeclarativeViewer::getActualSize()
     else if (m_currentFile->type() == File::Undefined)
         return QSize(min_width + 100, min_height);
     else
-    {
-        QSize size = getTextWindowSize( m_currentFile->url().toLocalFile() );
+     {
+        QSize size = getTextWindowSize( m_currentFile->url().toString());
         return size;
     }
 
@@ -378,7 +378,7 @@ void DeclarativeViewer::updateSize( const File* file )
     }
     else if ( file->type() == File::Image )
     {
-        QPixmap pixmap(file->url().toLocalFile());
+        QPixmap pixmap(file->url().toString());
 
         m_width = pixmap.width();
         m_height = pixmap.height();
