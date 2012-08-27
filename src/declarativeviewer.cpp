@@ -106,8 +106,6 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
 
     skipTaskBar();
 
-    setViewMode( Single );
-
     connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), SLOT(focusChanged(QWidget*, QWidget*)));
     connect(engine(), SIGNAL(quit()), SLOT(close()));
 
@@ -117,7 +115,7 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
 
 DeclarativeViewer::~DeclarativeViewer()
 {
-    qDeleteAll(m_files);
+//    qDeleteAll(m_files);
 
     if(m_thread)
         m_thread->exit();
@@ -137,6 +135,8 @@ void DeclarativeViewer::init(const QStringList& urls, bool embedded, const QRect
     m_urls = urls;
 
     m_fileModel->reset();
+
+    setViewMode( m_urls.count() > 1 ? Multi : Single);
 
     m_previewGenerator->setFiles(m_urls);
     rootContext()->setContextProperty("embedded", m_isEmbedded);
@@ -550,9 +550,6 @@ void DeclarativeViewer::changeContent()
 {
     if ( !m_currentFile  ) return;
 
-    ViewMode mode = ( m_files.size() == 1 ) ? Single : Multi;
-    setViewMode( mode );
-
     KService::Ptr ptr = KMimeTypeTrader::self()->preferredService( m_currentFile->mime() );
 /*    if ( ptr.isNull() )
         rootContext()->setContextProperty( "openText", ki18n( "Open" ).toString() );
@@ -889,14 +886,9 @@ void DeclarativeViewer::newFileProcessed( const File *file )
     if ( m_files.empty() )
     {
         m_currentFile = const_cast<File *>( file );
-
-        rootContext()->setContextProperty( "viewMode", ( ( m_urls.count() == 1 ) ? "single" : "multi" ) );
         emit setStartWindow();
 
         skipTaskBar();
-    }
-    else {
-        setViewMode( Multi );
     }
     m_files.append( file );
     if (m_files.count()-1 == m_indexToShow)
