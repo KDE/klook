@@ -79,7 +79,8 @@ public:
         LastModifiedRole,
         ContentSizeRole,
         CountRole,       // object count for folders
-        MimeRole
+        MimeRole,
+        LocalFileRole // is file local??
     };
 
     ListItem(File *file, QObject *parent)

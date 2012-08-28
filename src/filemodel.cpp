@@ -157,6 +157,8 @@ QVariant ListItem::data( int role ) const
     case MimeRole:
         return mime();
 
+    case LocalFileRole:
+        return m_file->url().isLocalFile();
     default:
         break;
     }
@@ -172,6 +174,7 @@ QHash<int, QByteArray> ListItem::roleNames()
     names[ContentSizeRole] = "contentSize";
     names[CountRole] = "countElements";
     names[MimeRole] = "mime";
+    names[LocalFileRole] = "isLocal";
 
     return names;
 }
