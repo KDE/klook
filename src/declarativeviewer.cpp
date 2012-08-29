@@ -288,7 +288,7 @@ void DeclarativeViewer::setFullScreen()
 
 QSize DeclarativeViewer::getActualSize()
 {
-    if (!m_currentFile)
+    if (!m_currentFile || !m_currentFile->url().isLocalFile())
         return QSize();
 
     if (m_currentFile->type() == File::Video)
