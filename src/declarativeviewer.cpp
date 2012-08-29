@@ -26,6 +26,7 @@
 
 #include <KMimeTypeTrader>
 
+#include "progressdeclarativeitem.h"
 #include "video.h"
 #include "audio.h"
 #include "text.h"
@@ -89,7 +90,6 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
     m_fileModel->setRoleNames(ListItem::roleNames());
 
     PreviewGenerator::createInstance()->setModel(m_fileModel);
-
 
     setRegisterTypes();
 
@@ -160,6 +160,7 @@ void DeclarativeViewer::setRegisterTypes()
     qmlRegisterType<Audio>( "Widgets", 1, 0, "Audio" );
     qmlRegisterType<MyText>( "Widgets", 1, 0, "PlainText" );
     qmlRegisterType<KPartsDeclarativeItem>("Widgets", 1, 0, "KPart");
+    qmlRegisterType<ProgressDeclarativeItem>("Widgets", 1, 0, "ProgressDelegate");
 
     qmlRegisterType<File>("Widgets", 1, 0, "File"); // to use File::FileType enum
 

@@ -34,6 +34,7 @@ set( klook_SRCS src/main.cpp
                                 src/mimeprovider.cpp
                                 src/kpartsdeclarativeitem.cpp
                                 src/kpartswidget.cpp
+                                src/progressdeclarativeitem.cpp
                                 ${qml_files} )
 
 #set( KDE4_ICON_DIR  ${CMAKE_INSTALL_PREFIX}/share/icons )
