@@ -547,7 +547,6 @@ void DeclarativeViewer::changeContent()
     rootContext()->setContextProperty( "fileName", fi.fileName() );
     rootContext()->setContextProperty( "indexToShow", m_indexToShow );
     rootContext()->setContextProperty( "fileUrl", m_currentFile->url() );
-    rootContext()->setContextProperty( "fileType", File::fileTypeToString( m_currentFile->type() ) );
 }
 
 void DeclarativeViewer::updateContent( int index )

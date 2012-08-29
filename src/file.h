@@ -53,7 +53,6 @@ public:
     QString mime() const;
     void setMime(const QString &mime);
 
-    static QString fileTypeToString( FileType );
 
 private:
     QUrl m_url;

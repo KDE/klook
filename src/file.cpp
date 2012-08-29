@@ -64,32 +64,3 @@ void File::setMime(const QString &mime)
 {
     m_mime = mime;
 }
-
-QString File::fileTypeToString( FileType ft )
-{
-    QString str;
-
-    switch(ft)
-    {
-    case Image:
-        str = "ImageType";
-        break;
-    case Video:
-        str = "VideoType";
-        break;
-    case Txt:
-        str = "TxtType";
-        break;
-    case Directory:
-        str = "DirectoryType";
-        break;
-    case Audio:
-        str = "AudioType";
-        break;
-    default:
-        str = "UndefinedType";
-        break;
-    }
-
-    return str;
-}
