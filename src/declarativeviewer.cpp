@@ -247,7 +247,6 @@ void DeclarativeViewer::onMetaDataChanged()
         if ( ( m_startFullScreen ) && ( sz == size() ) )
         {
             showFullScreen();
-            emit setFullScreenState();
         }
         else
         {
@@ -279,7 +278,6 @@ void DeclarativeViewer::setFullScreen()
     else if ( ( geometry().size() == getActualSize() ) || m_isGallery )
     {
         showFullScreen();
-        emit setFullScreenState();
     }
     else
     {
@@ -352,7 +350,6 @@ void DeclarativeViewer::showWidget( const QSize& sz )
     if ( ( m_startFullScreen ) && ( sz == size() ) )
     {
         showFullScreen();
-        emit setFullScreenState();
     }
     else
     {
