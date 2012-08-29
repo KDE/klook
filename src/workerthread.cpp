@@ -37,7 +37,7 @@ WorkerThread::WorkerThread( const QStringList& urls, QObject *parent )
     m_mimeTypes = Phonon::BackendCapabilities::availableMimeTypes();
 
     foreach(QString url, urls)
-        m_urls.append(QUrl(url));
+        m_urls.append(KUrl(url));
 }
 
 void WorkerThread::run()
@@ -50,11 +50,11 @@ void WorkerThread::run()
 
 void WorkerThread::processUrl()
 {
-    foreach (QUrl url, m_urls )
+    foreach (KUrl url, m_urls )
     {
         QString mime = getMime(url);
-        File::FileType type = getType( mime, url.toString() );
-        const File *file = new File( url.toString(), type, mime );
+        File::FileType type = getType(mime, url.toLocalFile());
+        const File *file = new File( url, type, mime );
         emit fileProcessed(file);
         isFound = true;
     }

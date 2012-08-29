@@ -27,7 +27,7 @@
 #include <QtCore/QThread>
 #include <QtCore/QList>
 #include <QtCore/QStringList>
-#include <QtCore/QUrl>
+#include <KUrl>
 
 class WorkerThread : public QThread
 {
@@ -48,7 +48,7 @@ private:
     void processUrl();
 
     bool isFound; // found at least one supported file
-    QList<QUrl> m_urls;
+    QList<KUrl> m_urls;
     QList<QByteArray> supportedImageFormats;
     QStringList m_mimeTypes;
 };
