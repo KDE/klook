@@ -21,10 +21,18 @@
 
 #include "file.h"
 
-#include <QtCore/QTemporaryFile>
 #include <KIO/JobClasses>
 #include <KIO/NetAccess>
 #include <KIO/JobUiDelegate>
+#include <KDE/Phonon/BackendCapabilities>
+#include <KMimeType>
+#include <QtCore/QTemporaryFile>
+#include <QtCore/QMetaType>
+#include <QtCore/QDir>
+#include <QtGui/QImageReader>
+#include <QtGui/QApplication>
+
+
 
 #include "progressdeclarativeitem.h"
 
@@ -32,17 +40,19 @@ File::File(QObject* parent)
     : QObject(parent)
     , m_type(Undefined)
     , m_tempFile(0)
+    , m_isLoaded(0)
+    , m_identifier(new FileTypeIdentifier)
 {
 }
 
 File::File(KUrl url, FileType type, const QString& mime,QObject* parent)
     : QObject( parent )
     , m_url(url)
-    , m_type(type)
+    , m_type(File::Undefined)
     , m_mime(mime)
     , m_tempFile(0)
     , m_isLoaded(0)
-
+    , m_identifier(new FileTypeIdentifier)
 {
 }
 
@@ -56,8 +66,9 @@ void File::setUrl(QUrl url)
     m_url = url;
 }
 
-File::FileType File::type() const
+File::FileType File::type()
 {
+    loadMimeAndType();
     return m_type;
 }
 
@@ -66,8 +77,9 @@ void File::setType(FileType type)
     m_type = type;
 }
 
-QString File::mime() const
+QString File::mime()
 {
+    loadMimeAndType();
     return m_mime;
 }
 
@@ -107,6 +119,139 @@ void File::slotResult(KJob *job)
     else
     {
         m_isLoaded = true;
+        loadMimeAndType();
         emit loaded();
     }
 }
+
+void File::loadMimeAndType()
+{
+    if(m_type == Undefined) {
+        KUrl uri = url();
+        if(!url().isLocalFile() && m_isLoaded)
+            uri = KUrl(m_tempFile->fileName());
+        qDebug() << uri;
+
+        QPair<File::FileType, QString> p = m_identifier->getTypeAndMime(uri);
+        m_type = p.first;
+        m_mime = p.second;
+        emit dataChanged();
+    }
+}
+
+FileTypeIdentifier::FileTypeIdentifier()
+    : supportedImageFormats(QImageReader::supportedImageFormats())
+    , m_mimeTypes(Phonon::BackendCapabilities::availableMimeTypes())
+
+{
+
+}
+
+QPair<File::FileType, QString> FileTypeIdentifier::getTypeAndMime(QUrl url) const
+{
+    QString mime = getMime(url);
+    File::FileType t = getType(mime, url.toLocalFile());
+    return qMakePair(t, mime);
+}
+
+QString FileTypeIdentifier::getMime(const QUrl &url) const
+{
+    KMimeType::Ptr ptr =  KMimeType::findByUrl(url);
+    return ptr->name();
+}
+
+File::FileType FileTypeIdentifier::getType(const QString& mime, const QString& path) const
+{
+    // this method is a complete mess right now
+    // information about supported types should not be hardcoded
+    int delimiter = mime.indexOf( '/' );
+
+    File::FileType type = File::MimetypeFallback;
+
+    if ( delimiter != -1 )
+    {
+        QString left = mime.left( delimiter );
+
+        if ( left == QLatin1String( "image" ) )
+        {
+            QString right = mime.mid(delimiter + 1);
+            if ( supportedImageFormats.contains( right.toLatin1()) || right == "x-xpixmap" )
+                type = File::Image;
+            else if ( supportedImageFormats.contains( "svg" ) && ( right == ( "svg+xml" ) || right == ( "svg+xml-compressed" ) ) )
+                type = File::Image;
+        }
+        else if ( left == QLatin1String( "video" ) )
+        {
+            QString right = mime.mid( delimiter + 1 );
+#if 1
+            if ( m_mimeTypes.contains( mime ) )
+                type = File::Video;
+
+            if ( type == File::Undefined )
+            {
+                if ( right == QLatin1String( "3gpp" ) ||
+                     right == QLatin1String( "mp4" ) ||
+                     right == QLatin1String( "x-theora+ogg" ) )
+                    type = File::Video;
+            }
+#else
+            if ( right == QLatin1String("x-msvideo") ||
+                 right == QLatin1String("mp4") ||
+                 right == QLatin1String("3gpp") ||
+                 right == QLatin1String("x-flv") ||
+                 right == QLatin1String("quicktime") )
+                type = File::Video;
+#endif
+        }
+        else if ( left == QLatin1String( "audio" ) )
+        {
+            QString right = mime.mid( delimiter + 1 );
+
+            if ( m_mimeTypes.contains( mime ) )
+                type = File::Audio;
+
+            if ( type == File::MimetypeFallback)
+            {
+                if ( right == QLatin1String( "ogg" ) ||
+                     right == QLatin1String( "mpeg" ) ||
+                     right == QLatin1String( "x-speex+ogg" ) ||
+                     right == QLatin1String( "x-vorbis+ogg" ) ||
+                     right == QLatin1String( "x-flac+ogg" ) )
+                    type = File::Audio;
+            }
+        }
+        else if ( left == QLatin1String( "text" ) ||
+                  mime == QLatin1String( "application/x-zerosize" ) ||
+                  mime == QLatin1String( "application/x-shellscript" ) )
+            type = File::Txt;
+        else if( mime.mid(delimiter + 1) == QLatin1String("directory"))
+        {
+            type = File::Directory;
+        }
+    }
+
+    if(mime == "application/pdf" || mime == "application/vnd.oasis.opendocument.text" ||
+            mime == "application/x-vnd.oasis.opendocument.text" || /*mime == "image/x-djvu" || mime == "image/vnd.djvu" ||*/
+            mime == "application/x-chm" || mime == "application/x-fictionbook+xml" || mime == "application/xhtml+xml")
+    {
+        type = File::OkularFile;
+    }
+
+    if ( type == File::MimetypeFallback)
+    {
+        if ( mime == QLatin1String( "application/x-matroska" ) ||
+             mime == QLatin1String( "application/vnd.rn-realmedia" ) )
+            type = File::Video;
+        else if ( mime == QLatin1String( "bmp" ) )
+            type = File::Image;
+        else if ( mime == QLatin1String( "application/octet-stream" ) )
+        {
+            QFileInfo fi( path );
+            if ( fi.suffix() == QLatin1String( "mp3" ) ||
+                 fi.suffix() == QLatin1String( "ogg" ) )
+                type = File::Audio;
+        }
+    }
+    return type;
+}
+

@@ -27,6 +27,7 @@
 #include <KUrl>
 
 class QTemporaryFile;
+class FileTypeIdentifier;
 
 class File : public QObject
 {
@@ -51,10 +52,10 @@ public slots:
     QUrl url() const;
     void setUrl( QUrl url );
 
-    File::FileType type() const;
+    File::FileType type();
     void setType(FileType type);
 
-    QString mime() const;
+    QString mime();
     void setMime(const QString &mime);
 
     void load(); // download file and return path to temporary file
@@ -67,14 +68,32 @@ private slots:
 
 signals:
     void loaded();
+    void dataChanged();
     void error(QString errorText);
 
 private:
+    void loadMimeAndType();
+
     KUrl m_url;
-    FileType m_type;
-    QString m_mime;
+    mutable FileType m_type;
+    mutable QString m_mime;
     QTemporaryFile *m_tempFile;
     bool m_isLoaded;
+    FileTypeIdentifier *m_identifier;
+};
+
+class FileTypeIdentifier
+{
+public:
+    FileTypeIdentifier();
+    QPair<File::FileType, QString> getTypeAndMime(QUrl url) const;
+
+private:
+    File::FileType getType(const QString& mime, const QString& path) const;
+    QString getMime(const QUrl &url) const;
+
+    QList<QByteArray> supportedImageFormats;
+    QStringList m_mimeTypes;
 };
 
 #endif // FILE_H

@@ -68,7 +68,7 @@ public:
     explicit DeclarativeViewer( QWidget *parent = 0 );
     virtual ~DeclarativeViewer();
 
-    void updateSize( const File* file );
+    void updateSize(File* file);
 
     void init(const QStringList& urls, bool embedded = false, const QRect& rc = QRect( 0, 0, 0, 0 ), const int indexToShow = 0 );
 
@@ -143,7 +143,7 @@ private:
     QRect           m_rcArrow;
     QStringList     m_urls;
 
-    const File*     m_currentFile;
+    File*     m_currentFile;
 
     bool            m_isActualSize;
     WidgetRegion    m_region;
@@ -154,7 +154,6 @@ private:
     QSize m_size;
 
     bool                m_compositing;
-    WorkerThread*       m_thread;
     PreviewGenerator*   m_previewGenerator;
     FileModel*          m_fileModel;
     ArrowPosition       m_posArrow;

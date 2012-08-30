@@ -70,7 +70,6 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
     , m_videoWidget(0)
     , m_size(min_width, min_height)
     , m_compositing(false)
-    , m_thread(0)
     , m_indexToShow(0)
 {
     setOptimizationFlags( QGraphicsView::DontSavePainterState );
@@ -113,12 +112,6 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
 
 DeclarativeViewer::~DeclarativeViewer()
 {
-//    qDeleteAll(m_files);
-
-    if(m_thread)
-        m_thread->exit();
-
-    delete m_thread;
 }
 
 void DeclarativeViewer::init(const QStringList& urls, bool embedded, const QRect& rc, const int indexToShow )
@@ -129,7 +122,26 @@ void DeclarativeViewer::init(const QStringList& urls, bool embedded, const QRect
     m_rcIcon = rc;
     m_urls = urls;
 
+    // leave only unique entries
+    QSet<QString>  set;
+    for(int i = 0; i < m_urls.size(); i++)
+    {
+        if(set.contains(m_urls[i]))
+        {
+            m_urls.removeAt(i);
+            i--;
+        }
+        else
+            set.insert(m_urls[i]);
+    }
+
     m_fileModel->reset();
+    QList<ListItem *> items;
+    foreach(QString str, m_urls) {
+        File *file = new File(KUrl(str));
+        items.append(new ListItem(file, this));
+    }
+    m_fileModel->appendRows(items);
 
     setViewMode( m_urls.count() > 1 ? Multi : Single);
 
@@ -137,7 +149,17 @@ void DeclarativeViewer::init(const QStringList& urls, bool embedded, const QRect
     rootContext()->setContextProperty("embedded", m_isEmbedded);
     setEmbedded(embedded);
 
-    startWorkingThread();
+    if (m_fileModel->rowCount())
+    {
+        m_currentFile = m_fileModel->file(m_indexToShow);
+        emit setStartWindow();
+        skipTaskBar();
+        changeContent();
+        setActualSize();
+        show();
+    }
+
+    //startWorkingThread();
 }
 
 //Check whether the KDE effects are included
@@ -195,26 +217,14 @@ void DeclarativeViewer::setRegisterTypes()
 
 void DeclarativeViewer::startWorkingThread()
 {
-    // leave only unique entries
-    QSet<QString>  set;
-    for(int i = 0; i < m_urls.size(); i++)
-    {
-        if(set.contains(m_urls[i]))
-        {
-            m_urls.removeAt(i);
-            i--;
-        }
-        else
-            set.insert(m_urls[i]);
-    }
-
+/*
     if(m_thread)
         m_thread->exit();
     delete m_thread;
     m_thread = new WorkerThread( m_urls );
     connect(m_thread, SIGNAL(fileProcessed(const File*)), SLOT(newFileProcessed(const File*)));
     connect(m_thread, SIGNAL(fail()), SLOT(showNoFilesNotification()));
-    m_thread->start();
+    m_thread->start();*/
 }
 
 void DeclarativeViewer::createVideoObject( QUrl url )
@@ -359,7 +369,7 @@ void DeclarativeViewer::showWidget( const QSize& sz )
     m_startFullScreen = false;
 }
 
-void DeclarativeViewer::updateSize( const File* file )
+void DeclarativeViewer::updateSize(File* file)
 {
     if (!file)
     {
@@ -530,7 +540,8 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
 
 void DeclarativeViewer::changeContent()
 {
-    if ( !m_currentFile  ) return;
+    if (!m_currentFile)
+        return;
 
     KService::Ptr ptr = KMimeTypeTrader::self()->preferredService( m_currentFile->mime() );
     if ( ptr.isNull() )
@@ -864,20 +875,6 @@ void DeclarativeViewer::skipTaskBar()
 
 void DeclarativeViewer::newFileProcessed( const File *file )
 {
-    if (!m_fileModel->rowCount())
-    {
-        m_currentFile = file;
-        emit setStartWindow();
-        skipTaskBar();
-    }
-
-    m_fileModel->append(const_cast<File *>(file));
-
-    if (m_fileModel->rowCount() - 1 == m_indexToShow)
-    {
-        changeContent();
-        setActualSize();
-    }
 }
 
 void DeclarativeViewer::showNoFilesNotification()
