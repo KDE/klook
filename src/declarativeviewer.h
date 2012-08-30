@@ -28,11 +28,10 @@
 #include <QtDeclarative/QDeclarativeView>
 #include <QVariant>
 
-#include "file.h"
-
 class QRect;
 class WorkerThread;
 class PreviewGenerator;
+class File;
 class FileModel;
 class QPoint;
 

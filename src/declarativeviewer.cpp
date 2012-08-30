@@ -30,6 +30,7 @@
 #include "video.h"
 #include "audio.h"
 #include "text.h"
+#include "file.h"
 #include "previewgenerator.h"
 #include "previewprovider.h"
 #include "mimeprovider.h"
