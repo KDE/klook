@@ -135,6 +135,13 @@ QModelIndex FileModel::indexFromItem(ListItem *item)
     return i != -1 ? index(i) : QModelIndex();
 }
 
+ListItem::ListItem(File *file, QObject *parent)
+    : QObject(parent), m_file(file)
+{
+    if(!m_file->url().isLocalFile())
+        connect(file, SIGNAL(loaded()), SIGNAL(dataChanged()));
+}
+
 ListItem *ListItem::newItem(File *file, QObject *parent)
 {
     if(file->type() == File::Directory)

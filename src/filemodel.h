@@ -75,7 +75,6 @@ private:
 class ListItem: public QObject
 {
     Q_OBJECT
-
 public:
     enum
     {
@@ -89,8 +88,7 @@ public:
         LocalFileRole // is file local??
     };
 
-    ListItem(File *file, QObject *parent)
-        : QObject(parent), m_file(file) {}
+    ListItem(File *file, QObject *parent);
     virtual ~ListItem() {}
 
     static ListItem *newItem(File *file, QObject *parent);
