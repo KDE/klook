@@ -63,6 +63,7 @@ bool FileModel::setData( const QModelIndex &index, const QVariant &value, int ro
 void FileModel::appendRow( ListItem *item )
 {
     beginInsertRows( QModelIndex(), rowCount(), rowCount() );
+    connect(item, SIGNAL(dataChanged()), SLOT(handleItemChange()));
     m_list.append( item );
     endInsertRows();
 }
@@ -118,6 +119,20 @@ int FileModel::count()
 File *FileModel::file(int index)
 {
     return m_list[index]->file();
+}
+
+void FileModel::handleItemChange()
+{
+    ListItem* item = qobject_cast<ListItem *>(sender());
+    QModelIndex index = indexFromItem(item);
+    if(index.isValid())
+        emit dataChanged(index, index);
+}
+
+QModelIndex FileModel::indexFromItem(ListItem *item)
+{
+    int i = m_list.indexOf(item);
+    return i != -1 ? index(i) : QModelIndex();
 }
 
 ListItem *ListItem::newItem(File *file, QObject *parent)

@@ -62,7 +62,12 @@ public slots:
     int count();
     File *file(int index);
 
+private slots:
+    void handleItemChange();
+
 private:
+    QModelIndex indexFromItem(ListItem *item);
+
     ListItem* m_prototype;
     QList<ListItem*> m_list;
 };
