@@ -297,7 +297,7 @@ QSize DeclarativeViewer::getActualSize()
     }
     else if (m_currentFile->type() == File::Image)
     {
-        QPixmap pixmap(m_currentFile->url().toString());
+        QPixmap pixmap(m_currentFile->url().toLocalFile());
         m_size = pixmap.size();
         QSize sz = calculateViewSize(m_size);
         sz.setHeight(sz.height() + ( m_isEmbedded ? 0 : height_offset ));
