@@ -23,7 +23,10 @@
 #define FILE_H
 
 #include <QtCore/QObject>
-#include <QtCore/QUrl>
+#include <KIO/Job>
+#include <KUrl>
+
+class QTemporaryFile;
 
 class File : public QObject
 {
@@ -40,10 +43,10 @@ public:
         Audio,
         OkularFile
     };
-
     File( QObject* parent );
-    File( QUrl url = QUrl(), FileType type = Undefined, const QString& mime = "", QObject* parent = 0 );
+    File( KUrl url = KUrl(), FileType type = Undefined, const QString& mime = "", QObject* parent = 0 );
 
+public slots:
     QUrl url() const;
     void setUrl( QUrl url );
 
@@ -53,12 +56,24 @@ public:
     QString mime() const;
     void setMime(const QString &mime);
 
+    void load(); // download file and return path to temporary file
+    bool isLoaded() const; // is file downloaded?
+
+    QString tempFilePath() const;
+
+private slots:
+    void slotResult(KJob *job);
+
+signals:
+    void loaded();
+    void error(QString errorText);
 
 private:
-    QUrl m_url;
+    KUrl m_url;
     FileType m_type;
     QString m_mime;
-
+    QTemporaryFile *m_tempFile;
+    bool m_isLoaded;
 };
 
 #endif // FILE_H

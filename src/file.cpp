@@ -21,17 +21,28 @@
 
 #include "file.h"
 
-File::File( QObject* parent )
-    : QObject( parent )
-    , m_type( Undefined )
+#include <QtCore/QTemporaryFile>
+#include <KIO/JobClasses>
+#include <KIO/NetAccess>
+#include <KIO/JobUiDelegate>
+
+#include "progressdeclarativeitem.h"
+
+File::File(QObject* parent)
+    : QObject(parent)
+    , m_type(Undefined)
+    , m_tempFile(0)
 {
 }
 
-File::File( QUrl url, FileType type, const QString& mime,QObject* parent )
+File::File(KUrl url, FileType type, const QString& mime,QObject* parent)
     : QObject( parent )
-    , m_url( url )
-    , m_type( type )
-    , m_mime( mime )
+    , m_url(url)
+    , m_type(type)
+    , m_mime(mime)
+    , m_tempFile(0)
+    , m_isLoaded(0)
+
 {
 }
 
@@ -63,4 +74,39 @@ QString File::mime() const
 void File::setMime(const QString &mime)
 {
     m_mime = mime;
+}
+
+void File::load()
+{
+    if(!m_tempFile)
+    {
+        m_tempFile = new QTemporaryFile(this);
+        if (m_tempFile->open())
+        {
+            KIO::Job* job = KIO::file_copy(m_url, KUrl(m_tempFile->fileName()), -1, KIO::Overwrite | KIO::HideProgressInfo);
+            connect(job, SIGNAL(result(KJob *)), SLOT(slotResult(KJob *)));
+            ProgressDeclarativeItem::setJob(job);
+        }
+    }
+}
+
+bool File::isLoaded() const
+{
+    return m_isLoaded;
+}
+
+QString File::tempFilePath() const
+{
+    return m_tempFile ? m_tempFile->fileName() : QString();
+}
+
+void File::slotResult(KJob *job)
+{
+    if(job->error())
+        emit error(job->errorText());
+    else
+    {
+        m_isLoaded = true;
+        emit loaded();
+    }
 }
