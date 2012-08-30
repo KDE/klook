@@ -21,9 +21,10 @@
 
 #include "workerthread.h"
 
-#include <QMetaType>
-#include <QDir>
-#include <QImageReader>
+#include <QtGui/QApplication>
+#include <QtCore/QMetaType>
+#include <QtCore/QDir>
+#include <QtGui/QImageReader>
 
 #include <KDE/Phonon/BackendCapabilities>
 
@@ -47,14 +48,14 @@ void WorkerThread::run()
         emit fail();
 }
 
-
 void WorkerThread::processUrl()
 {
     foreach (KUrl url, m_urls )
     {
         QString mime = getMime(url);
         File::FileType type = getType(mime, url.toLocalFile());
-        const File *file = new File( url, type, mime );
+        File *file = new File(url, type, mime);
+        file->moveToThread(qApp->thread());
         emit fileProcessed(file);
         isFound = true;
     }
