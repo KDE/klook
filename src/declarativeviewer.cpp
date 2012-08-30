@@ -865,7 +865,7 @@ void DeclarativeViewer::newFileProcessed( const File *file )
 {
     if (!m_fileModel->rowCount())
     {
-        m_currentFile = const_cast<File *>(file);
+        m_currentFile = file;
         emit setStartWindow();
         skipTaskBar();
     }
