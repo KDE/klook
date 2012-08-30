@@ -19,6 +19,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+#include <KUrl>
+
 #include "previewprovider.h"
 #include "previewgenerator.h"
 
@@ -32,8 +34,8 @@ QPixmap PreviewProvider::requestPixmap(const QString& id, QSize* size, const QSi
 {
     QString str = id.left(id.lastIndexOf( '%' ));
 
-    QFileInfo fi(str);
-    QPixmap pixmap = previewGenerator->getPreviewPixmap(fi.absoluteFilePath());
+    KUrl url(str);
+    QPixmap pixmap = previewGenerator->getPreviewPixmap(url.url());
     if (requestedSize.isValid())
         pixmap = pixmap.scaled( requestedSize, Qt::KeepAspectRatio );
     if(size)

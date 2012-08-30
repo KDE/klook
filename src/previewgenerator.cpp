@@ -48,14 +48,14 @@ PreviewGenerator::PreviewGenerator(QObject *parent)
 
 }
 
-void PreviewGenerator::notifyModel( const QString& filePath )
+void PreviewGenerator::notifyModel( QUrl url )
 {
     if ( m_model )
     {
         for (int i = 0; i < m_model->rowCount(); i++)
         {
             QModelIndex index = m_model->indexFromRowNumber( i );
-            if (m_model->data( index, ListItem::FilePathRole).toString() == filePath)
+            if (m_model->data( index, ListItem::FilePathRole).toUrl() == url)
                 m_model->refreshRow( index );
         }
     }
@@ -72,7 +72,7 @@ void PreviewGenerator::setPreview( const KFileItem &item, const QPixmap &pixmap 
         QPixmap scaledPixmap = videoPixmap.scaled(pict.width() / 2, pict.height() / 2,  Qt::KeepAspectRatio, Qt::SmoothTransformation );
         p.drawPixmap( pict.width() / 2 - scaledPixmap.width() / 2, pict.height() / 2 - scaledPixmap.height() / 2 ,  scaledPixmap );
     }
-    previews.insert(item.localPath(), pict);
+    previews.insert(item.url(), pict);
     notifyModel(item.localPath());
 }
 

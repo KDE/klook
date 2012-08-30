@@ -56,11 +56,11 @@ private slots:
 private:
     explicit PreviewGenerator( QObject *parent = 0 );
 
-    void notifyModel( const QString& filePath );
+    void notifyModel(QUrl url);
 
     static PreviewGenerator*    instance;
 
-    QHash<QString, QPixmap> previews;
+    QHash<KUrl, QPixmap> previews;
 
     QPixmap             defaultPreview;
     QPixmap             videoPixmap;
