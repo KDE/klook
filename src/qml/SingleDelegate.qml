@@ -49,14 +49,6 @@ Item {
         return w
     }
 
-    function getName( path )
-    {
-        if ( path.substr( -1 ) === '/' && path.length !== 1 ) { // remove trailing slash if it's not root
-            path = path.substr( 0, path.length - 1 );
-        }
-        return path.substring( path.lastIndexOf( '/' ) + 1 );
-    }
-
     ImageDelegate {
         id: imgDelegate
     }
