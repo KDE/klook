@@ -72,7 +72,7 @@ signals:
     void error(QString errorText);
 
 private:
-    void loadMimeAndType();
+    void loadMimeAndType(bool force = false);
 
     KUrl m_url;
     mutable FileType m_type;

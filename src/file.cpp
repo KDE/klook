@@ -20,6 +20,7 @@
  */
 
 #include "file.h"
+#include "progressdeclarativeitem.h"
 
 #include <KIO/JobClasses>
 #include <KIO/NetAccess>
@@ -31,10 +32,6 @@
 #include <QtCore/QDir>
 #include <QtGui/QImageReader>
 #include <QtGui/QApplication>
-
-
-
-#include "progressdeclarativeitem.h"
 
 File::File(QObject* parent)
     : QObject(parent)
@@ -119,23 +116,20 @@ void File::slotResult(KJob *job)
     else
     {
         m_isLoaded = true;
-        loadMimeAndType();
+        loadMimeAndType(true);
         emit loaded();
     }
 }
 
-void File::loadMimeAndType()
+void File::loadMimeAndType(bool force)
 {
-    if(m_type == Undefined) {
+    if(m_type == Undefined || force) {
         KUrl uri = url();
         if(!url().isLocalFile() && m_isLoaded)
             uri = KUrl(m_tempFile->fileName());
-        qDebug() << uri;
-
         QPair<File::FileType, QString> p = m_identifier->getTypeAndMime(uri);
         m_type = p.first;
         m_mime = p.second;
-        emit dataChanged();
     }
 }
 
@@ -254,4 +248,3 @@ File::FileType FileTypeIdentifier::getType(const QString& mime, const QString& p
     }
     return type;
 }
-

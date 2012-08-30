@@ -148,6 +148,7 @@ ListItem::ListItem(File *file, QObject *parent)
 {
     if(!m_file->url().isLocalFile())
         connect(file, SIGNAL(loaded()), SIGNAL(dataChanged()));
+    connect(file, SIGNAL(dataChanged()), SIGNAL(dataChanged()));
 }
 
 ListItem *ListItem::newItem(File *file, QObject *parent)
@@ -161,14 +162,14 @@ ListItem *ListItem::newItem(File *file, QObject *parent)
 
 QString ListItem::path() const
 {
+
     QString result;
     if(m_file->url().isLocalFile())
         result = m_file->url().toLocalFile();
-    else if(m_file->isLoaded())
+    else if(!m_file->url().isLocalFile() && m_file->isLoaded())
         result = m_file->tempFilePath();
     else
         result = m_file->url().toString();
-
     return result;
 }
 
@@ -226,7 +227,7 @@ DirectoryItem::DirectoryItem( File *file, QObject* parent )
     : ListItem( file, parent )
     , isScanned( false )
     , dir( file->url().toString() )
-    , sizeFinder(new DirectorySizeFinder(file->url().toString()))
+    , sizeFinder(new DirectorySizeFinder(file->url().toLocalFile()))
     , timer( new QTimer( this ) )
     , size( 0 )
     , count( 0 )
