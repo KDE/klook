@@ -159,6 +159,10 @@ QVariant ListItem::data( int role ) const
 
     case LocalFileRole:
         return m_file->url().isLocalFile();
+
+    case FileNameRole:
+        // TODO: should simply change function signature to return KURl
+        return KUrl(m_file->url()).fileName();
     default:
         break;
     }
@@ -169,6 +173,7 @@ QHash<int, QByteArray> ListItem::roleNames()
 {
     QHash<int, QByteArray> names;
     names[FilePathRole] = "filePath";
+    names[FileNameRole] = "fileName";
     names[TypeRole] = "type";
     names[LastModifiedRole] = "lastModified";
     names[ContentSizeRole] = "contentSize";

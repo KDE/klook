@@ -40,7 +40,7 @@ Component {
 
         InfoItem {
             id: name
-            text: "<b>" + getName( filePath ) +"</b>"
+            text: "<b>" + fileName +"</b>"
             anchors.left: folderIcon.right
             font.pointSize: 15
             y: ( folderIcon.height - folderIcon.paintedHeight ) / 2 + iconHeightMargin

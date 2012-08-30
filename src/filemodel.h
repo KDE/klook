@@ -75,6 +75,7 @@ public:
     enum
     {
         FilePathRole = Qt::UserRole + 1,
+        FileNameRole,
         TypeRole,
         LastModifiedRole,
         ContentSizeRole,

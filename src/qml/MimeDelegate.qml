@@ -39,7 +39,7 @@ Component {
         InfoItem {
             id: name
             anchors.left: mimeIcon.right
-            text: "<b>" + getName(filePath) +"</b>"
+            text: "<b>" + fileName +"</b>"
             font.pointSize: 15
             y: ( mimeIcon.height - mimeIcon.paintedHeight ) / 2 + iconHeightMargin
         }
