@@ -1,7 +1,9 @@
 #ifndef PROGRESSDECLARATIVEITEM_H
 #define PROGRESSDECLARATIVEITEM_H
 
+#include <QtCore/QPointer>
 #include <QtGui/QGraphicsProxyWidget>
+#include <QtGui/QVBoxLayout>
 
 namespace KIO
 {
@@ -16,8 +18,12 @@ public:
 
     static void setJob(KIO::Job *job);
 
+public slots:
+    void setJobWidget();
+
 private:
-    static KIO::Job *m_job;
+    static QPointer<KIO::Job> m_job;
+    QVBoxLayout *layout;
 };
 
 #endif // PROGRESSDECLARATIVEITEM_H
