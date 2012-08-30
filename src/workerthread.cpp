@@ -73,7 +73,7 @@ File::FileType WorkerThread::getType( const QString& mime, const QString& path )
     // information about supported types should not be hardcoded
     int delimiter = mime.indexOf( '/' );
 
-    File::FileType type = File::Undefined;
+    File::FileType type = File::MimetypeFallback;
 
     if ( delimiter != -1 )
     {
@@ -94,7 +94,7 @@ File::FileType WorkerThread::getType( const QString& mime, const QString& path )
             if ( m_mimeTypes.contains( mime ) )
                 type = File::Video;
 
-            if ( type == File::Undefined )
+            if ( type == File::MimetypeFallback )
             {
                 if ( right == QLatin1String( "3gpp" ) ||
                      right == QLatin1String( "mp4" ) ||
@@ -117,7 +117,7 @@ File::FileType WorkerThread::getType( const QString& mime, const QString& path )
             if ( m_mimeTypes.contains( mime ) )
                 type = File::Audio;
 
-            if ( type == File::Undefined )
+            if ( type == File::MimetypeFallback)
             {
                 if ( right == QLatin1String( "ogg" ) ||
                      right == QLatin1String( "mpeg" ) ||
@@ -144,7 +144,7 @@ File::FileType WorkerThread::getType( const QString& mime, const QString& path )
         type = File::OkularFile;
     }
 
-    if ( type == File::Undefined )
+    if ( type == File::MimetypeFallback )
     {
         if ( mime == QLatin1String( "application/x-matroska" ) ||
              mime == QLatin1String( "application/vnd.rn-realmedia" ) )

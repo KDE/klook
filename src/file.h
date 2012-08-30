@@ -41,7 +41,8 @@ public:
         Txt,
         Directory,
         Audio,
-        OkularFile
+        OkularFile,
+        MimetypeFallback
     };
     File( QObject* parent );
     File( KUrl url = KUrl(), FileType type = Undefined, const QString& mime = "", QObject* parent = 0 );

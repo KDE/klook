@@ -307,7 +307,7 @@ QSize DeclarativeViewer::getActualSize()
         return QSize(min_width, min_height);
     else if (m_currentFile->type() == File::Directory)
         return QSize(min_width + 100, min_height);
-    else if (m_currentFile->type() == File::Undefined)
+    else if (m_currentFile->type() == File::MimetypeFallback)
         return QSize(min_width + 100, min_height);
     else
      {
@@ -381,12 +381,12 @@ void DeclarativeViewer::updateSize( const File* file )
     }
     else if ( ( file->type() == File::Audio ) ||
               ( file->type() == File::Directory ) ||
-              ( file->type() == File::Undefined ) )
+              ( file->type() == File::MimetypeFallback) )
     {
         int width = min_width;
         int height = min_height;
         if ( ( file->type() == File::Directory ) ||
-             ( file->type() == File::Undefined ) )
+             ( file->type() == File::MimetypeFallback) )
             width += 100;
 
         QSize sz( width, height );

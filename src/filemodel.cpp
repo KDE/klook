@@ -146,7 +146,7 @@ ListItem *ListItem::newItem(File *file, QObject *parent)
 {
     if(file->type() == File::Directory)
         return new DirectoryItem(file, parent);
-    else if(file->type() == File::Undefined)
+    else if(file->type() == File::MimetypeFallback)
         return new UnsupportedItem(file, parent);
     return new ListItem(file, parent);
 }

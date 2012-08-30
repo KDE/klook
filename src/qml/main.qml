@@ -622,7 +622,7 @@ Rectangle {
                 anchors.topMargin: 1
                 color: ( ( ( mainWindow.currentFileType === File.Directory ) ||
                           ( mainWindow.currentFileType === File.Audio )  ||
-                          ( mainWindow.currentFileType === File.Undefined ) ) &&
+                          ( mainWindow.currentFileType === File.MimetypeFallback ) ) &&
                         ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
             }
 
@@ -707,7 +707,7 @@ Rectangle {
                 anchors.topMargin: 1
                 color: (((mainWindow.currentFileType == File.Directory) ||
                           (mainWindow.currentFileType == File.Audio ) ||
-                          (mainWindow.currentFileType === File.Undefined)) &&
+                          (mainWindow.currentFileType === File.MimetypeFallback)) &&
                         (albumWrapper.state == "fullscreen")) ? "#dadada" : "#333333"
             }
         }

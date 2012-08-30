@@ -108,7 +108,7 @@ Item {
         else if (t == File.OkularFile) {
             return okularDelegate;
         }
-        else if(t == File.Undefined) {
+        else if(t == File.MimetypeFallback) {
             return mimeDelegate;
         }
         console.debug("Should never be here")
