@@ -160,7 +160,7 @@ void DeclarativeViewer::setRegisterTypes()
     qmlRegisterType<Audio>( "Widgets", 1, 0, "Audio" );
     qmlRegisterType<MyText>( "Widgets", 1, 0, "PlainText" );
     qmlRegisterType<KPartsDeclarativeItem>("Widgets", 1, 0, "KPart");
-    qmlRegisterType<ProgressDeclarativeItem>("Widgets", 1, 0, "ProgressDelegate");
+    qmlRegisterType<ProgressDeclarativeItem>("Widgets", 1, 0, "ProgressItem");
 
     qmlRegisterType<File>("Widgets", 1, 0, "File"); // to use File::FileType enum
 

@@ -77,8 +77,17 @@ Item {
         id: okularDelegate
     }
 
+    ProgressDelegate {
+        id: progressDelegate
+    }
+
     // function for getting delegate of loader element
     function bestDelegate(t) {
+        var f = fileModel.file(index)
+        if(!isLocal && !f.isLoaded()) {
+            f.load()
+            return progressDelegate
+        }
         // for some reason '===' does not work here
         if (t == File.Image) {
             return imgDelegate;
