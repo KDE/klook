@@ -153,7 +153,15 @@ ListItem *ListItem::newItem(File *file, QObject *parent)
 
 QString ListItem::path() const
 {
-    return m_file->url().toString();
+    QString result;
+    if(m_file->url().isLocalFile())
+        result = m_file->url().toLocalFile();
+    else if(m_file->isLoaded())
+        result = m_file->tempFilePath();
+    else
+        result = m_file->url().toString();
+
+    return result;
 }
 
 int ListItem::type() const
