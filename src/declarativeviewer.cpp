@@ -119,6 +119,7 @@ void DeclarativeViewer::init(const QStringList& urls, bool embedded, const QRect
         qDebug() << "No files to display. Closing...";
         close();
     }
+
     m_currentFile = 0;
     m_indexToShow = indexToShow;
 
@@ -274,6 +275,7 @@ void DeclarativeViewer::setFullScreen()
     {
         showNormal();
         setActualSize();
+        return;
     }
     else if ( ( geometry().size() == getActualSize() ) || m_isGallery )
     {
@@ -284,6 +286,7 @@ void DeclarativeViewer::setFullScreen()
         m_startFullScreen = true;
         setActualSize();
     }
+    emit setFullScreenState();
 }
 
 QSize DeclarativeViewer::getActualSize()
