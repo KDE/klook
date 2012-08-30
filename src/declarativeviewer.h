@@ -29,7 +29,6 @@
 #include <QVariant>
 
 class QRect;
-class WorkerThread;
 class PreviewGenerator;
 class File;
 class FileModel;
@@ -87,15 +86,8 @@ public slots:
     void onMetaDataChanged();
 
     void setEmbedded(bool);
-    void setRectIcon(const QRect&);
-    void setUrls(const QStringList&);
-
-private:
-    void startWorkingThread();
 
 private slots:
-    void newFileProcessed(const File* file);
-    void showNoFilesNotification();
     void focusChanged(QWidget*, QWidget*);
 
 protected:

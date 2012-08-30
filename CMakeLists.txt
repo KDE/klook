@@ -25,7 +25,6 @@ set( klook_SRCS src/main.cpp
                                 src/video.cpp
                                 src/text.cpp
                                 src/file.cpp
-                                src/workerthread.cpp
                                 src/previewgenerator.cpp
                                 src/previewprovider.cpp
                                 src/filemodel.cpp

@@ -35,7 +35,6 @@
 #include "previewprovider.h"
 #include "mimeprovider.h"
 #include "filemodel.h"
-#include "workerthread.h"
 #include "kpartsdeclarativeitem.h"
 
 #include "plasma/windoweffects.h"
@@ -116,6 +115,10 @@ DeclarativeViewer::~DeclarativeViewer()
 
 void DeclarativeViewer::init(const QStringList& urls, bool embedded, const QRect& rc, const int indexToShow )
 {
+    if(!urls.size()) {
+        qDebug() << "No files to display. Closing...";
+        close();
+    }
     m_currentFile = 0;
     m_indexToShow = indexToShow;
 
@@ -158,8 +161,6 @@ void DeclarativeViewer::init(const QStringList& urls, bool embedded, const QRect
         setActualSize();
         show();
     }
-
-    //startWorkingThread();
 }
 
 //Check whether the KDE effects are included
@@ -213,18 +214,6 @@ void DeclarativeViewer::setRegisterTypes()
     rootContext()->setContextProperty( "lastModifiedStr", ki18n( "Last Modified:" ).toString() );
     rootContext()->setContextProperty( "sizeStr", ki18n( "Size:" ).toString() );
     rootContext()->setContextProperty( "elementsStr", ki18n( "Elements:" ).toString() );
-}
-
-void DeclarativeViewer::startWorkingThread()
-{
-/*
-    if(m_thread)
-        m_thread->exit();
-    delete m_thread;
-    m_thread = new WorkerThread( m_urls );
-    connect(m_thread, SIGNAL(fileProcessed(const File*)), SLOT(newFileProcessed(const File*)));
-    connect(m_thread, SIGNAL(fail()), SLOT(showNoFilesNotification()));
-    m_thread->start();*/
 }
 
 void DeclarativeViewer::createVideoObject( QUrl url )
@@ -873,16 +862,6 @@ void DeclarativeViewer::skipTaskBar()
     XChangeProperty( QX11Info::display(), winId(), XInternAtom( dpy, "_NET_WM_STATE", False ), XA_ATOM, 32, PropModeReplace, ( unsigned char* )state, 3 );
 }
 
-void DeclarativeViewer::newFileProcessed( const File *file )
-{
-}
-
-void DeclarativeViewer::showNoFilesNotification()
-{
-    qDebug() << "No files!";
-    close();
-}
-
 void DeclarativeViewer::setViewMode( DeclarativeViewer::ViewMode mode )
 {
     m_isSingleMode = ( mode == Single );
@@ -953,13 +932,4 @@ void DeclarativeViewer::setEmbedded( bool state )
     m_isEmbedded = state;
 }
 
-void DeclarativeViewer::setRectIcon( const QRect& rc )
-{
-    m_rcIcon = rc;
-}
-
-void DeclarativeViewer::setUrls( const QStringList& urls )
-{
-    m_urls = urls;
-}
 
