@@ -27,7 +27,6 @@
 #include <kicon.h>
 
 #include "filemodel.h"
-#include <QtCore/QDebug>
 
 PreviewGenerator *PreviewGenerator::instance = 0;
 

@@ -149,9 +149,10 @@ void DeclarativeViewer::init(const QStringList& urls, bool embedded, const QRect
 
     setViewMode( m_urls.count() > 1 ? Multi : Single);
 
-    m_previewGenerator->setFiles(m_urls);
     rootContext()->setContextProperty("embedded", m_isEmbedded);
     setEmbedded(embedded);
+
+    m_previewGenerator->setFiles(m_urls);
 
     if (m_fileModel->rowCount())
     {
