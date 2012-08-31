@@ -33,6 +33,7 @@ Klook is a quick preview feature based on Qt and Qt Quick, allows users to look 
 %_kde_appsdir/klook/ImageDelegate.qml
 %_kde_appsdir/klook/MimeDelegate.qml
 %_kde_appsdir/klook/OkularDelegate.qml
+%_kde_appsdir/klook/ProgressDelegate.qml
 %_kde_appsdir/klook/TextDelegate.qml
 %_kde_appsdir/klook/VideoDelegate.qml
 %_kde_appsdir/klook/ControlPanel.qml
