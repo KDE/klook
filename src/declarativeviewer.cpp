@@ -122,6 +122,7 @@ void DeclarativeViewer::init(const QStringList& urls, bool embedded, const QRect
 
     m_currentFile = 0;
     m_indexToShow = indexToShow;
+    rootContext()->setContextProperty( "indexToShow", m_indexToShow );
 
     m_rcIcon = rc;
     m_urls = urls;
@@ -209,7 +210,6 @@ void DeclarativeViewer::setRegisterTypes()
     rootContext()->setContextProperty( "arrowX", .0 );
     rootContext()->setContextProperty( "arrowY", .0 );
     rootContext()->setContextProperty( "effects", ( checkComposite() ) ? "on" : "off" );
-    rootContext()->setContextProperty( "indexToShow", m_indexToShow );
     rootContext()->setContextProperty( "artistStr", ki18n( "Artist:" ).toString() );
     rootContext()->setContextProperty( "totalTimeStr", ki18n( "Total time:" ).toString() );
     rootContext()->setContextProperty( "folderStr", ki18n( "Folder" ).toString() );
