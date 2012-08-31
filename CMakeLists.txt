@@ -48,7 +48,7 @@ target_link_libraries( klook ${KDE4_KIO_LIBS}
                                                         kparts
                                                         ${QT_LIBRARIES}
                                                         ${QT_QDECLARATIVE_LIBRARIES}
-                                                        ${X11_LIBRARIES})
+                                                        ${X11_LIBRARIES}
                                                         )
 
 
