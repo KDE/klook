@@ -163,7 +163,7 @@ void DeclarativeViewer::registerTypes()
     qmlRegisterType<KPartsDeclarativeItem>("Widgets", 1, 0, "KPart");
     qmlRegisterType<ProgressDeclarativeItem>("Widgets", 1, 0, "ProgressItem");
 
-    qmlRegisterType<File>("Widgets", 1, 0, "File"); // to use File::FileType enum
+    qmlRegisterUncreatableType<File>("Widgets", 1, 0, "File", "This type is registered only for its enums"); // to use File::FileType enum
 
     QDesktopWidget dw;
     QRect r = dw.screenGeometry( this );
