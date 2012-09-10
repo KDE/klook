@@ -89,7 +89,7 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
 
     PreviewGenerator::createInstance()->setModel(m_fileModel);
 
-    setRegisterTypes();
+    registerTypes();
 
     //Remove standart KDE title
     setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint );
@@ -180,7 +180,7 @@ bool DeclarativeViewer:: checkComposite()
     return false;
 }
 
-void DeclarativeViewer::setRegisterTypes()
+void DeclarativeViewer::registerTypes()
 {
     qmlRegisterType<Video>( "Widgets", 1, 0, "Video" );
     qmlRegisterType<Audio>( "Widgets", 1, 0, "Audio" );

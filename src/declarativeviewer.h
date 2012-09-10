@@ -100,7 +100,6 @@ protected:
 
     void changeContent();
 
-    void setRegisterTypes();
 
     void createVideoObject( QUrl url );
     QSize calculateViewSize( const QSize& sz );
@@ -123,6 +122,7 @@ private:
 
     void setViewMode( ViewMode mode );
     QSize getTextWindowSize( QString url );
+    void registerTypes();
 
     QPoint          m_lastMousePosition;
     bool            m_isSingleMode;
