@@ -39,7 +39,7 @@ class PreviewGenerator : public QObject
 
 public:
     static PreviewGenerator *createInstance();
-    void setFiles( const QStringList& list );
+    void setFiles( QStringList list );
 
     QPixmap getPreviewPixmap( QString filePath );
     void setModel( FileModel *model );

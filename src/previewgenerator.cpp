@@ -96,7 +96,7 @@ PreviewGenerator * PreviewGenerator::createInstance()
     return instance;
 }
 
-void PreviewGenerator::setFiles( const QStringList &list )
+void PreviewGenerator::setFiles( QStringList list )
 {
     stop();
     m_fileList.clear();
