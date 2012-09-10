@@ -24,7 +24,6 @@
 #include <QPlainTextEdit>
 #include <QFile>
 #include <QTextCodec>
-#include <QDebug>
 #include <KImageCache>
 #include <kencodingprober.h>
 
