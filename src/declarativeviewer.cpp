@@ -167,6 +167,8 @@ void DeclarativeViewer::registerTypes()
 
     QDesktopWidget dw;
     QRect r = dw.screenGeometry( this );
+
+    rootContext()->setContextProperty("indexToShow", m_indexToShow);
     rootContext()->setContextProperty( "DWigth", r.width() );
     rootContext()->setContextProperty( "DHeight", r.height() );
     rootContext()->setContextProperty( "fileModel", m_fileModel );
@@ -253,13 +255,13 @@ void DeclarativeViewer::setFullScreen()
     else if ( ( geometry().size() == getActualSize() ) || m_isGallery )
     {
         showFullScreen();
+        emit setFullScreenState();
     }
     else
     {
         m_startFullScreen = true;
         setActualSize();
     }
-    emit setFullScreenState();
 }
 
 QSize DeclarativeViewer::getActualSize() const
@@ -286,7 +288,7 @@ QSize DeclarativeViewer::getActualSize() const
         return QSize(min_width + 100, min_height);
     else
      {
-        QSize size = getTextWindowSize( m_currentFile->url().toString());
+        QSize size = getTextWindowSize( m_currentFile->url().toLocalFile());
         return size;
     }
 
@@ -325,6 +327,7 @@ void DeclarativeViewer::showWidget( const QSize& sz )
     if ( ( m_startFullScreen ) && ( sz == size() ) )
     {
         showFullScreen();
+        emit setFullScreenState();
     }
     else
     {
@@ -538,14 +541,19 @@ void DeclarativeViewer::changeContent()
         rootContext()->setContextProperty( "openText",  ( ki18n( "Open in " ).toString() + serv->name() ) );
     }
 
-    QFileInfo fi(m_currentFile->url().toString());
-    rootContext()->setContextProperty( "fileName", fi.fileName() );
-    rootContext()->setContextProperty( "indexToShow", m_indexToShow );
-    rootContext()->setContextProperty( "fileUrl", m_currentFile->url() );
+    QString fileName = KUrl(m_currentFile->url()).fileName();
+    rootContext()->setContextProperty("fileName", fileName);
+    rootContext()->setContextProperty("indexToShow", m_indexToShow);
+    rootContext()->setContextProperty("fileUrl", m_currentFile->url());
 }
 
 void DeclarativeViewer::updateContent( int index )
 {
+    if(index == m_indexToShow)
+        return;
+
+    m_indexToShow = index;
+
     if (index == -1)
     {
         rootContext()->setContextProperty("openText",  ki18n( "Open in..." ).toString() );

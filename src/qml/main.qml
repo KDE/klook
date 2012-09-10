@@ -211,7 +211,6 @@ Rectangle {
 
         setGalleryView( albumWrapper.state === 'inGrid' )
     }
-    property int index: 0
 
     Image{
         id: arrow
@@ -389,7 +388,6 @@ Rectangle {
 
                 GridView {
                     id: photosGridView; model: fileModel; delegate: Delegate{}
-
                     width: drawer.width; height: drawer.height
                     anchors.fill: parent ; anchors.margins: 10
                     cellWidth: getCellSize( photosGridView.count ).width
@@ -457,8 +455,9 @@ Rectangle {
                 }
 
                 ListView {
-                    id: photosListView;
+                    id: photosListView
                     model: fileModel
+                    currentIndex: indexToShow
                     delegate: SingleDelegate{}
                     orientation: Qt.Horizontal
                     anchors.fill: parent
