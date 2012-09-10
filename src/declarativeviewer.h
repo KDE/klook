@@ -69,7 +69,7 @@ public:
 
     void updateSize(File* file);
 
-    void init(const QStringList& urls, bool embedded = false, const QRect& rc = QRect( 0, 0, 0, 0 ), const int indexToShow = 0 );
+    void init(QStringList urls, bool embedded = false, const QRect& rc = QRect( 0, 0, 0, 0 ), int indexToShow = 0 );
 
 signals:
     void sizeChanged();
@@ -120,6 +120,7 @@ private:
         Multi
     };
 
+    void initModel(QStringList urls);
     void setViewMode( ViewMode mode );
     QSize getTextWindowSize( QString url );
     void registerTypes();
@@ -133,7 +134,6 @@ private:
     bool            m_isGallery;
     QRect           m_rcIcon;
     QRect           m_rcArrow;
-    QStringList     m_urls;
 
     File*     m_currentFile;
 

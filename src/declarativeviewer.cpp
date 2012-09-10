@@ -112,57 +112,32 @@ DeclarativeViewer::~DeclarativeViewer()
 {
 }
 
-void DeclarativeViewer::init(const QStringList& urls, bool embedded, const QRect& rc, const int indexToShow )
+void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, int indexToShow )
 {
     if(!urls.size()) {
         qDebug() << "No files to display. Closing...";
         close();
     }
 
-    m_currentFile = 0;
-    m_indexToShow = indexToShow;
-    rootContext()->setContextProperty( "indexToShow", m_indexToShow );
+    initModel(urls);
 
     m_rcIcon = rc;
-    m_urls = urls;
 
-    // leave only unique entries
-    QSet<QString>  set;
-    for(int i = 0; i < m_urls.size(); i++)
-    {
-        if(set.contains(m_urls[i]))
-        {
-            m_urls.removeAt(i);
-            i--;
-        }
-        else
-            set.insert(m_urls[i]);
-    }
+    m_indexToShow = indexToShow;
+    rootContext()->setContextProperty("indexToShow", indexToShow);
 
-    m_fileModel->reset();
-    QList<ListItem *> items;
-    foreach(QString str, m_urls) {
-        File *file = new File(KUrl(str));
-        items.append(new ListItem(file, this));
-    }
-    m_fileModel->appendRows(items);
-
-    setViewMode( m_urls.count() > 1 ? Multi : Single);
+    setViewMode( urls.count() > 1 ? Multi : Single);
 
     rootContext()->setContextProperty("embedded", m_isEmbedded);
     setEmbedded(embedded);
 
-    m_previewGenerator->setFiles(m_urls);
+    m_previewGenerator->setFiles(urls);
 
-    if (m_fileModel->rowCount())
-    {
-        m_currentFile = m_fileModel->file(m_indexToShow);
-        emit setStartWindow();
-        skipTaskBar();
-        changeContent();
-        setActualSize();
-        show();
-    }
+    m_currentFile = m_fileModel->file(indexToShow);
+    changeContent();
+    setActualSize();
+    emit setStartWindow();
+    show();
 }
 
 //Check whether the KDE effects are included
@@ -356,6 +331,29 @@ void DeclarativeViewer::showWidget( const QSize& sz )
         centerWidget( sz );
     }
     m_startFullScreen = false;
+}
+
+void DeclarativeViewer::initModel(QStringList urls)
+{
+    // leave only unique entries
+    QSet<QString>  set;
+    for(int i = 0; i < urls.size(); i++) {
+        if(set.contains(urls[i])) {
+            urls.removeAt(i);
+            i--;
+        }
+        else
+            set.insert(urls[i]);
+    }
+
+    m_fileModel->reset();
+
+    QList<ListItem *> items;
+    foreach(QString str, urls) {
+        File *file = new File(KUrl(str));
+        items.append(new ListItem(file, this));
+    }
+    m_fileModel->appendRows(items);
 }
 
 void DeclarativeViewer::updateSize(File* file)
