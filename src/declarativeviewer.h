@@ -91,39 +91,34 @@ private slots:
     void focusChanged(QWidget*, QWidget*);
 
 protected:
-    QSize getActualSize();
-    WidgetRegion calculateWindowRegion( const QPoint& mousePos );
-
     void mousePressEvent( QMouseEvent* event );
     void mouseMoveEvent( QMouseEvent* event );
     void mouseReleaseEvent( QMouseEvent* event );
 
-    void changeContent();
-
-
-    void createVideoObject( QUrl url );
-    QSize calculateViewSize( const QSize& sz );
-
-    QSize inscribedRectToRect( const QSize& sz1, const QSize& sz2 );
-    void centerWidget( const QSize& sz );
-
-    void skipTaskBar();
-    bool checkComposite();
-
-    void showWidget( const QSize& sz );
-
 private:
-
     enum ViewMode
     {
         Single,
         Multi
     };
 
+    QSize getActualSize() const;
+    WidgetRegion calculateWindowRegion( const QPoint& mousePos );
+
     void initModel(QStringList urls);
     void setViewMode( ViewMode mode );
-    QSize getTextWindowSize( QString url );
+    void changeContent();
     void registerTypes();
+    QSize getTextWindowSize( QString url ) const;
+    void createVideoObject( QUrl url );
+    QSize calculateViewSize( const QSize& sz ) const;
+
+    QSize inscribedRectToRect( const QSize& sz1, const QSize& sz2 ) const;
+    void centerWidget( const QSize& sz );
+    void showWidget( const QSize& sz );
+
+    void skipTaskBar();
+    bool checkComposite();
 
     QPoint          m_lastMousePosition;
     bool            m_isSingleMode;

@@ -262,7 +262,7 @@ void DeclarativeViewer::setFullScreen()
     emit setFullScreenState();
 }
 
-QSize DeclarativeViewer::getActualSize()
+QSize DeclarativeViewer::getActualSize() const
 {
     if (!m_currentFile || !m_currentFile->url().isLocalFile())
         return QSize();
@@ -293,7 +293,7 @@ QSize DeclarativeViewer::getActualSize()
     return QSize();
 }
 
-QSize DeclarativeViewer::calculateViewSize( const QSize& sz )
+QSize DeclarativeViewer::calculateViewSize( const QSize& sz ) const
 {
     QSize szItem = sz;
     QDesktopWidget dw;
@@ -311,7 +311,7 @@ QSize DeclarativeViewer::calculateViewSize( const QSize& sz )
 }
 
 // function inscribing rect sz1 into rect sz2
-QSize DeclarativeViewer::inscribedRectToRect( const QSize& sz1, const QSize& sz2 )
+QSize DeclarativeViewer::inscribedRectToRect( const QSize& sz1, const QSize& sz2 ) const
 {
     QSize sz = sz1;
     if ((sz.height() > sz2.height()) || (sz.width() > sz2.width()))
@@ -870,7 +870,7 @@ void DeclarativeViewer::onSetGallery( bool isGallery )
     m_isGallery = isGallery;
 }
 
-QSize DeclarativeViewer::getTextWindowSize(QString url)
+QSize DeclarativeViewer::getTextWindowSize(QString url) const
 {
     QFile f( url );
     if ( !f.open(QIODevice::ReadOnly | QIODevice::Text) )
