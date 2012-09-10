@@ -143,8 +143,6 @@ private:
     Phonon::MediaObject* m_mediaObject;
     Phonon::VideoWidget* m_videoWidget;
 
-    QSize m_size;
-
     bool                m_compositing;
     PreviewGenerator*   m_previewGenerator;
     FileModel*          m_fileModel;
