@@ -21,20 +21,22 @@ QT4_ADD_RESOURCES( QRC_SOURCES ${RESOURCES} )
 file( GLOB qml_files "${CMAKE_CURRENT_SOURCE_DIR}/src/qml/*.qml" )
 
 set( klook_SRCS src/main.cpp
-                                src/declarativeviewer.cpp
-                                src/video.cpp
-                                src/text.cpp
-                                src/file.cpp
-                                src/previewgenerator.cpp
-                                src/previewprovider.cpp
-                                src/filemodel.cpp
-                                src/klookapp.cpp
-                                src/audio.cpp
-                                src/mimeprovider.cpp
-                                src/kpartsdeclarativeitem.cpp
-                                src/kpartswidget.cpp
-                                src/progressdeclarativeitem.cpp
-                                ${qml_files} )
+                src/declarativeviewer.cpp
+                src/video.cpp
+                src/text.cpp
+                src/file.cpp
+                src/listitem.cpp
+                src/previewgenerator.cpp
+                src/previewprovider.cpp
+                src/filemodel.cpp
+                src/klookapp.cpp
+                src/audio.cpp
+                src/mimeprovider.cpp
+                src/kpartsdeclarativeitem.cpp
+                src/kpartswidget.cpp
+                src/progressdeclarativeitem.cpp
+                src/listitemcontent.cpp
+                ${qml_files} )
 
 #set( KDE4_ICON_DIR  ${CMAKE_INSTALL_PREFIX}/share/icons )
 
