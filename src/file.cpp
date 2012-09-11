@@ -53,7 +53,7 @@ File::File(KUrl url, FileType type, const QString& mime,QObject* parent)
 {
 }
 
-QUrl File::url() const
+KUrl File::url() const
 {
     return m_url;
 }

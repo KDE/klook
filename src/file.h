@@ -49,7 +49,7 @@ public:
     File( KUrl url = KUrl(), FileType type = Undefined, const QString& mime = "", QObject* parent = 0 );
 
 public slots:
-    QUrl url() const;
+    KUrl url() const;
     void setUrl( QUrl url );
 
     File::FileType type();

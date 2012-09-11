@@ -99,7 +99,6 @@ Item {
             return txtDelegate;
         }
         else if (t === File.Directory) {
-            fileModel.scanDirectory( index )
             return folderDelegate;
         }
         else if (t == File.Audio) {

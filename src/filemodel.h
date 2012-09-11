@@ -30,7 +30,7 @@
 #include <QtCore/QThread>
 
 #include "file.h"
-
+#include "listitem.h"
 class ListItem;
 class DirectoryItem;
 class QTimer;
@@ -54,12 +54,10 @@ public:
     QModelIndex indexFromRowNumber( int row );
     void reset();
 
-    void refreshItem(ListItem *item);
     void setRoleNames(const QHash<int,QByteArray> &roleNames) { QAbstractItemModel::setRoleNames(roleNames); }
 
 public slots:
     void append(File *file);
-    void scanDirectory(int index);
     int count();
     File *file(int index);
 
@@ -73,85 +71,6 @@ private:
     QList<ListItem*> m_list;
 };
 
-class ListItem: public QObject
-{
-    Q_OBJECT
-public:
-    enum
-    {
-        FilePathRole = Qt::UserRole + 1,
-        FileNameRole,
-        TypeRole,
-        LastModifiedRole,
-        ContentSizeRole,
-        CountRole,       // object count for folders
-        MimeRole,
-        LocalFileRole // is file local??
-    };
-
-    ListItem(File *file, QObject *parent);
-    virtual ~ListItem() {}
-
-    static ListItem *newItem(File *file, QObject *parent);
-    static QHash<int, QByteArray> roleNames();
-
-    virtual QVariant data(int role) const;
-
-    virtual QString path() const;
-    void setPath(QString path) { m_file->setUrl(QUrl(path)); }
-
-    virtual QString mime() const;
-
-    virtual int type() const;
-    void setType(int type) { m_file->setType(static_cast<File::FileType>(type)); }
-
-    File *file() { return m_file; }
-
-signals:
-    void dataChanged();
-
-private:
-    File *m_file;
-};
-
-class DirectorySizeFinder : public QThread
-{
-public:
-    DirectorySizeFinder( QString path, QObject* parent = 0 )
-        : QThread( parent ), path( path ), m_size( 0 ), count( 0 ) {}
-    virtual void run ();
-
-    qint64 size() const { return m_size; }
-    int fileCount() const { return count; }
-
-private:
-    QString path;
-    qint64 m_size;
-    int count;
-};
-
-class DirectoryItem : public ListItem
-{
-    Q_OBJECT
-public:
-    DirectoryItem(File *file, QObject* parent = 0);
-    ~DirectoryItem();
-    QVariant data(int role) const;
-    void startScan();
-private slots:
-    void timeout();
-
-private:
-    QString formatSize(qint64 size);
-    void notifyModel();
-
-    bool isScanned;
-    QDir dir;
-    DirectorySizeFinder *sizeFinder;
-    QTimer *timer;
-    qint64 size;
-    int count;
-};
 
 class UnsupportedItem : public ListItem
 {
