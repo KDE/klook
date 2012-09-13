@@ -30,7 +30,7 @@
 #include <QtCore/QThread>
 
 #include "file.h"
-#include "listitem.h"
+
 class ListItem;
 class DirectoryItem;
 class QTimer;
@@ -57,7 +57,6 @@ public:
     void setRoleNames(const QHash<int,QByteArray> &roleNames) { QAbstractItemModel::setRoleNames(roleNames); }
 
 public slots:
-    void append(File *file);
     int count();
     File *file(int index);
 
@@ -69,15 +68,6 @@ private:
 
     ListItem* m_prototype;
     QList<ListItem*> m_list;
-};
-
-
-class UnsupportedItem : public ListItem
-{
-    Q_OBJECT
-public:
-    UnsupportedItem(File *file, QObject* parent = 0);
-    QVariant data( int role ) const;
 };
 
 #endif // FILEMODEL_H

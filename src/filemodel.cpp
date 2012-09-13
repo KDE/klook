@@ -21,6 +21,7 @@
 
 #include "filemodel.h"
 #include "file.h"
+#include "listitem.h"
 
 #include <KGlobal>
 #include <KLocale>
@@ -93,11 +94,6 @@ void FileModel::reset()
     endRemoveRows();
 }
 
-void FileModel::append(File *file)
-{
-    appendRow(ListItem::newItem(file, this));
-}
-
 int FileModel::count()
 {
     return rowCount();
@@ -120,25 +116,4 @@ QModelIndex FileModel::indexFromItem(ListItem *item)
 {
     const int i = m_list.indexOf(item);
     return i != -1 ? index(i) : QModelIndex();
-}
-
-UnsupportedItem::UnsupportedItem(File *file, QObject *parent )
-    : ListItem( file, parent )
-{
-}
-
-QVariant UnsupportedItem::data(int role) const
-{
-    if ( role == LastModifiedRole )
-    {
-        QFileInfo fi( path() );
-        return KGlobal::locale()->formatDate( fi.lastModified().date() );
-    }
-    else if ( role == ContentSizeRole )
-    {
-        QFileInfo fi( path() );
-        return KGlobal::locale()->formatByteSize( fi.size() );
-    }
-
-    return ListItem::data(role);
 }
