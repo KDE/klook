@@ -73,6 +73,10 @@ public:
 
 signals:
     void sizeChanged();
+
+    /**
+     * @brief Informs QML to set fullscreen state
+     */
     void setFullScreenState();
     void setEmbeddedState();
     void setStartWindow();

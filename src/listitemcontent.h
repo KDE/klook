@@ -2,6 +2,7 @@
 #define LISTITEMCONTENT_H
 
 #include <QObject>
+#include <QDateTime>
 
 class File;
 class KJob;
@@ -33,10 +34,13 @@ public:
 
 private slots:
     void directorySizeResult(KJob *job);
+    void handleStatJob(KJob *job);
+
 private:
     mutable bool m_isScanned;
     qint64 m_totalFiles;
     qint64 m_totalSize;
+    QDateTime m_modificationTime;
 };
 
 class ListItemFallbackContent : public ListItemContent
@@ -49,6 +53,10 @@ public:
 
 private slots:
     void handleStatJob(KJob *job);
+
+private:
+    QDateTime m_modificationTime;
+    qulonglong m_size;
 };
 
 

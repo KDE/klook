@@ -111,6 +111,7 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
 
 DeclarativeViewer::~DeclarativeViewer()
 {
+
 }
 
 void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, int indexToShow )
@@ -128,11 +129,14 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
     rootContext()->setContextProperty("indexToShow", indexToShow);
 
     setViewMode( urls.count() > 1 ? Multi : Single);
-
     rootContext()->setContextProperty("embedded", m_isEmbedded);
     setEmbedded(embedded);
 
-    m_previewGenerator->setFiles(urls);
+    KUrl::List lst;
+    for(int i = 0; i < urls.size(); i++)
+        lst.append(KUrl(urls[i]));
+    m_previewGenerator->setFiles(lst);
+    m_previewGenerator->start();
 
     m_currentFile = m_fileModel->file(indexToShow);
     changeContent();

@@ -19,13 +19,13 @@ public:
         ContentSizeRole,
         CountRole,       // object count for folders
         MimeRole,
-        LocalFileRole // is file local??
+        LocalFileRole, // is file local??
+        DownloadInProgress
     };
 
     ListItem(File *file, QObject *parent);
     virtual ~ListItem() {}
 
-    static ListItem *newItem(File *file, QObject *parent);
     static QHash<int, QByteArray> roleNames();
 
     virtual QVariant data(int role) const;

@@ -50,7 +50,10 @@ File::File(KUrl url, FileType type, const QString& mime,QObject* parent)
     , m_tempFile(0)
     , m_isLoaded(0)
     , m_identifier(new FileTypeIdentifier)
+    , m_jobStarted(false)
+    , m_downloadInProgress(false)
 {
+
 }
 
 KUrl File::url() const
@@ -87,13 +90,14 @@ void File::setMime(const QString &mime)
 
 void File::load()
 {
+    m_downloadInProgress = true;
     if(!m_tempFile)
     {
         m_tempFile = new QTemporaryFile(this);
         if (m_tempFile->open())
         {
             KIO::Job* job = KIO::file_copy(m_url, KUrl(m_tempFile->fileName()), -1, KIO::Overwrite | KIO::HideProgressInfo);
-            connect(job, SIGNAL(result(KJob *)), SLOT(slotResult(KJob *)));
+            connect(job, SIGNAL(result(KJob *)), SLOT(slotDownloadResult(KJob*)));
             ProgressDeclarativeItem::setJob(job);
         }
     }
@@ -104,32 +108,58 @@ bool File::isLoaded() const
     return m_isLoaded;
 }
 
+bool File::downloadInProgress() const
+{
+    return m_downloadInProgress;
+}
+
 QString File::tempFilePath() const
 {
     return m_tempFile ? m_tempFile->fileName() : QString();
 }
 
-void File::slotResult(KJob *job)
+void File::slotDownloadResult(KJob *job)
 {
+    m_downloadInProgress = false;
     if(job->error())
         emit error(job->errorText());
     else
     {
         m_isLoaded = true;
         loadMimeAndType(true);
-        emit loaded();
+        emit dataChanged();
+    }
+}
+
+void File::slotResult(KJob *job)
+{
+    if(!job->error())
+    {
+        setMime(dynamic_cast<KIO::MimetypeJob *>(job)->mimetype());
+        FileType t = m_identifier->getType(mime(), url().fileName());
+        setType(t);
+
+        // check if we should download file. it should be done only for
+        // some files we support well
+
+        if(t == File::Audio || t == File::Image
+                || t == File::Video || t == File::Txt) {
+            load();
+        }
+        else if(t != File::Directory){
+            t = File::MimetypeFallback;
+        }
+
+        emit dataChanged();
     }
 }
 
 void File::loadMimeAndType(bool force)
 {
-    if(m_type == Undefined || force) {
-        KUrl uri = url();
-        if(!url().isLocalFile() && m_isLoaded)
-            uri = KUrl(m_tempFile->fileName());
-        QPair<File::FileType, QString> p = m_identifier->getTypeAndMime(uri);
-        m_type = p.first;
-        m_mime = p.second;
+    if(!m_jobStarted) {
+        KIO::MimetypeJob *job = KIO::mimetype(url(), KIO::HideProgressInfo);
+        connect(job, SIGNAL(result(KJob *)), SLOT(slotResult(KJob*)));
+        m_jobStarted = true;
     }
 }
 
@@ -150,11 +180,10 @@ QPair<File::FileType, QString> FileTypeIdentifier::getTypeAndMime(QUrl url) cons
 
 QString FileTypeIdentifier::getMime(const QUrl &url) const
 {
-    KMimeType::Ptr ptr =  KMimeType::findByUrl(url);
-    return ptr->name();
+    return "bla";
 }
 
-File::FileType FileTypeIdentifier::getType(const QString& mime, const QString& path) const
+File::FileType FileTypeIdentifier::getType(const QString& mime, const QString& name) const
 {
     // this method is a complete mess right now
     // information about supported types should not be hardcoded
@@ -240,7 +269,7 @@ File::FileType FileTypeIdentifier::getType(const QString& mime, const QString& p
             type = File::Image;
         else if ( mime == QLatin1String( "application/octet-stream" ) )
         {
-            QFileInfo fi( path );
+            QFileInfo fi( name );
             if ( fi.suffix() == QLatin1String( "mp3" ) ||
                  fi.suffix() == QLatin1String( "ogg" ) )
                 type = File::Audio;

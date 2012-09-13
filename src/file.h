@@ -61,13 +61,14 @@ public slots:
     void load(); // download file and return path to temporary file
     bool isLoaded() const; // is file downloaded?
 
+    bool downloadInProgress() const;
+
     QString tempFilePath() const;
 
-private slots:
+    void slotDownloadResult(KJob *job);
     void slotResult(KJob *job);
 
 signals:
-    void loaded();
     void dataChanged();
     void error(QString errorText);
 
@@ -80,6 +81,8 @@ private:
     QTemporaryFile *m_tempFile;
     bool m_isLoaded;
     FileTypeIdentifier *m_identifier;
+    bool m_jobStarted;
+    bool m_downloadInProgress;
 };
 
 class FileTypeIdentifier
@@ -87,9 +90,9 @@ class FileTypeIdentifier
 public:
     FileTypeIdentifier();
     QPair<File::FileType, QString> getTypeAndMime(QUrl url) const;
+    File::FileType getType(const QString& mime, const QString& name) const;
 
 private:
-    File::FileType getType(const QString& mime, const QString& path) const;
     QString getMime(const QUrl &url) const;
 
     QList<QByteArray> supportedImageFormats;

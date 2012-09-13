@@ -84,10 +84,11 @@ Item {
     // function for getting delegate of loader element
     function bestDelegate(t) {
         var f = fileModel.file(index)
-        if(!isLocal && !f.isLoaded()) {
-            f.load()
+        console.log("Download in progress" + downloadInProgress)
+        if(downloadInProgress) {
             return progressDelegate
         }
+   //     console.log(filePath + " " + mime + " " + type)
         // for some reason '===' does not work here
         if (t == File.Image) {
             return imgDelegate;
@@ -107,7 +108,7 @@ Item {
         else if (t == File.OkularFile) {
             return okularDelegate;
         }
-        else if(t == File.MimetypeFallback) {
+        else {
             return mimeDelegate;
         }
         console.debug("Should never be here")
