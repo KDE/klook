@@ -21,8 +21,8 @@
 
 #include "mimeprovider.h"
 
-#include <kfileitem.h>
-#include <kicon.h>
+#include <KIcon>
+#include <KMimeType>
 
 MimeProvider::MimeProvider()
     : QDeclarativeImageProvider( Pixmap )
@@ -31,8 +31,7 @@ MimeProvider::MimeProvider()
 
 QPixmap MimeProvider::requestPixmap( const QString& id, QSize* size, const QSize &requestedSize )
 {
-    KFileItem fi( id, KMimeType::iconNameForUrl( id ), KFileItem::Unknown );
-    KIcon icon( fi.iconName() );
+    KIcon icon( KMimeType::iconNameForUrl( id ) );
 
     QPixmap pixmap = icon.isNull() ? QPixmap( ":images/pla-empty-box.png" ) : icon.pixmap( 1000 );
     if ( requestedSize.isValid() )
