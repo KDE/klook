@@ -56,7 +56,7 @@ private slots:
 private:
     explicit PreviewGenerator( QObject *parent = 0 );
 
-    void notifyModel(QUrl url);
+    void notifyModel(KUrl url);
 
     static PreviewGenerator*    instance;
 

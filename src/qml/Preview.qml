@@ -27,7 +27,7 @@ import QtQuick 1.0
 // update
 
 Image {
-    source: "image://preview/" + filePath + "%" + Math.random( 10 )
+    source: "image://preview/" + fileUrl + "%" + Math.random( 10 )
     width: Math.min( sourceSize.width, parent.width )
     height: Math.min( sourceSize.height, parent.height )
     fillMode: Image.PreserveAspectFit
@@ -41,7 +41,7 @@ Image {
         target: fileModel
         onDataChanged:
         {
-            source = "image://preview/" + filePath + "%" + Math.random( 10 )
+            source = "image://preview/" + fileUrl + "%" + Math.random( 10 )
         }
     }
 }

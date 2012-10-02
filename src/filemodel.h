@@ -50,7 +50,7 @@ public:
     const QHash<int, QByteArray> & roleNames () const;
     void appendRow( ListItem* item );
     void appendRows(QList<ListItem *> items);
-    void refreshRow( const QModelIndex &index );
+    void refreshRow(int row );
     QModelIndex indexFromRowNumber( int row );
     void reset();
 

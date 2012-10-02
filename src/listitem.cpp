@@ -50,6 +50,10 @@ QVariant ListItem::data( int role ) const
 
     case DownloadInProgress:
         return m_file->downloadInProgress();
+
+    case UrlRole:
+        return m_file->url().url();
+
     default:
         break;
     }
@@ -75,6 +79,7 @@ QHash<int, QByteArray> ListItem::roleNames()
     QHash<int, QByteArray> names;
     names[FilePathRole] = "filePath";
     names[FileNameRole] = "fileName";
+    names[UrlRole] = "fileUrl";
     names[TypeRole] = "type";
     names[LastModifiedRole] = "lastModified";
     names[ContentSizeRole] = "contentSize";

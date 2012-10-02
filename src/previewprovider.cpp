@@ -35,7 +35,6 @@ QPixmap PreviewProvider::requestPixmap(const QString& id, QSize* size, const QSi
     QString str = id.left(id.lastIndexOf( '%' ));
 
     KUrl url(str);
-    qDebug() << url.url();
     QPixmap pixmap = previewGenerator->getPreviewPixmap(url.url());
     if (requestedSize.isValid())
         pixmap = pixmap.scaled( requestedSize, Qt::KeepAspectRatio );

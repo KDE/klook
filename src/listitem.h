@@ -13,6 +13,8 @@ public:
     enum
     {
         FilePathRole = Qt::UserRole + 1,
+        // this role will always return url no matter if file is downloaded or not
+        UrlRole,
         FileNameRole,
         TypeRole,
         LastModifiedRole,

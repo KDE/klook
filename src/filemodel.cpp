@@ -77,9 +77,9 @@ void FileModel::appendRows(QList<ListItem *> items)
 
 }
 
-void FileModel::refreshRow( const QModelIndex & index )
+void FileModel::refreshRow( int row )
 {
-    emit dataChanged( index, index );
+    emit dataChanged( index(row), index(row) );
 }
 
 QModelIndex FileModel::indexFromRowNumber( int row )
