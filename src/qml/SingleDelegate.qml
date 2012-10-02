@@ -83,13 +83,11 @@ Item {
 
     // function for getting delegate of loader element
     function bestDelegate(t) {
-        var f = fileModel.file(index)
         console.log("Download in progress" + downloadInProgress)
-        if(downloadInProgress) {
+        // for some reason '===' does not work here
+        if(t == File.Undefined || downloadInProgress) {
             return progressDelegate
         }
-   //     console.log(filePath + " " + mime + " " + type)
-        // for some reason '===' does not work here
         if (t == File.Image) {
             return imgDelegate;
         }

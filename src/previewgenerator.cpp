@@ -27,6 +27,8 @@
 #include <kicon.h>
 
 #include "filemodel.h"
+#include "listitem.h"
+#include <QDebug>
 
 PreviewGenerator *PreviewGenerator::instance = 0;
 
@@ -63,14 +65,12 @@ void PreviewGenerator::notifyModel( QUrl url )
 void PreviewGenerator::setPreview( const KFileItem &item, const QPixmap &pixmap )
 {
     QPixmap pict = pixmap;
-    m_fileList.removeAll(item);
-
     if ( item.mimetype().startsWith("video/") )
     {
         QPainter p(&pict);
         QPixmap scaledPixmap = videoPixmap.scaled(pict.width() / 2, pict.height() / 2,  Qt::KeepAspectRatio, Qt::SmoothTransformation );
         p.drawPixmap( pict.width() / 2 - scaledPixmap.width() / 2, pict.height() / 2 - scaledPixmap.height() / 2 ,  scaledPixmap );
-    }
+   }
     previews.insert(item.url(), pict);
     notifyModel(item.localPath());
 }
@@ -96,15 +96,14 @@ PreviewGenerator * PreviewGenerator::createInstance()
     return instance;
 }
 
-void PreviewGenerator::setFiles( QStringList list )
+void PreviewGenerator::setFiles(KUrl::List list)
 {
     stop();
     m_fileList.clear();
 
     for ( int i = 0; i < list.size(); i++ )
     {
-        QFileInfo fi(list[i]);
-        KFileItem fileItem(KFileItem::Unknown, KFileItem::Unknown, fi.absoluteFilePath(), false);
+        KFileItem fileItem(KFileItem::Unknown, KFileItem::Unknown, list[i], false);
         m_fileList.append(fileItem);
     }
 }
@@ -119,10 +118,8 @@ void PreviewGenerator::start()
     if (m_fileList.isEmpty())
         return;
 
-    if(m_job)
-        m_job->kill();
-
-    m_job = KIO::filePreview( m_fileList, 1000, 0, 0, 0, true, false, &m_plugins );
+    qDebug() << m_plugins;
+    m_job = KIO::filePreview( m_fileList, QSize(1000, 0), &m_plugins );
     m_job->setIgnoreMaximumSize();
     m_job->setAutoDelete( false );
 
@@ -139,13 +136,14 @@ void PreviewGenerator::stop()
 
 void PreviewGenerator::previewFailed( KFileItem item )
 {
+
     if ( item.mimetype().startsWith( "text/" ) )
     {
         QStringList listP;
         listP << "textthumbnail";
         KFileItemList list;
         list << item;
-        KIO::PreviewJob* job = KIO::filePreview( list, 1000, 0, 0, 0, true, true, &listP );
+        KIO::PreviewJob* job = KIO::filePreview( list, QSize(1000, 0), &listP );
         job->setIgnoreMaximumSize();
         job->setAutoDelete( true );
         connect( job, SIGNAL( gotPreview( const KFileItem&, const QPixmap& ) ), SLOT( setPreview( const KFileItem&, const QPixmap& ) ) );

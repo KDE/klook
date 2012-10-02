@@ -20,7 +20,6 @@
  */
 
 #include "file.h"
-#include "progressdeclarativeitem.h"
 
 #include <KIO/JobClasses>
 #include <KIO/NetAccess>
@@ -91,15 +90,12 @@ void File::setMime(const QString &mime)
 void File::load()
 {
     m_downloadInProgress = true;
-    if(!m_tempFile)
-    {
+    if(!m_tempFile) {
         m_tempFile = new QTemporaryFile(this);
-        if (m_tempFile->open())
-        {
-            KIO::Job* job = KIO::file_copy(m_url, KUrl(m_tempFile->fileName()), -1, KIO::Overwrite | KIO::HideProgressInfo);
-            connect(job, SIGNAL(result(KJob *)), SLOT(slotDownloadResult(KJob*)));
-            ProgressDeclarativeItem::setJob(job);
-        }
+    }
+    if (m_tempFile->open()) {
+        KIO::FileCopyJob *m_job = KIO::file_copy(m_url, KUrl(m_tempFile->fileName()), -1, KIO::Overwrite | KIO::HideProgressInfo);
+        connect(m_job, SIGNAL(result(KJob *)), SLOT(slotDownloadResult(KJob *)));
     }
 }
 

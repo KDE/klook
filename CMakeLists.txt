@@ -34,7 +34,6 @@ set( klook_SRCS src/main.cpp
                 src/mimeprovider.cpp
                 src/kpartsdeclarativeitem.cpp
                 src/kpartswidget.cpp
-                src/progressdeclarativeitem.cpp
                 src/listitemcontent.cpp
                 ${qml_files} )
 
@@ -44,13 +43,14 @@ kde4_add_app_icon( klook_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/icons/hi*-apps-klook.
 kde4_add_executable( klook ${klook_SRCS} ${QRC_SOURCES} )
 
 target_link_libraries( klook ${KDE4_KIO_LIBS}
-                                                        ${KDE4_PHONON_LIBS}
-                                                        ${KDE4_PLASMA_LIBS}
-                                                        ${KDE4_KFILE_LIBS}
-                                                        kparts
-                                                        ${QT_LIBRARIES}
-                                                        ${QT_QDECLARATIVE_LIBRARIES}
-                                                        )
+                           ${KDE4_PHONON_LIBS}
+                           ${KDE4_PLASMA_LIBS}
+                           ${KDE4_KFILE_LIBS}
+                           kparts
+                           ${QT_LIBRARIES}
+                           ${QT_QDECLARATIVE_LIBRARIES}
+                           ${X11_LIBRARIES}
+                      )
 
 
 install( TARGETS klook ${INSTALL_TARGETS_DEFAULT_ARGS} )

@@ -26,7 +26,6 @@
 
 #include <KMimeTypeTrader>
 
-#include "progressdeclarativeitem.h"
 #include "video.h"
 #include "audio.h"
 #include "text.h"
@@ -166,7 +165,6 @@ void DeclarativeViewer::registerTypes()
     qmlRegisterType<Audio>( "Widgets", 1, 0, "Audio" );
     qmlRegisterType<MyText>( "Widgets", 1, 0, "PlainText" );
     qmlRegisterType<KPartsDeclarativeItem>("Widgets", 1, 0, "KPart");
-    qmlRegisterType<ProgressDeclarativeItem>("Widgets", 1, 0, "ProgressItem");
 
     qmlRegisterUncreatableType<File>("Widgets", 1, 0, "File", "This type is registered only for its enums"); // to use File::FileType enum
 
