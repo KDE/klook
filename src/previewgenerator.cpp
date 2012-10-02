@@ -23,8 +23,8 @@
 
 #include <QPainter>
 
-#include <kfile.h>
-#include <kicon.h>
+#include <KFileItem>
+#include <KIcon>
 
 #include "filemodel.h"
 #include "listitem.h"
