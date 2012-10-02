@@ -66,7 +66,7 @@ void ListItemDirectoryContent::handleStatJob(KJob *job)
 {
     if(job && !job->error()) {
         const KIO::UDSEntry entry = static_cast<KIO::StatJob*>(job)->statResult();
-        m_modificationTime = QDateTime::fromTime_t(entry.numberValue(KIO::UDSEntry::UDS_SIZE));
+        m_modificationTime = QDateTime::fromTime_t(entry.numberValue(KIO::UDSEntry::UDS_MODIFICATION_TIME));
         emit dataChanged();
     }
 }
