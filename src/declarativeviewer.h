@@ -121,7 +121,6 @@ private:
     void centerWidget( const QSize& sz );
     void showWidget( const QSize& sz );
 
-    void skipTaskBar();
     bool checkComposite();
 
     QPoint          m_lastMousePosition;

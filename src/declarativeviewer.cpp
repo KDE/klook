@@ -25,6 +25,7 @@
 #include <QtDBus/QDBusReply>
 
 #include <KMimeTypeTrader>
+#include <KWindowSystem>
 
 #include "video.h"
 #include "audio.h"
@@ -99,8 +100,6 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
     setAutoFillBackground( false );
     setStyleSheet( "background:transparent;" );
 
-    skipTaskBar();
-
     connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), SLOT(focusChanged(QWidget*, QWidget*)));
     connect(engine(), SIGNAL(quit()), SLOT(close()));
 
@@ -141,6 +140,7 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
     changeContent();
     setActualSize();
     emit setStartWindow();
+    KWindowSystem::setState( winId(), NET::SkipTaskbar );
     show();
 }
 
@@ -855,19 +855,6 @@ void DeclarativeViewer::mouseReleaseEvent( QMouseEvent* event )
         event->accept();
     }
     QDeclarativeView::mouseReleaseEvent( event );
-}
-
-
-void DeclarativeViewer::skipTaskBar()
-{
-    //Skip Taskbar
-    Display* dpy = QX11Info::display();
-    Atom state[3];
-    state[0] = XInternAtom( dpy, "_NET_WM_STATE_SKIP_PAGER", false );
-    state[1] = XInternAtom( dpy, "_NET_WM_STATE_SKIP_TASKBAR", false );
-    state[2] = XInternAtom( dpy, "_NET_WM_STATE_STICKY", false );
-
-    XChangeProperty( QX11Info::display(), winId(), XInternAtom( dpy, "_NET_WM_STATE", False ), XA_ATOM, 32, PropModeReplace, ( unsigned char* )state, 3 );
 }
 
 void DeclarativeViewer::setViewMode( DeclarativeViewer::ViewMode mode )
