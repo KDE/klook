@@ -59,15 +59,12 @@ typedef enum ArrowPosition
 
 } ArrowPosition;
 
-
 class DeclarativeViewer : public QDeclarativeView
 {
     Q_OBJECT
 public:
     explicit DeclarativeViewer( QWidget *parent = 0 );
     virtual ~DeclarativeViewer();
-
-    void updateSize(File* file);
 
     void init(QStringList urls, bool embedded = false, const QRect& rc = QRect( 0, 0, 0, 0 ), int indexToShow = 0 );
 
@@ -83,13 +80,10 @@ signals:
 
 public slots:
     void updateContent(int index);
-    void setActualSize();
     void setFullScreen();
     void onSetGallery(bool );
 
     void onMetaDataChanged();
-
-    void setEmbedded(bool);
 
 private slots:
     void focusChanged(QWidget*, QWidget*);
@@ -106,8 +100,9 @@ private:
         Multi
     };
 
-    QSize getPreferredSize() const;
+    QSize getPreferredSize(const QString &path, int type) const;
     WidgetRegion calculateWindowRegion( const QPoint& mousePos );
+    void setEmbedded(bool);
 
     void initModel(QStringList urls);
     void setViewMode( ViewMode mode );
@@ -115,11 +110,8 @@ private:
     void registerTypes();
     QSize getTextWindowSize( QString url ) const;
     void createVideoObject( QUrl url );
-    QSize calculateViewSize( const QSize& sz ) const;
 
-    QSize inscribedRectToRect( const QSize& sz1, const QSize& sz2 ) const;
     void centerWidget( const QSize& sz );
-    void showWidget( const QSize& sz );
 
     bool compositingEnabled() const;
 
@@ -127,7 +119,6 @@ private:
     bool            m_isSingleMode;
     bool            m_moving;
     bool            m_resize;
-    bool            m_startFullScreen;
     bool            m_isEmbedded;
     bool            m_isGallery;
     QRect           m_rcIcon;
@@ -145,5 +136,8 @@ private:
     FileModel*          m_fileModel;
     ArrowPosition       m_posArrow;
 };
+
+QSize calculateViewSize(const QSize& sz, const QRect &desktop);
+QSize inscribedRectToRect(const QSize& sz1, const QSize& sz2);
 
 #endif // DECLARATIVEVIEWER_H
