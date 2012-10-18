@@ -24,8 +24,8 @@ import QtQuick 1.0
 Image {
     anchors.centerIn: parent
     source: "images/pla-empty-box.png"
-    width:  photosGridView.cellWidth - 20
-    height: photosGridView.cellHeight - 20
+    width:  galleryGridView.cellWidth - 20
+    height: galleryGridView.cellHeight - 20
     fillMode: Image.Stretch
     smooth: true
     visible: albumWrapper.state === "inGrid"

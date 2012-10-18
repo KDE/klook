@@ -83,9 +83,9 @@ Item {
 
     // function for getting delegate of loader element
     function bestDelegate(t) {
-        console.log("Download in progress" + downloadInProgress)
+        //console.log("Download in progress" + downloadInProgress + ";FileType - " + t + ";FilePAth " + filePath)
         // for some reason '===' does not work here
-        if(t == File.Undefined || downloadInProgress) {
+        if(!isLocal && (t == File.Undefined || downloadInProgress)) {
             return progressDelegate
         }
         if (t == File.Image) {
