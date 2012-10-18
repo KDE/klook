@@ -106,7 +106,7 @@ private:
         Multi
     };
 
-    QSize preferredSize() const;
+    QSize getPreferredSize() const;
     WidgetRegion calculateWindowRegion( const QPoint& mousePos );
 
     void initModel(QStringList urls);
