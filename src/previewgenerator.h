@@ -51,7 +51,6 @@ public slots:
 private slots:
     void setPreview( const KFileItem&, const QPixmap& );
     void previewFailed( KFileItem );
-    void deleteJob();
 
 private:
     explicit PreviewGenerator( QObject *parent = 0 );

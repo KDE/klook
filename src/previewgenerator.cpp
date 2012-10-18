@@ -72,12 +72,6 @@ void PreviewGenerator::setPreview( const KFileItem &item, const QPixmap &pixmap 
     notifyModel(item.url());
 }
 
-void PreviewGenerator::deleteJob()
-{
-    delete m_job;
-    m_job = 0;
-}
-
 QPixmap PreviewGenerator::getPreviewPixmap(QString filePath)
 {
     if (previews.contains(filePath))
@@ -114,20 +108,18 @@ void PreviewGenerator::start()
 {
     if (m_fileList.isEmpty())
         return;
-    //m_job = KIO::filePreview( m_fileList, QSize(1000, 0), &m_plugins );
     m_job = KIO::filePreview( m_fileList, 1000, 0, 0, 0, true, false, &m_plugins );
     m_job->setIgnoreMaximumSize(true);
     m_job->setAutoDelete( false );
 
     connect(m_job, SIGNAL( gotPreview( const KFileItem&, const QPixmap& ) ), SLOT( setPreview( const KFileItem&, const QPixmap& ) ) );
     connect(m_job, SIGNAL( failed( KFileItem ) ), SLOT( previewFailed( KFileItem ) ) );
-    connect(m_job, SIGNAL( result( KJob* ) ), SLOT( deleteJob() ) );
 }
 
 void PreviewGenerator::stop()
 {
     if (m_job)
-        m_job->suspend();
+        m_job->kill();
 }
 
 void PreviewGenerator::previewFailed( KFileItem item )
