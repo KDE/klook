@@ -7,14 +7,28 @@ Component {
     Item
     {
         id: videoItem
-
         signal ready()
-
         Video {
             id: video
             opacity: 0
+            source: filePath
             anchors.fill: parent
             visible: albumWrapper.state === 'fullscreen' && video.ready
+
+            Component.onCompleted: {
+                video.opacity = 1
+                video.setPlayerParent()
+                video.source = filePath
+                mainWindow.currentFileType = File.Video
+                mainWindow.updatePanel()
+                if ( albumWrapper.state === "fullscreen" )
+                    video.play()
+
+                if ( video.playing )
+                    panel.playButtonState = 'Play'
+                else
+                    panel.playButtonState = 'Pause'
+            }
 
             onTicked:
             {
@@ -60,27 +74,5 @@ Component {
             }
         }
 
-        Connections{
-            target: photosListView;
-            onCurrentIndexChanged: {
-                if ( listItem.ListView.isCurrentItem )
-                {
-                    video.opacity = 1
-                    video.setPlayerParent()
-                    video.source = filePath
-                    mainWindow.currentFileType = File.Video
-                    mainWindow.updatePanel()
-                    if ( albumWrapper.state === "fullscreen" )
-                        video.play()
-
-                    if ( video.playing )
-                        panel.playButtonState = 'Play'
-                    else
-                        panel.playButtonState = 'Pause'
-                }
-                else
-                    video.opacity = 0
-            }
-        }
     }
 }
