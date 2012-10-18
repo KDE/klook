@@ -121,7 +121,7 @@ private:
     void centerWidget( const QSize& sz );
     void showWidget( const QSize& sz );
 
-    bool checkComposite();
+    bool compositingEnabled() const;
 
     QPoint          m_lastMousePosition;
     bool            m_isSingleMode;
@@ -141,7 +141,6 @@ private:
     Phonon::MediaObject* m_mediaObject;
     Phonon::VideoWidget* m_videoWidget;
 
-    bool                m_compositing;
     PreviewGenerator*   m_previewGenerator;
     FileModel*          m_fileModel;
     ArrowPosition       m_posArrow;

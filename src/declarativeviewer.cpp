@@ -68,7 +68,6 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
     , m_region(FRAME_REGION)
     , m_mediaObject(0)
     , m_videoWidget(0)
-    , m_compositing(false)
     , m_indexToShow(0)
 {
     setOptimizationFlags( QGraphicsView::DontSavePainterState );
@@ -145,17 +144,14 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
 }
 
 //Check whether the KDE effects are included
-bool DeclarativeViewer:: checkComposite()
+bool DeclarativeViewer:: compositingEnabled() const
 {
     QDBusInterface remoteApp( "org.kde.kwin", "/KWin", "org.kde.KWin" );
     QDBusReply<bool> reply = remoteApp.call( "compositingActive" );
-    if (reply.isValid())
-    {
-        m_compositing = reply.value();
+    if (reply.isValid()) {
         return reply.value();
     }
-    qDebug() << "DBus reply is not valid";
-    m_compositing = false;
+
     return false;
 }
 
@@ -188,7 +184,7 @@ void DeclarativeViewer::registerTypes()
     rootContext()->setContextProperty( "embeddedLayout", "null" );
     rootContext()->setContextProperty( "arrowX", .0 );
     rootContext()->setContextProperty( "arrowY", .0 );
-    rootContext()->setContextProperty( "effects", ( checkComposite() ) ? "on" : "off" );
+    rootContext()->setContextProperty( "effects", ( compositingEnabled() ) ? "on" : "off" );
     rootContext()->setContextProperty( "artistStr", ki18n( "Artist:" ).toString() );
     rootContext()->setContextProperty( "totalTimeStr", ki18n( "Total time:" ).toString() );
     rootContext()->setContextProperty( "folderStr", ki18n( "Folder" ).toString() );
