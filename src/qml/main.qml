@@ -457,7 +457,6 @@ Rectangle {
                 ListView {
                     id: photosListView
                     model: fileModel
-                    currentIndex: indexToShow
                     delegate: SingleDelegate{}
                     orientation: Qt.Horizontal
                     anchors.fill: parent
@@ -473,7 +472,6 @@ Rectangle {
 
                     onCurrentIndexChanged:
                     {
-                        console.log(currentItem + " index " + currentIndex)
                         fileModel.load(currentIndex)
                         cppObject.updateContent ( currentIndex )
                         updateMenuButtons()
@@ -500,10 +498,10 @@ Rectangle {
                 Connections {
                     target: fileModel
                     onRowsInserted: {
-                        if ( fileModel.count() !== 0 )
+                        if (fileModel.count() !== 0) {
                             updateMenuButtons()
-                        if ((fileModel.count() - 1) === indexToShow)
                             photosListView.positionViewAtIndex(indexToShow, ListView.Contain)
+                        }
                     }
                 }
                 states: [

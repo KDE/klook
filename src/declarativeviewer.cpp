@@ -68,7 +68,6 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
     , m_region(FRAME_REGION)
     , m_mediaObject(0)
     , m_videoWidget(0)
-    , m_indexToShow(0)
 {
     setOptimizationFlags( QGraphicsView::DontSavePainterState );
     setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
@@ -118,12 +117,11 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
         close();
     }
 
+    rootContext()->setContextProperty("indexToShow", indexToShow);
+
     initModel(urls);
 
     m_rcIcon = rc;
-
-    m_indexToShow = indexToShow;
-    rootContext()->setContextProperty("indexToShow", indexToShow);
 
     setViewMode( urls.count() > 1 ? Multi : Single);
     rootContext()->setContextProperty("embedded", m_isEmbedded);
@@ -167,7 +165,6 @@ void DeclarativeViewer::registerTypes()
     QDesktopWidget dw;
     QRect r = dw.screenGeometry( this );
 
-    rootContext()->setContextProperty("indexToShow", m_indexToShow);
     rootContext()->setContextProperty( "DWigth", r.width() );
     rootContext()->setContextProperty( "DHeight", r.height() );
     rootContext()->setContextProperty( "fileModel", m_fileModel );
@@ -542,16 +539,14 @@ void DeclarativeViewer::changeContent()
 
     QString fileName = KUrl(m_currentFile->url()).fileName();
     rootContext()->setContextProperty("fileName", fileName);
-    rootContext()->setContextProperty("indexToShow", m_indexToShow);
+ //   rootContext()->setContextProperty("indexToShow", m_indexToShow);
     rootContext()->setContextProperty("fileUrl", m_currentFile->url());
 }
 
 void DeclarativeViewer::updateContent( int index )
 {
-    if(index == m_indexToShow)
+    if(m_fileModel->file(index) == m_currentFile)
         return;
-
-    m_indexToShow = index;
 
     if (index == -1)
     {

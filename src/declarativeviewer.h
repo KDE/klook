@@ -144,7 +144,6 @@ private:
     PreviewGenerator*   m_previewGenerator;
     FileModel*          m_fileModel;
     ArrowPosition       m_posArrow;
-    int                 m_indexToShow;
 };
 
 #endif // DECLARATIVEVIEWER_H
