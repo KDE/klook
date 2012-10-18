@@ -29,8 +29,7 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QThread>
 
-#include "file.h"
-
+class File;
 class ListItem;
 class DirectoryItem;
 class QTimer;
@@ -56,6 +55,8 @@ public:
 
     void setRoleNames(const QHash<int,QByteArray> &roleNames) { QAbstractItemModel::setRoleNames(roleNames); }
 
+    Q_INVOKABLE void load(int row);
+
 public slots:
     int count();
     File *file(int index);
@@ -68,6 +69,7 @@ private:
 
     ListItem* m_prototype;
     QList<ListItem*> m_list;
+    File *m_currentLoadingFile;
 };
 
 #endif // FILEMODEL_H

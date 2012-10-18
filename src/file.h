@@ -46,9 +46,7 @@ public:
         MimetypeFallback
     };
     File( QObject* parent );
-    File( KUrl url = KUrl(), FileType type = Undefined, const QString& mime = "", QObject* parent = 0 );
-
-public slots:
+    File( KUrl url = KUrl(), QObject* parent = 0);
     KUrl url() const;
     void setUrl( QUrl url );
 
@@ -58,30 +56,35 @@ public slots:
     QString mime();
     void setMime(const QString &mime);
 
-    void load(); // download file and return path to temporary file
+    void load();
     bool isLoaded() const; // is file downloaded?
 
     bool downloadInProgress() const;
 
+    void stopDownload();
     QString tempFilePath() const;
 
+public slots:
     void slotDownloadResult(KJob *job);
-    void slotResult(KJob *job);
+    void resultMimetypeJob(KJob *job);
 
 signals:
     void dataChanged();
     void error(QString errorText);
 
 private:
-    void loadMimeAndType(bool force = false);
+    void loadType();
+    void download(); // download file and return path to temporary file
+    bool needDownload();
 
     KUrl m_url;
+    KIO::FileCopyJob *m_job;
     mutable FileType m_type;
     mutable QString m_mime;
     QTemporaryFile *m_tempFile;
     bool m_isLoaded;
     FileTypeIdentifier *m_identifier;
-    bool m_jobStarted;
+    bool m_mimeJobStarted;
     bool m_downloadInProgress;
 };
 
@@ -89,12 +92,9 @@ class FileTypeIdentifier
 {
 public:
     FileTypeIdentifier();
-    QPair<File::FileType, QString> getTypeAndMime(QUrl url) const;
     File::FileType getType(const QString& mime, const QString& name) const;
 
 private:
-    QString getMime(const QUrl &url) const;
-
     QList<QByteArray> supportedImageFormats;
     QStringList m_mimeTypes;
 };

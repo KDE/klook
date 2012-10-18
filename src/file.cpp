@@ -23,7 +23,6 @@
 
 #include <KIO/JobClasses>
 #include <KIO/NetAccess>
-#include <KIO/JobUiDelegate>
 #include <KDE/Phonon/BackendCapabilities>
 #include <KMimeType>
 #include <QtCore/QTemporaryFile>
@@ -31,6 +30,7 @@
 #include <QtCore/QDir>
 #include <QtGui/QImageReader>
 #include <QtGui/QApplication>
+#include <kuiserverjobtracker.h>
 
 File::File(QObject* parent)
     : QObject(parent)
@@ -38,19 +38,20 @@ File::File(QObject* parent)
     , m_tempFile(0)
     , m_isLoaded(0)
     , m_identifier(new FileTypeIdentifier)
+    , m_job(0)
 {
 }
 
-File::File(KUrl url, FileType type, const QString& mime,QObject* parent)
+File::File(KUrl url, QObject* parent)
     : QObject( parent )
     , m_url(url)
     , m_type(File::Undefined)
-    , m_mime(mime)
     , m_tempFile(0)
     , m_isLoaded(0)
     , m_identifier(new FileTypeIdentifier)
-    , m_jobStarted(false)
+    , m_mimeJobStarted(false)
     , m_downloadInProgress(false)
+    , m_job(0)
 {
 
 }
@@ -67,7 +68,6 @@ void File::setUrl(QUrl url)
 
 File::FileType File::type()
 {
-    loadMimeAndType();
     return m_type;
 }
 
@@ -78,7 +78,6 @@ void File::setType(FileType type)
 
 QString File::mime()
 {
-    loadMimeAndType();
     return m_mime;
 }
 
@@ -89,14 +88,49 @@ void File::setMime(const QString &mime)
 
 void File::load()
 {
-    m_downloadInProgress = true;
+    qDebug() << "File::Load";
+    if(type() == Undefined) {
+        if(!m_mimeJobStarted)
+            loadType();
+        else
+            return;
+    }
+    else if(needDownload()) {
+        download();
+    }
+}
+
+void File::download()
+{
+    qDebug() << "File::download()";
+    if(m_downloadInProgress)
+        return;
+
     if(!m_tempFile) {
         m_tempFile = new QTemporaryFile(this);
     }
     if (m_tempFile->open()) {
-        KIO::FileCopyJob *m_job = KIO::file_copy(m_url, KUrl(m_tempFile->fileName()), -1, KIO::Overwrite | KIO::HideProgressInfo);
+        m_downloadInProgress = true;
+        m_job = KIO::file_copy(m_url, KUrl(m_tempFile->fileName()), -1, KIO::Overwrite | KIO::HideProgressInfo);
         connect(m_job, SIGNAL(result(KJob *)), SLOT(slotDownloadResult(KJob *)));
+        KIO::getJobTracker()->registerJob( m_job );
     }
+    emit dataChanged();
+}
+
+bool File:: needDownload()
+{
+    bool r = true;
+    FileType t = type();
+    if(t == File::Audio || t == File::Image
+            || t == File::Video || t == File::Txt) {
+        r = true;
+    }
+    else if(t != File::Directory) {
+        r = false;
+    }
+    qDebug() << (!url().isLocalFile() && r);
+    return !url().isLocalFile() && r;
 }
 
 bool File::isLoaded() const
@@ -107,6 +141,18 @@ bool File::isLoaded() const
 bool File::downloadInProgress() const
 {
     return m_downloadInProgress;
+}
+
+void File::stopDownload()
+{
+    if(m_job) {
+        m_downloadInProgress = false;
+        m_isLoaded = false;
+        m_job->kill();
+        delete m_tempFile;
+        m_tempFile = 0;
+        m_job = 0;
+    }
 }
 
 QString File::tempFilePath() const
@@ -122,12 +168,11 @@ void File::slotDownloadResult(KJob *job)
     else
     {
         m_isLoaded = true;
-        loadMimeAndType(true);
         emit dataChanged();
     }
 }
 
-void File::slotResult(KJob *job)
+void File::resultMimetypeJob(KJob *job)
 {
     if(!job->error())
     {
@@ -135,27 +180,19 @@ void File::slotResult(KJob *job)
         FileType t = m_identifier->getType(mime(), url().fileName());
         setType(t);
 
-        // check if we should download file. it should be done only for
-        // some files we support well
-
-        if(t == File::Audio || t == File::Image
-                || t == File::Video || t == File::Txt) {
-            load();
-        }
-        else if(t != File::Directory){
-            t = File::MimetypeFallback;
-        }
+        if(needDownload())
+            download();
 
         emit dataChanged();
     }
 }
 
-void File::loadMimeAndType(bool force)
+void File::loadType()
 {
-    if(!m_jobStarted) {
+    if(!m_mimeJobStarted) {
         KIO::MimetypeJob *job = KIO::mimetype(url(), KIO::HideProgressInfo);
-        connect(job, SIGNAL(result(KJob *)), SLOT(slotResult(KJob*)));
-        m_jobStarted = true;
+        connect(job, SIGNAL(result(KJob *)), SLOT(resultMimetypeJob(KJob*)));
+        m_mimeJobStarted = true;
     }
 }
 
@@ -165,18 +202,6 @@ FileTypeIdentifier::FileTypeIdentifier()
 
 {
 
-}
-
-QPair<File::FileType, QString> FileTypeIdentifier::getTypeAndMime(QUrl url) const
-{
-    QString mime = getMime(url);
-    File::FileType t = getType(mime, url.toLocalFile());
-    return qMakePair(t, mime);
-}
-
-QString FileTypeIdentifier::getMime(const QUrl &url) const
-{
-    return "bla";
 }
 
 File::FileType FileTypeIdentifier::getType(const QString& mime, const QString& name) const
@@ -202,7 +227,6 @@ File::FileType FileTypeIdentifier::getType(const QString& mime, const QString& n
         else if ( left == QLatin1String( "video" ) )
         {
             QString right = mime.mid( delimiter + 1 );
-#if 1
             if ( m_mimeTypes.contains( mime ) )
                 type = File::Video;
 
@@ -213,14 +237,6 @@ File::FileType FileTypeIdentifier::getType(const QString& mime, const QString& n
                      right == QLatin1String( "x-theora+ogg" ) )
                     type = File::Video;
             }
-#else
-            if ( right == QLatin1String("x-msvideo") ||
-                 right == QLatin1String("mp4") ||
-                 right == QLatin1String("3gpp") ||
-                 right == QLatin1String("x-flv") ||
-                 right == QLatin1String("quicktime") )
-                type = File::Video;
-#endif
         }
         else if ( left == QLatin1String( "audio" ) )
         {

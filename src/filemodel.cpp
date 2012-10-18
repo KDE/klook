@@ -30,6 +30,7 @@
 
 FileModel::FileModel(QObject *parent)
     : QAbstractListModel( parent )
+    , m_currentLoadingFile(0)
 {
 }
 
@@ -94,6 +95,21 @@ void FileModel::reset()
     endRemoveRows();
 }
 
+void FileModel::load(int row)
+{
+    if(row >= rowCount() || row < 0)
+        return;
+
+    // stop previous download
+    if(m_currentLoadingFile && m_currentLoadingFile->downloadInProgress()) {
+        m_currentLoadingFile->stopDownload();
+    }
+
+    File *f = file(row);
+    f->load();
+    m_currentLoadingFile = f;
+}
+
 int FileModel::count()
 {
     return rowCount();
@@ -108,8 +124,9 @@ void FileModel::handleItemChange()
 {
     ListItem* item = qobject_cast<ListItem *>(sender());
     QModelIndex index = indexFromItem(item);
-    if(index.isValid())
+    if(index.isValid()) {
         emit dataChanged(index, index);
+    }
 }
 
 QModelIndex FileModel::indexFromItem(ListItem *item)
