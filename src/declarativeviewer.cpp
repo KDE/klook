@@ -248,7 +248,7 @@ void DeclarativeViewer::setFullScreen()
         setActualSize();
         return;
     }
-    else if ( ( geometry().size() == getActualSize() ) || m_isGallery )
+    else if ( ( geometry().size() == preferredSize() ) || m_isGallery )
     {
         showFullScreen();
         emit setFullScreenState();
@@ -260,7 +260,7 @@ void DeclarativeViewer::setFullScreen()
     }
 }
 
-QSize DeclarativeViewer::getActualSize() const
+QSize DeclarativeViewer::preferredSize() const
 {
     if (!m_currentFile || !m_currentFile->url().isLocalFile())
         return QSize();
