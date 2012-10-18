@@ -271,9 +271,10 @@ QSize DeclarativeViewer::preferredSize() const
     }
     else if (m_currentFile->type() == File::Image)
     {
-        QPixmap pixmap(m_currentFile->url().toLocalFile());
-        QSize sz = calculateViewSize(pixmap.size());
-        sz.setHeight(sz.height() + ( m_isEmbedded ? 0 : height_offset ));
+        QImageReader imgReader(m_currentFile->url().toLocalFile());
+        QSize sz = imgReader.size();
+        sz.setWidth(sz.width() + (m_isEmbedded ? 0 : 6)) ;
+        sz.setHeight(sz.height() + (m_isEmbedded ? 0 : height_offset +4));
         return sz;
     }
     else if (m_currentFile->type() == File::Audio)
@@ -369,10 +370,10 @@ void DeclarativeViewer::updateSize(File* file)
     }
     else if ( file->type() == File::Image )
     {
-        QPixmap pixmap(file->url().toLocalFile());
-        QSize sz = calculateViewSize(pixmap.size());
-        sz.setWidth(sz.width() + ( m_isEmbedded ? 0 : 6 )) ;
-        sz.setHeight( sz.height() + ( m_isEmbedded ? 0 : height_offset +4 ) );
+        QImageReader imgReader(file->url().toLocalFile());
+        QSize sz = imgReader.size();
+        sz.setWidth(sz.width() + (m_isEmbedded ? 0 : 6)) ;
+        sz.setHeight(sz.height() + (m_isEmbedded ? 0 : height_offset +4));
         showWidget(sz);
     }
     else if ( ( file->type() == File::Audio ) ||
