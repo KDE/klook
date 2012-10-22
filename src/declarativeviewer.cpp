@@ -213,18 +213,15 @@ void DeclarativeViewer::onMetaDataChanged()
         sz.setWidth(sz.width() + ( m_isEmbedded ? 0 : 6 )) ;
         sz.setHeight( sz.height() + ( m_isEmbedded ? 0 : height_offset +4 ) );
 
-        if (!isFullScreen() && sz == size())
-        {
+        if (!isFullScreen() && sz == size()) {
             showFullScreen();
         }
-        else
-        {
+        else {
             centerWidget( sz );
         }
     }
 
-    if (m_mediaObject)
-    {
+    if(m_mediaObject) {
         QObject::disconnect( m_mediaObject, SIGNAL( metaDataChanged() ), this, SLOT( onMetaDataChanged() ) );
         delete m_mediaObject;
         m_mediaObject = 0;
@@ -233,6 +230,12 @@ void DeclarativeViewer::onMetaDataChanged()
 
 void DeclarativeViewer::setFullScreen()
 {
+    if (m_isGallery) {
+        showFullScreen();
+        emit setFullScreenState();
+        return;
+    }
+
     QSize preferredSize;
     File::FileType type = m_currentFile->type();
 
@@ -261,7 +264,7 @@ void DeclarativeViewer::setFullScreen()
         return;
     }
 
-    if (geometry().size() == preferredSize || m_isGallery) {
+    if (geometry().size() == preferredSize) {
         showFullScreen();
         emit setFullScreenState();
     }
