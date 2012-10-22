@@ -120,6 +120,7 @@ void PreviewGenerator::stop()
 {
     if (m_job)
         m_job->kill();
+    previews.clear();
 }
 
 void PreviewGenerator::previewFailed( KFileItem item )
