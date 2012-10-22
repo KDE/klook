@@ -68,6 +68,10 @@ public:
 
     void init(QStringList urls, bool embedded = false, const QRect& rc = QRect( 0, 0, 0, 0 ), int indexToShow = 0 );
 
+
+protected:
+    void resizeEvent(QResizeEvent *event);
+
 signals:
     void sizeChanged();
 
@@ -112,8 +116,6 @@ private:
     void createVideoObject( QUrl url );
 
     void centerWidget( const QSize& sz );
-
-    bool compositingEnabled() const;
 
     QPoint          m_lastMousePosition;
     bool            m_isSingleMode;

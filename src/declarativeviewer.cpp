@@ -93,15 +93,10 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
     setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint );
 
     setAttribute( Qt::WA_TranslucentBackground);
-
-    setAutoFillBackground( false );
     setStyleSheet( "background:transparent;" );
 
     connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), SLOT(focusChanged(QWidget*, QWidget*)));
     connect(engine(), SIGNAL(quit()), SLOT(close()));
-
-    Plasma::WindowEffects::overrideShadow( this->winId(), true );
-    Plasma::WindowEffects::enableBlurBehind( winId() );
 }
 
 DeclarativeViewer::~DeclarativeViewer()
@@ -143,16 +138,16 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
     emit setStartWindow();
 }
 
-//Check whether the KDE effects are included
-bool DeclarativeViewer:: compositingEnabled() const
+void DeclarativeViewer::resizeEvent(QResizeEvent *event)
 {
-    QDBusInterface remoteApp( "org.kde.kwin", "/KWin", "org.kde.KWin" );
-    QDBusReply<bool> reply = remoteApp.call( "compositingActive" );
-    if (reply.isValid()) {
-        return reply.value();
+    if (KWindowSystem::compositingActive()) {
+        QRegion mask(QRect(QPoint(), size()));
+
+        Plasma::WindowEffects::enableBlurBehind(winId(), true, mask);
+        Plasma::WindowEffects::overrideShadow(winId(), true);
     }
 
-    return false;
+    QDeclarativeView::resizeEvent(event);
 }
 
 void DeclarativeViewer::registerTypes()
@@ -183,7 +178,7 @@ void DeclarativeViewer::registerTypes()
     rootContext()->setContextProperty( "embeddedLayout", "null" );
     rootContext()->setContextProperty( "arrowX", .0 );
     rootContext()->setContextProperty( "arrowY", .0 );
-    rootContext()->setContextProperty( "effects", ( compositingEnabled() ) ? "on" : "off" );
+    rootContext()->setContextProperty( "effects", ( KWindowSystem::compositingActive() ) ? "on" : "off" );
     rootContext()->setContextProperty( "artistStr", ki18n( "Artist:" ).toString() );
     rootContext()->setContextProperty( "totalTimeStr", ki18n( "Total time:" ).toString() );
     rootContext()->setContextProperty( "folderStr", ki18n( "Folder" ).toString() );
@@ -473,7 +468,6 @@ void DeclarativeViewer::changeContent()
 
     QString fileName = KUrl(m_currentFile->url()).fileName();
     rootContext()->setContextProperty("fileName", fileName);
- //   rootContext()->setContextProperty("indexToShow", m_indexToShow);
     rootContext()->setContextProperty("fileUrl", m_currentFile->url());
 }
 
