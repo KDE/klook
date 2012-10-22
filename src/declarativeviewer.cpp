@@ -167,7 +167,6 @@ void DeclarativeViewer::registerTypes()
     rootContext()->setContextProperty( "fileModel", m_fileModel );
     rootContext()->setContextProperty( "previewGenerator", PreviewGenerator::createInstance() );
     rootContext()->setContextProperty( "cppObject",  this );
-    rootContext()->setContextProperty( "effects", "on" );
     rootContext()->setContextProperty( "actualSize", "off" );
     rootContext()->setContextProperty( "openText", ki18n( "Open in..." ).toString() );
     rootContext()->setContextProperty( "fileName", "" );
@@ -178,7 +177,6 @@ void DeclarativeViewer::registerTypes()
     rootContext()->setContextProperty( "embeddedLayout", "null" );
     rootContext()->setContextProperty( "arrowX", .0 );
     rootContext()->setContextProperty( "arrowY", .0 );
-    rootContext()->setContextProperty( "effects", ( KWindowSystem::compositingActive() ) ? "on" : "off" );
     rootContext()->setContextProperty( "artistStr", ki18n( "Artist:" ).toString() );
     rootContext()->setContextProperty( "totalTimeStr", ki18n( "Total time:" ).toString() );
     rootContext()->setContextProperty( "folderStr", ki18n( "Folder" ).toString() );
