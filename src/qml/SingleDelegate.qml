@@ -1,4 +1,3 @@
-
 /* KLook
  * Copyright (c) 2011-2012 ROSA  <support@rosalab.ru>
  * Authors: Julia Mineeva, Evgeniy Auzhin, Sergey Borovkov.
