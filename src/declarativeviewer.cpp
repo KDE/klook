@@ -189,6 +189,8 @@ void DeclarativeViewer::registerTypes()
 
 void DeclarativeViewer::createVideoObject( QUrl url )
 {
+    // UGLY HACK to get video widget size hint
+    // it should be replaced with proper solution
     delete m_videoWidget;
     delete m_mediaObject;
 
