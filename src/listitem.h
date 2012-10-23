@@ -26,21 +26,30 @@ public:
     };
 
     ListItem(File *file, QObject *parent);
-    virtual ~ListItem() {}
 
     static QHash<int, QByteArray> roleNames();
 
-    virtual QVariant data(int role) const;
+    QVariant data(int role) const;
 
-    virtual QString path() const;
-    void setPath(QString path) { m_file->setUrl(QUrl(path)); }
+    QString path() const;
+    void setPath(QString path)
+    {
+        m_file->setUrl(QUrl(path));
+    }
 
-    virtual QString mime() const;
+    QString mime() const;
 
-    virtual int type() const;
-    void setType(int type) { m_file->setType(static_cast<File::FileType>(type)); }
+    int type() const;
 
-    File *file() { return m_file; }
+    void setType(int type)
+    {
+        m_file->setType(static_cast<File::FileType>(type));
+    }
+
+    File *file()
+    {
+        return m_file;
+    }
 
 signals:
     void dataChanged();

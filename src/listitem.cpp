@@ -64,8 +64,6 @@ QVariant ListItem::data( int role ) const
         QObject *parent = const_cast<QObject *>(qobject_cast<const QObject *>(this));
         if(type == File::Directory)
             m_content = new ListItemDirectoryContent(m_file, parent);
-        else if(type == File::MimetypeFallback)
-            m_content = new ListItemFallbackContent(m_file, parent);
         else
             m_content = new ListItemFallbackContent(m_file, parent);
         connect(m_content, SIGNAL(dataChanged()), SIGNAL(dataChanged()));
