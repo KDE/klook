@@ -81,6 +81,8 @@ QVariant ListItem::data( int role ) const
 QHash<int, QByteArray> ListItem::roleNames()
 {
     QHash<int, QByteArray> names;
+    names[StatCompleteRole] = "statComplete";
+    names[DirSizeCompleteRole] = "dirSizeComplete";
     names[FilePathRole] = "filePath";
     names[FileNameRole] = "fileName";
     names[UrlRole] = "fileUrl";

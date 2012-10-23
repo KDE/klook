@@ -23,7 +23,9 @@ public:
         CountRole,       // object count for folders
         MimeRole,
         LocalFileRole, // is file local??
-        DownloadInProgress
+        DownloadInProgress,
+        StatCompleteRole, // for fallback content
+        DirSizeCompleteRole // for dir size job
     };
 
     ListItem(File *file, QObject *parent);

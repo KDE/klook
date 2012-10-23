@@ -24,25 +24,6 @@ private:
     File *m_file;
 };
 
-class ListItemDirectoryContent : public ListItemContent
-{
-    Q_OBJECT
-public:
-    explicit ListItemDirectoryContent(File *file, QObject *parent = 0);
-
-    virtual QVariant data(int role) const;
-
-private slots:
-    void directorySizeResult(KJob *job);
-    void handleStatJob(KJob *job);
-
-private:
-    mutable bool m_isScanned;
-    qint64 m_totalFiles;
-    qint64 m_totalSize;
-    QDateTime m_modificationTime;
-};
-
 class ListItemFallbackContent : public ListItemContent
 {
     Q_OBJECT
@@ -57,7 +38,25 @@ private slots:
 private:
     QDateTime m_modificationTime;
     qulonglong m_size;
+    bool m_statComplete;
 };
 
+class ListItemDirectoryContent : public ListItemFallbackContent
+{
+    Q_OBJECT
+public:
+    explicit ListItemDirectoryContent(File *file, QObject *parent = 0);
+
+    virtual QVariant data(int role) const;
+
+private slots:
+    void handleDirSizeJob(KJob *job);
+
+private:
+    bool m_isScanned;
+    qint64 m_totalFiles;
+    qint64 m_totalSize;
+    QDateTime m_modificationTime;
+};
 
 #endif // LISTITEMCONTENT_H
