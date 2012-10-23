@@ -6,7 +6,7 @@
 KPartsWidget *KPartsWidget::m_instance = 0;
 
 KPartsWidget::KPartsWidget(QWidget *parent)
-    : KParts::MainWindow(parent, KDE_DEFAULT_WINDOWFLAGS)
+    : KParts::MainWindow(parent, static_cast<Qt::WindowFlags>(KDE_DEFAULT_WINDOWFLAGS))
 {
     m_service = KService::serviceByDesktopPath("okular_part.desktop");
 
