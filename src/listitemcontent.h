@@ -13,7 +13,7 @@ class ListItemContent : public QObject
 public:
     explicit ListItemContent(File *file, QObject *parent = 0);
 
-    virtual QVariant data(int role) const;
+    virtual QVariant data(int role) const = 0;
 
     File *file() const;
 

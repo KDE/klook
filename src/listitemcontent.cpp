@@ -12,12 +12,6 @@ ListItemContent::ListItemContent(File *file, QObject *parent)
 {
 }
 
-QVariant ListItemContent::data(int role) const
-{
-    Q_UNUSED(role)
-    return QVariant();
-}
-
 File *ListItemContent::file() const
 {
     return m_file;
