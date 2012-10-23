@@ -37,7 +37,6 @@ File::File(QObject* parent)
     , m_type(Undefined)
     , m_tempFile(0)
     , m_isLoaded(0)
-    , m_identifier(new FileTypeIdentifier)
     , m_job(0)
 {
 }
@@ -48,7 +47,6 @@ File::File(KUrl url, QObject* parent)
     , m_type(File::Undefined)
     , m_tempFile(0)
     , m_isLoaded(0)
-    , m_identifier(new FileTypeIdentifier)
     , m_mimeJobStarted(false)
     , m_job(0)
     , m_downloadInProgress(false)
@@ -102,9 +100,10 @@ void File::load()
 
 void File::download()
 {
-    qDebug() << "File::download()";
-    if(m_downloadInProgress)
+    if(m_downloadInProgress) {
+        qDebug() << "Trying to download file for the second time...";
         return;
+    }
 
     if(!m_tempFile) {
         m_tempFile = new QTemporaryFile(this);
@@ -147,8 +146,8 @@ void File::stopDownload()
     if(m_job) {
         m_downloadInProgress = false;
         m_isLoaded = false;
-        KIO::getJobTracker()->unregisterJob(m_job);
         m_job->kill();
+        KIO::getJobTracker()->unregisterJob(m_job);
         delete m_tempFile;
         m_tempFile = 0;
         m_job = 0;
@@ -177,11 +176,13 @@ void File::resultMimetypeJob(KJob *job)
     if(!job->error())
     {
         setMime(dynamic_cast<KIO::MimetypeJob *>(job)->mimetype());
-        FileType t = m_identifier->getType(mime(), url().fileName());
+        FileType t = getFileType(mime(), url().fileName());
         setType(t);
 
-        if(needDownload())
+        // now that we know file type we can download file if necessary
+        if(needDownload()) {
             download();
+        }
 
         emit dataChanged();
     }
@@ -196,16 +197,11 @@ void File::loadType()
     }
 }
 
-FileTypeIdentifier::FileTypeIdentifier()
-    : supportedImageFormats(QImageReader::supportedImageFormats())
-    , m_mimeTypes(Phonon::BackendCapabilities::availableMimeTypes())
-
+File::FileType getFileType(const QString& mime, const QString& name)
 {
+    static QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
+    static QStringList m_mimeTypes = Phonon::BackendCapabilities::availableMimeTypes();
 
-}
-
-File::FileType FileTypeIdentifier::getType(const QString& mime, const QString& name) const
-{
     // this method is a complete mess right now
     // information about supported types should not be hardcoded
     int delimiter = mime.indexOf( '/' );

@@ -83,20 +83,10 @@ private:
     mutable QString m_mime;
     QTemporaryFile *m_tempFile;
     bool m_isLoaded;
-    FileTypeIdentifier *m_identifier;
     bool m_mimeJobStarted;
     bool m_downloadInProgress;
 };
 
-class FileTypeIdentifier
-{
-public:
-    FileTypeIdentifier();
-    File::FileType getType(const QString& mime, const QString& name) const;
-
-private:
-    QList<QByteArray> supportedImageFormats;
-    QStringList m_mimeTypes;
-};
+File::FileType getFileType(const QString& mime, const QString& name);
 
 #endif // FILE_H

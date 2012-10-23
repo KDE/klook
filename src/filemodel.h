@@ -56,10 +56,8 @@ public:
     void setRoleNames(const QHash<int,QByteArray> &roleNames) { QAbstractItemModel::setRoleNames(roleNames); }
 
     Q_INVOKABLE void load(int row);
-
-public slots:
-    int count();
-    File *file(int index);
+    Q_INVOKABLE File *file(int index);
+    Q_INVOKABLE int count() const;
 
 private slots:
     void handleItemChange();

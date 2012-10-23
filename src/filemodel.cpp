@@ -110,7 +110,7 @@ void FileModel::load(int row)
     m_currentLoadingFile = f;
 }
 
-int FileModel::count()
+int FileModel::count() const
 {
     return rowCount();
 }
