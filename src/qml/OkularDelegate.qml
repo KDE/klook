@@ -35,7 +35,6 @@ Component {
             target: photosListView
             onCurrentIndexChanged: {
                 if ( listItem.ListView.isCurrentItem ) {
-                    mainWindow.currentFileType = File.OkularFile
                     mouseControl.enabled = mainWindow.state == 'fullscreen' ? true : false
                     part.setPartParent()
                 }

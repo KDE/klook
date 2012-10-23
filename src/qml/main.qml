@@ -621,11 +621,12 @@ Rectangle {
                 anchors.bottomMargin: 2
                 anchors.topMargin: 1
                 color: {
+                    console.debug("Changing color!" + mainWindow.currentFileType)
                     if (((mainWindow.currentFileType === File.Directory) ||
-                          (mainWindow.currentFileType === File.Audio)  ||
-                          (mainWindow.currentFileType === File.MimetypeFallback) ||
-                          (mainWindow.currentFileType === File.Undefined)) &&
-                        (albumWrapper.state == "fullscreen" ))
+                         (mainWindow.currentFileType === File.Audio)  ||
+                         (mainWindow.currentFileType === File.MimetypeFallback) ||
+                         (mainWindow.currentFileType === File.Undefined)) &&
+                            (albumWrapper.state == "fullscreen" ))
                         return "#dadada"
                     else
                         return "#333333"
@@ -708,7 +709,6 @@ Rectangle {
                 anchors.topMargin: 1
                 color: (((mainWindow.currentFileType == File.Directory) ||
                          (mainWindow.currentFileType == File.Audio ) ||
-                         (mainWindow.currentFileType === File.Undefined) ||
                          (mainWindow.currentFileType === File.MimetypeFallback)) &&
                         (albumWrapper.state == "fullscreen")) ? "#dadada" : "#333333"
             }

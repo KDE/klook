@@ -40,7 +40,6 @@ Component {
                 video.opacity = 1
                 video.setPlayerParent()
                 video.source = filePath
-                mainWindow.currentFileType = File.Video
                 mainWindow.updatePanel()
                 if ( albumWrapper.state === "fullscreen" )
                     video.play()

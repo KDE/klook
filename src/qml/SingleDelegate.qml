@@ -82,14 +82,12 @@ Item {
 
     // function for getting delegate of loader element
     function bestDelegate(t) {
-        if(!isLocal && !isLoaded) {
+        if(!isLoaded) {
             mainWindow.currentFileType = File.Undefined
-            mainWindow.updatePanel()
             return progressDelegate
         }
 
         mainWindow.currentFileType = t
-        mainWindow.updatePanel()
 
         if (t === File.Image) {
             return imgDelegate;
@@ -119,5 +117,8 @@ Item {
         id: componentLoader
         anchors.fill: parent
         sourceComponent: bestDelegate(type)
+        onLoaded: {
+            mainWindow.updatePanel()
+        }
     }
 }
