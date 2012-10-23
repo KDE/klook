@@ -1,6 +1,7 @@
 #include "kpartswidget.h"
 
-#include <ktoolbar.h>
+#include <KToolBar>
+#include <QtGui/QDesktopWidget>
 
 KPartsWidget *KPartsWidget::m_instance = 0;
 
@@ -22,11 +23,6 @@ KPartsWidget::KPartsWidget(QWidget *parent)
     }
 }
 
-KPartsWidget::~KPartsWidget()
-{
-
-}
-
 KPartsWidget *KPartsWidget::instance()
 {
     if(!m_instance)
@@ -44,4 +40,21 @@ void KPartsWidget::setUrl(const QString &url)
 QStringList KPartsWidget::supportedMimeTypes() const
 {
     return QStringList();
+}
+
+QSize getDocumentWindowSize()
+{
+    QDesktopWidget dw;
+    QSize size;
+
+    if (dw.height() < dw.width()) {
+        size.setHeight(dw.height() * 0.8);
+        size.setWidth(size.height () / 1.4142 + 40  * 1.4142);
+    }
+    else {
+        size.setWidth(dw.width() * 0.8);
+        size.setHeight(size.width() * 1.4142);
+        size.setWidth(size.width() + 40); // caption
+    }
+    return size;
 }

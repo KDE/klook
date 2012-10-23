@@ -203,6 +203,8 @@ void DeclarativeViewer::createVideoObject( QUrl url )
 
 void DeclarativeViewer::onMetaDataChanged()
 {
+    // calculate video size hint
+    // TODO: ask QML component about size hint
     if(m_videoWidget) {
         delete m_videoWidget;
         m_videoWidget = 0;
@@ -275,54 +277,33 @@ void DeclarativeViewer::setFullScreen()
 
 QSize DeclarativeViewer::getPreferredSize(const QString &path, int type) const
 {
-    if (type == File::Video)
-    {
+    //TODO: use virtual functions for this
+    if (type == File::Video) {
+        // video size is calculated separately
         return QSize();
     }
-    else if (type == File::Image)
-    {
+    else if (type == File::Image) {
         QImageReader imgReader(path);
-
         QDesktopWidget dw;
         QSize sz = calculateViewSize(imgReader.size(), dw.screenGeometry(this));
         sz.setWidth(sz.width() + (m_isEmbedded ? 0 : 6)) ;
         sz.setHeight(sz.height() + (m_isEmbedded ? 0 : height_offset +4));
         return sz;
     }
-    else if ( ( type == File::Audio ) ||
-              ( type == File::Directory ) ||
-              ( type == File::MimetypeFallback) )
-    {
+    else if (type == File::Audio ||
+             type == File::Directory ||
+             type == File::MimetypeFallback) {
         int width = min_width;
-        int height = min_height;
-        if ( ( type == File::Directory ) ||
-             ( type == File::MimetypeFallback) )
+        if (type == File::Directory ||
+            type == File::MimetypeFallback)
             width += 100;
-        return QSize (width, height);
+        return QSize (width, min_height);
     }
-    else if ( type == File::Txt )
-    {
+    else if (type == File::Txt) {
         return getTextWindowSize(path);
     }
-    else if( type == File::OkularFile)
-    {
-        QDesktopWidget dw;
-        int width, height;
-
-        if(dw.height() < dw.width())
-        {
-            height = dw.height() * 0.8;
-            width = ( height / 1.4142 + 40 ) * 1.4142;
-        }
-        else
-        {
-            width = dw.width() * 0.8;
-            height = width * 1.4142;
-            width += 40; // caption
-        }
-
-
-        return QSize( width, height );
+    else if( type == File::OkularFile) {
+        return getDocumentWindowSize();
     }
     return QSize();
 }
