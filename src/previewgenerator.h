@@ -38,7 +38,7 @@ class PreviewGenerator : public QObject
     Q_OBJECT
 
 public:
-    static PreviewGenerator *createInstance();
+    static PreviewGenerator *instance();
     void setFiles(KUrl::List list);
 
     QPixmap getPreviewPixmap( QString filePath );
@@ -57,7 +57,7 @@ private:
 
     void notifyModel(KUrl url);
 
-    static PreviewGenerator*    instance;
+    static PreviewGenerator* m_instance;
 
     QHash<KUrl, QPixmap> previews;
 

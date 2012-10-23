@@ -29,7 +29,7 @@
 #include "filemodel.h"
 #include "listitem.h"
 
-PreviewGenerator *PreviewGenerator::instance = 0;
+PreviewGenerator *PreviewGenerator::m_instance = 0;
 
 #define NO_DIRECTORY_THUMBNAIL
 
@@ -80,11 +80,11 @@ QPixmap PreviewGenerator::getPreviewPixmap(QString filePath)
     return defaultPreview;
 }
 
-PreviewGenerator * PreviewGenerator::createInstance()
+PreviewGenerator * PreviewGenerator::instance()
 {
-    if (!instance)
-        instance = new PreviewGenerator;
-    return instance;
+    if (!m_instance)
+        m_instance = new PreviewGenerator;
+    return m_instance;
 }
 
 void PreviewGenerator::setFiles(KUrl::List list)

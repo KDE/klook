@@ -26,7 +26,7 @@
 
 PreviewProvider::PreviewProvider()
     : QDeclarativeImageProvider(Pixmap)
-    , previewGenerator(PreviewGenerator::createInstance())
+    , previewGenerator(PreviewGenerator::instance())
 {
 }
 

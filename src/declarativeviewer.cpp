@@ -80,12 +80,12 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
 
     setMinimumSize(min_width, min_height);
 
-    m_previewGenerator = PreviewGenerator::createInstance();
+    m_previewGenerator = PreviewGenerator::instance();
 
     m_fileModel = new FileModel(this);
     m_fileModel->setRoleNames(ListItem::roleNames());
 
-    PreviewGenerator::createInstance()->setModel(m_fileModel);
+    PreviewGenerator::instance()->setModel(m_fileModel);
 
     registerTypes();
 
@@ -165,7 +165,7 @@ void DeclarativeViewer::registerTypes()
     rootContext()->setContextProperty( "DWigth", r.width() );
     rootContext()->setContextProperty( "DHeight", r.height() );
     rootContext()->setContextProperty( "fileModel", m_fileModel );
-    rootContext()->setContextProperty( "previewGenerator", PreviewGenerator::createInstance() );
+    rootContext()->setContextProperty( "previewGenerator", PreviewGenerator::instance() );
     rootContext()->setContextProperty( "cppObject",  this );
     rootContext()->setContextProperty( "actualSize", "off" );
     rootContext()->setContextProperty( "openText", ki18n( "Open in..." ).toString() );
