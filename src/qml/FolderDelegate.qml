@@ -86,14 +86,30 @@ Component {
             id: size
             anchors.top: modified.bottom
             anchors.left: folderIcon.right
-            text: sizeStr + " " + contentSize
+            text: (dirSizeComplete)? sizeStr + " " + contentSize : sizeStr
+        }
+
+        AnimatedImage {
+            id: sizeWaitAnimation
+            anchors.top: modified.bottom
+            anchors.left: size.right
+            source: "images/loader.gif"
+            visible: !dirSizeComplete
         }
 
         InfoItem {
             id: content
             anchors.top: size.bottom
             anchors.left: folderIcon.right
-            text: elementsStr + " " + countElements
+            text: (dirSizeComplete)? elementsStr + " " + countElements : elementsStr
+        }
+
+        AnimatedImage {
+            id: contentWaitAnimation
+            anchors.top: size.bottom
+            anchors.left: content.right
+            source: "images/loader.gif"
+            visible: !dirSizeComplete
         }
 
         Connections{
@@ -103,6 +119,19 @@ Component {
                     folderIcon.opacity = 1
                 } else {
                     folderIcon.opacity = 0
+                }
+            }
+        }
+        Connections{
+            target: mainWindow
+            onStateChanged: {
+                if (mainWindow.state === 'fullscreen') {
+                    sizeWaitAnimation.source = "images/white-loader.gif"
+                    contentWaitAnimation.source = "images/white-loader.gif"
+                }
+                else {
+                    sizeWaitAnimation.source = "images/loader.gif"
+                    contentWaitAnimation.source = "images/loader.gif"
                 }
             }
         }
