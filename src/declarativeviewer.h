@@ -34,7 +34,7 @@ class File;
 class FileModel;
 class QPoint;
 
-typedef enum WidgetRegion
+enum WidgetRegion
 {
     FRAME_REGION,
     HEADER_REGION,
@@ -47,8 +47,7 @@ typedef enum WidgetRegion
     BOTTOM_LEFT_CORNER_REGION,
     BOTTOM_RIGHT_CORNER_REGION,
     ARROW_NULL_REGION
-
-} WidgetRegion;
+};
 
 typedef enum ArrowPosition
 {
