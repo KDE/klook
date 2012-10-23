@@ -50,10 +50,10 @@ File::File(KUrl url, QObject* parent)
     , m_isLoaded(0)
     , m_identifier(new FileTypeIdentifier)
     , m_mimeJobStarted(false)
-    , m_downloadInProgress(false)
     , m_job(0)
+    , m_downloadInProgress(false)
 {
-
+    m_isLoaded = m_url.isLocalFile();
 }
 
 KUrl File::url() const
@@ -64,6 +64,7 @@ KUrl File::url() const
 void File::setUrl(QUrl url)
 {
     m_url = url;
+    m_isLoaded = url.isLocalFile();
 }
 
 File::FileType File::type()
@@ -88,7 +89,6 @@ void File::setMime(const QString &mime)
 
 void File::load()
 {
-    qDebug() << "File::Load";
     if(type() == Undefined) {
         if(!m_mimeJobStarted)
             loadType();
@@ -129,7 +129,6 @@ bool File:: needDownload()
     else if(t != File::Directory) {
         r = false;
     }
-    qDebug() << (!url().isLocalFile() && r);
     return !url().isLocalFile() && r;
 }
 
@@ -148,6 +147,7 @@ void File::stopDownload()
     if(m_job) {
         m_downloadInProgress = false;
         m_isLoaded = false;
+        KIO::getJobTracker()->unregisterJob(m_job);
         m_job->kill();
         delete m_tempFile;
         m_tempFile = 0;

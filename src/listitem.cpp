@@ -54,6 +54,9 @@ QVariant ListItem::data( int role ) const
     case UrlRole:
         return m_file->url().url();
 
+    case LoadedRole:
+        return m_file->isLoaded();
+
     default:
         break;
     }
@@ -83,6 +86,7 @@ QHash<int, QByteArray> ListItem::roleNames()
     names[ContentSizeRole] = "contentSize";
     names[CountRole] = "countElements";
     names[MimeRole] = "mime";
+    names[LoadedRole] = "isLoaded";
     names[LocalFileRole] = "isLocal";
     names[DownloadInProgress] = "downloadInProgress";
 

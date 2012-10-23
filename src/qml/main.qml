@@ -538,7 +538,7 @@ Rectangle {
 
                 onStateChanged:
                 {
-                    if ( albumWrapper.state === 'inGrid' )
+                    if (albumWrapper.state === 'inGrid')
                         previewGenerator.start()
                     else
                     {
@@ -620,10 +620,16 @@ Rectangle {
                 anchors.leftMargin: 2
                 anchors.bottomMargin: 2
                 anchors.topMargin: 1
-                color: ( ( ( mainWindow.currentFileType === File.Directory ) ||
-                          ( mainWindow.currentFileType === File.Audio )  ||
-                          ( mainWindow.currentFileType === File.MimetypeFallback ) ) &&
-                        ( albumWrapper.state == "fullscreen" ) ) ? "#dadada" : "#333333"
+                color: {
+                    if (((mainWindow.currentFileType === File.Directory) ||
+                          (mainWindow.currentFileType === File.Audio)  ||
+                          (mainWindow.currentFileType === File.MimetypeFallback) ||
+                          (mainWindow.currentFileType === File.Undefined)) &&
+                        (albumWrapper.state == "fullscreen" ))
+                        return "#dadada"
+                    else
+                        return "#333333"
+                }
             }
 
             PropertyChanges {
@@ -687,7 +693,9 @@ Rectangle {
             }
             PropertyChanges {
                 target: arrow
-                source: (embeddedLayout === "top") ? "images/arrow/arrow-bottom.png" : ((embeddedLayout === "left") ? "images/arrow/arrow-right.png" : "images/arrow/arrow-left.png")
+                source: (embeddedLayout === "top") ?
+                            "images/arrow/arrow-bottom.png" :
+                            ((embeddedLayout === "left") ? "images/arrow/arrow-right.png" : "images/arrow/arrow-left.png")
                 visible : true
                 x : arrowX; y: arrowY
             }
@@ -699,8 +707,9 @@ Rectangle {
                 anchors.bottomMargin: 1
                 anchors.topMargin: 1
                 color: (((mainWindow.currentFileType == File.Directory) ||
-                          (mainWindow.currentFileType == File.Audio ) ||
-                          (mainWindow.currentFileType === File.MimetypeFallback)) &&
+                         (mainWindow.currentFileType == File.Audio ) ||
+                         (mainWindow.currentFileType === File.Undefined) ||
+                         (mainWindow.currentFileType === File.MimetypeFallback)) &&
                         (albumWrapper.state == "fullscreen")) ? "#dadada" : "#333333"
             }
         }

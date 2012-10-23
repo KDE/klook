@@ -82,39 +82,42 @@ Item {
 
     // function for getting delegate of loader element
     function bestDelegate(t) {
-        //console.log("Download in progress" + downloadInProgress + ";FileType - " + t + ";FilePAth " + filePath)
-        // for some reason '===' does not work here
-        if(!isLocal && (t == File.Undefined || downloadInProgress)) {
+        if(!isLocal && !isLoaded) {
+            mainWindow.currentFileType = File.Undefined
+            mainWindow.updatePanel()
             return progressDelegate
         }
-        if (t == File.Image) {
+
+        mainWindow.currentFileType = t
+        mainWindow.updatePanel()
+
+        if (t === File.Image) {
             return imgDelegate;
         }
-        else if (t == File.Video) {
+        else if (t === File.Video) {
             return videoDelegate;
         }
-        else if (t == File.Txt) {
+        else if (t === File.Txt) {
             return txtDelegate;
         }
         else if (t === File.Directory) {
             return folderDelegate;
         }
-        else if (t == File.Audio) {
+        else if (t === File.Audio) {
             return audioDelegate;
         }
-        else if (t == File.OkularFile) {
+        else if (t === File.OkularFile) {
             return okularDelegate;
         }
         else {
             return mimeDelegate;
         }
-        console.debug("Should never be here")
     }
 
     Loader
     {
         id: componentLoader
-        anchors.fill: parent;
+        anchors.fill: parent
         sourceComponent: bestDelegate(type)
     }
 }

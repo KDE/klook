@@ -100,9 +100,7 @@ Component {
             target: photosListView;
             onCurrentIndexChanged: {
                 if ( listItem.ListView.isCurrentItem ) {
-                    mainWindow.currentFileType = File.Directory;
                     folderIcon.opacity = 1
-                    mainWindow.updatePanel()
                 } else {
                     folderIcon.opacity = 0
                 }

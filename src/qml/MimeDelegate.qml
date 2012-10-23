@@ -93,9 +93,7 @@ Component {
             onCurrentIndexChanged: {
                 if ( listItem.ListView.isCurrentItem )
                 {
-                    mainWindow.currentFileType = File.MimetypeFallback;
                     mimeIcon.opacity = 1
-                    mainWindow.updatePanel()
                 } else
                 {
                     mimeIcon.opacity = 0

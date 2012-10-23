@@ -154,8 +154,6 @@ Component {
                 {
                     audioIcon.opacity = 1
                     audio.source = filePath
-                    mainWindow.currentFileType = File.Audio;
-                    mainWindow.updatePanel()
                     if ( albumWrapper.state === "fullscreen" )
                         audio.play()
 

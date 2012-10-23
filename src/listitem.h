@@ -15,6 +15,7 @@ public:
         FilePathRole = Qt::UserRole + 1,
         // this role will always return url no matter if file is downloaded or not
         UrlRole,
+        LoadedRole,
         FileNameRole,
         TypeRole,
         LastModifiedRole,

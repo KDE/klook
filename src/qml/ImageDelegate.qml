@@ -50,9 +50,7 @@ Component {
             onCurrentIndexChanged: {
                 if ( listItem.ListView.isCurrentItem )
                 {
-                    mainWindow.currentFileType = File.Image;
                     img.opacity = 1
-                    mainWindow.updatePanel()
                 } else
                 {
                     img.opacity = 0
