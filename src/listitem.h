@@ -40,9 +40,15 @@ public:
         m_file->setUrl(QUrl(path));
     }
 
-    QString mime() const;
+    QString mime() const
+    {
+        return m_file->mime();
+    }
 
-    int type() const;
+    int type() const
+    {
+        return m_file->type();
+    }
 
     void setType(int type)
     {

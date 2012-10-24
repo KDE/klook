@@ -20,15 +20,6 @@ QString ListItem::path() const
     return result;
 }
 
-int ListItem::type() const
-{
-    return m_file->type();
-}
-
-QString ListItem::mime() const
-{
-    return m_file->mime();
-}
 QVariant ListItem::data( int role ) const
 {
     switch ( role )
