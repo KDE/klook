@@ -128,7 +128,6 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
     m_previewGenerator->start();
 
     m_currentFile = m_fileModel->file(indexToShow);
-    changeContent();
 
     QSize startingSize = m_currentFile->url().isLocalFile() ?
                          getPreferredSize(m_currentFile->url().toLocalFile(), File::Undefined) :
@@ -436,40 +435,29 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
     activateWindow();
 }
 
-void DeclarativeViewer::changeContent()
+void DeclarativeViewer::updateMenu(int index)
 {
-    if (!m_currentFile)
-        return;
-
-    KService::Ptr ptr = KMimeTypeTrader::self()->preferredService( m_currentFile->mime() );
-    if ( ptr.isNull() )
-        rootContext()->setContextProperty( "openText", ki18n( "Open" ).toString() );
-    else
-    {
-        KService *serv = ptr.data();
-        rootContext()->setContextProperty( "openText",  ( ki18n( "Open in " ).toString() + serv->name() ) );
-    }
-
-    QString fileName = KUrl(m_currentFile->url()).fileName();
-    rootContext()->setContextProperty("fileName", fileName);
-    rootContext()->setContextProperty("fileUrl", m_currentFile->url());
-}
-
-void DeclarativeViewer::updateContent( int index )
-{
-    if(m_fileModel->file(index) == m_currentFile)
-        return;
-
-    if (index == -1)
-    {
+    if(index == -1) {
         rootContext()->setContextProperty("openText",  ki18n( "Open in..." ).toString() );
         rootContext()->setContextProperty("fileName",  ki18n( "Elements: " ).toString() + QString::number(m_fileModel->rowCount()));
+        return;
     }
-    else
-    {
-        m_currentFile = m_fileModel->file(index);
-        changeContent();
+
+    File *file = m_fileModel->file(index);
+    QString openText;
+    if (!file->mime().isEmpty()) {
+        KService::Ptr ptr = KMimeTypeTrader::self()->preferredService(file->mime());
+        KService *serv = ptr.data();
+        if(!ptr.isNull())
+            openText = ki18n("Open in ").toString() + serv->name();
     }
+
+    if(openText.isEmpty())
+        openText = ki18n( "Open" ).toString();
+
+    rootContext()->setContextProperty("openText", openText);
+    rootContext()->setContextProperty("fileName", file->url().fileName());
+    rootContext()->setContextProperty("fileUrl", file->url().url());
 }
 
 WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )

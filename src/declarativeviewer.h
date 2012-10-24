@@ -66,6 +66,7 @@ public:
     virtual ~DeclarativeViewer();
 
     void init(QStringList urls, bool embedded = false, const QRect& rc = QRect( 0, 0, 0, 0 ), int indexToShow = 0 );
+    Q_INVOKABLE void updateMenu(int index);
 
 
 protected:
@@ -82,7 +83,6 @@ signals:
     void setStartWindow();
 
 public slots:
-    void updateContent(int index);
     void setFullScreen();
     void onSetGallery(bool );
 
@@ -110,7 +110,6 @@ private:
 
     void initModel(QStringList urls);
     void setViewMode( ViewMode mode );
-    void changeContent();
     void registerTypes();
     QSize getTextWindowSize( QString url ) const;
     void createVideoObject( QUrl url );

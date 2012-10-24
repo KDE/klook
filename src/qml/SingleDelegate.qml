@@ -118,6 +118,7 @@ Item {
         anchors.fill: parent
         sourceComponent: bestDelegate(type)
         onLoaded: {
+            mainWidget.updateMenu(index)
             mainWindow.updatePanel()
         }
     }

@@ -212,7 +212,7 @@ Rectangle {
         setGalleryView( albumWrapper.state === 'inGrid' )
     }
 
-    Image{
+    Image {
         id: arrow
         source: "images/arrow/arrow-left.png"
         z:100
@@ -221,7 +221,7 @@ Rectangle {
 
     // Item 1: menu bar
     Rectangle {
-        id: row
+        id: menu
         height: 27
         color: "#dadada"
         anchors.right: parent.right; anchors.rightMargin: 1
@@ -347,7 +347,7 @@ Rectangle {
         anchors.leftMargin: 1
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 1
-        anchors.top: row.bottom
+        anchors.top: menu.bottom
         anchors.topMargin: -1
         border.width: 0
         border.color: "#7b7b7b"
@@ -395,7 +395,7 @@ Rectangle {
 
                     onCurrentIndexChanged:
                     {
-                        mainWidget.updateContent ( currentIndex )
+                        mainWidget.updateMenu(currentIndex)
                     }
 
                     highlight:  highlight
@@ -426,7 +426,7 @@ Rectangle {
                                     openButton.state = 'disabled'
                                 galleryGridView.currentIndex = -1
                             }
-                            mainWidget.updateContent( mouseIndex )
+                            mainWidget.updateMenu(mouseIndex)
                         }
 
                         onClicked: {
@@ -473,7 +473,7 @@ Rectangle {
                     onCurrentIndexChanged:
                     {
                         fileModel.load(currentIndex)
-                        mainWidget.updateContent ( currentIndex )
+                        mainWidget.updateMenu(currentIndex)
                         updateMenuButtons()
                     }
 
@@ -604,7 +604,7 @@ Rectangle {
                 border.width: 2
                 color: "transparent"
             }
-            PropertyChanges { target: row; visible: true }
+            PropertyChanges { target: menu; visible: true }
             PropertyChanges { target: photosListView; highlightMoveSpeed: 5000 }
             PropertyChanges {
                 target: panel
@@ -660,7 +660,7 @@ Rectangle {
                 y: albumWrapper.height - panel.height - 32
             }
 
-            PropertyChanges { target: row; visible: false }
+            PropertyChanges { target: menu; visible: false }
             ParentChange { target: drawer; parent: mainWindow }
             PropertyChanges {
                 target: drawer
@@ -680,7 +680,7 @@ Rectangle {
             name: "embedded"
             PropertyChanges {target: mainWindow;  border.width: 0; }
 
-            PropertyChanges { target: row; visible: false  }
+            PropertyChanges { target: menu; visible: false  }
 
             AnchorChanges   { target: drawerBorder; anchors.top: parent.top }
             PropertyChanges { target: drawerBorder; anchors.topMargin: 0 }
