@@ -18,11 +18,12 @@ public:
 
 private:
     KPartsWidget(QWidget *parent = 0);
-    ~KPartsWidget();
 
     static KPartsWidget *m_instance;
     QPointer<KParts::ReadOnlyPart> m_part;
     KService::Ptr m_service;
 };
+
+QSize getDocumentWindowSize();
 
 #endif // KPARTSWIDGET_H

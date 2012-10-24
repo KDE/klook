@@ -22,15 +22,17 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include <QObject>
+#include <QtCore/QObject>
+#include <KIO/Job>
+#include <KUrl>
+
+class QTemporaryFile;
+class FileTypeIdentifier;
 
 class File : public QObject
 {
     Q_OBJECT
     Q_ENUMS(FileType)
-    Q_PROPERTY( QString name READ name WRITE setName )
-    Q_PROPERTY( FileType type READ type WRITE setType )
-
 public:
     enum FileType
     {
@@ -40,28 +42,56 @@ public:
         Txt,
         Directory,
         Audio,
-        OkularFile
+        OkularFile,
+        MimetypeFallback,
+        Error
     };
-
     File( QObject* parent );
-    File( const QString& name = "", FileType type = Undefined, const QString& mime = "", QObject* parent = 0 );
+    File( KUrl url = KUrl(), QObject* parent = 0);
+    ~File();
 
-    QString name() const;
-    void setName( const QString& );
+    KUrl url() const;
+    void setUrl( QUrl url );
 
-    File::FileType type() const;
-    void setType( FileType );
+    File::FileType type();
+    void setType(FileType type);
 
-    QString mime() const;
-    void setMime( const QString& );
+    QString mime();
+    void setMime(const QString &mime);
 
-    static QString fileTypeToString( FileType );
+    void load();
+    bool isLoaded() const; // is file downloaded?
+
+    bool downloadInProgress() const;
+
+    void stopDownload();
+    QString tempFilePath() const;
+
+    QString error() const;
+
+public slots:
+    void slotDownloadResult(KJob *job);
+    void resultMimetypeJob(KJob *job);
+
+signals:
+    void dataChanged();
 
 private:
-    QString     m_name;
-    FileType    m_type;
-    QString     m_mime;
+    void loadType();
+    void download(); // download file and return path to temporary file
+    bool needDownload();
 
+    KUrl m_url;
+    KIO::FileCopyJob *m_job;
+    QString m_error;
+    FileType m_type;
+    QString m_mime;
+    QTemporaryFile *m_tempFile;
+    bool m_isLoaded;
+    bool m_mimeJobStarted;
+    bool m_downloadInProgress;
 };
+
+File::FileType getFileType(const QString& mime, const QString& name);
 
 #endif // FILE_H

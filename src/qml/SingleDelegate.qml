@@ -1,4 +1,3 @@
-
 /* KLook
  * Copyright (c) 2011-2012 ROSA  <support@rosalab.ru>
  * Authors: Julia Mineeva, Evgeniy Auzhin, Sergey Borovkov.
@@ -49,14 +48,6 @@ Item {
         return w
     }
 
-    function getName( path )
-    {
-        if ( path.substr( -1 ) === '/' && path.length !== 1 ) { // remove trailing slash if it's not root
-            path = path.substr( 0, path.length - 1 );
-        }
-        return path.substring( path.lastIndexOf( '/' ) + 1 );
-    }
-
     ImageDelegate {
         id: imgDelegate
     }
@@ -85,38 +76,67 @@ Item {
         id: okularDelegate
     }
 
+    ProgressDelegate {
+        id: progressDelegate
+    }
+
+    Component {
+        id: fileDoesNotExist
+        Text {
+            id: fileNameLabel
+            anchors.fill: parent
+            text: error
+            font.pointSize: 24
+            wrapMode: Text.WordWrap
+            horizontalAlignment:  Text.AlignHCenter
+            verticalAlignment:  Text.AlignVCenter
+        }
+    }
+
     // function for getting delegate of loader element
     function bestDelegate(t) {
-        // for some reason '===' does not work here
-        if (t == File.Image) {
+        mainWidget.updateMenu(photosListView.currentIndex)
+
+        if(!isLoaded) {
+            mainWindow.currentFileType = File.Undefined
+            return progressDelegate
+        }
+
+        mainWindow.currentFileType = t
+
+        if (t === File.Image) {
             return imgDelegate;
         }
-        else if (t == File.Video) {
+        else if (t === File.Video) {
             return videoDelegate;
         }
-        else if (t == File.Txt) {
+        else if (t === File.Txt) {
             return txtDelegate;
         }
         else if (t === File.Directory) {
-            fileModel.scanDirectory( index )
             return folderDelegate;
         }
-        else if (t == File.Audio) {
+        else if (t === File.Audio) {
             return audioDelegate;
         }
-        else if (t == File.OkularFile) {
+        else if (t === File.OkularFile) {
             return okularDelegate;
         }
-        else if(t == File.Undefined) {
+        else if(t === File.Error) {
+            return fileDoesNotExist
+        }
+        else {
             return mimeDelegate;
         }
-        console.log("MASAKA")
     }
 
     Loader
     {
         id: componentLoader
-        anchors.fill: parent;
+        anchors.fill: parent
         sourceComponent: bestDelegate(type)
+        onLoaded: {
+            mainWindow.updatePanel()
+        }
     }
 }

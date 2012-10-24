@@ -23,13 +23,13 @@
 
 #include <QPainter>
 
-#include <kfile.h>
-#include <kicon.h>
+#include <KFileItem>
+#include <KIcon>
 
 #include "filemodel.h"
-#include <QtCore/QDebug>
+#include "listitem.h"
 
-PreviewGenerator *PreviewGenerator::instance = 0;
+PreviewGenerator *PreviewGenerator::m_instance = 0;
 
 #define NO_DIRECTORY_THUMBNAIL
 
@@ -48,15 +48,14 @@ PreviewGenerator::PreviewGenerator(QObject *parent)
 
 }
 
-void PreviewGenerator::notifyModel( const QString& filePath )
+void PreviewGenerator::notifyModel( KUrl url )
 {
     if ( m_model )
     {
         for (int i = 0; i < m_model->rowCount(); i++)
         {
-            QModelIndex index = m_model->indexFromRowNumber( i );
-            if (m_model->data( index, ListItem::FilePathRole).toString() == filePath)
-                m_model->refreshRow( index );
+            if (m_model->file(i)->url() == url)
+                m_model->refreshRow(i);
         }
     }
 }
@@ -64,22 +63,13 @@ void PreviewGenerator::notifyModel( const QString& filePath )
 void PreviewGenerator::setPreview( const KFileItem &item, const QPixmap &pixmap )
 {
     QPixmap pict = pixmap;
-    m_fileList.removeAll(item);
-
-    if ( item.mimetype().startsWith("video/") )
-    {
+    if ( item.mimetype().startsWith("video/") ) {
         QPainter p(&pict);
         QPixmap scaledPixmap = videoPixmap.scaled(pict.width() / 2, pict.height() / 2,  Qt::KeepAspectRatio, Qt::SmoothTransformation );
         p.drawPixmap( pict.width() / 2 - scaledPixmap.width() / 2, pict.height() / 2 - scaledPixmap.height() / 2 ,  scaledPixmap );
     }
-    previews.insert(item.localPath(), pict);
-    notifyModel(item.localPath());
-}
-
-void PreviewGenerator::deleteJob()
-{
-    delete m_job;
-    m_job = 0;
+    previews.insert(item.url(), pict);
+    notifyModel(item.url());
 }
 
 QPixmap PreviewGenerator::getPreviewPixmap(QString filePath)
@@ -90,22 +80,21 @@ QPixmap PreviewGenerator::getPreviewPixmap(QString filePath)
     return defaultPreview;
 }
 
-PreviewGenerator * PreviewGenerator::createInstance()
+PreviewGenerator * PreviewGenerator::instance()
 {
-    if (!instance)
-        instance = new PreviewGenerator;
-    return instance;
+    if (!m_instance)
+        m_instance = new PreviewGenerator;
+    return m_instance;
 }
 
-void PreviewGenerator::setFiles( const QStringList &list )
+void PreviewGenerator::setFiles(KUrl::List list)
 {
     stop();
     m_fileList.clear();
 
     for ( int i = 0; i < list.size(); i++ )
     {
-        QFileInfo fi(list[i]);
-        KFileItem fileItem(KFileItem::Unknown, KFileItem::Unknown, fi.absoluteFilePath(), false);
+        KFileItem fileItem(KFileItem::Unknown, KFileItem::Unknown, list[i].url(), false);
         m_fileList.append(fileItem);
     }
 }
@@ -119,34 +108,29 @@ void PreviewGenerator::start()
 {
     if (m_fileList.isEmpty())
         return;
-
-    if(m_job)
-        m_job->kill();
-
     m_job = KIO::filePreview( m_fileList, 1000, 0, 0, 0, true, false, &m_plugins );
-    m_job->setIgnoreMaximumSize();
+    m_job->setIgnoreMaximumSize(true);
     m_job->setAutoDelete( false );
 
     connect(m_job, SIGNAL( gotPreview( const KFileItem&, const QPixmap& ) ), SLOT( setPreview( const KFileItem&, const QPixmap& ) ) );
     connect(m_job, SIGNAL( failed( KFileItem ) ), SLOT( previewFailed( KFileItem ) ) );
-    connect(m_job, SIGNAL( result( KJob* ) ), SLOT( deleteJob() ) );
 }
 
 void PreviewGenerator::stop()
 {
     if (m_job)
-        m_job->suspend();
+        m_job->kill();
+    previews.clear();
 }
 
 void PreviewGenerator::previewFailed( KFileItem item )
 {
-    if ( item.mimetype().startsWith( "text/" ) )
-    {
+    if (item.mimetype().startsWith( "text/" )) {
         QStringList listP;
         listP << "textthumbnail";
         KFileItemList list;
         list << item;
-        KIO::PreviewJob* job = KIO::filePreview( list, 1000, 0, 0, 0, true, true, &listP );
+        KIO::PreviewJob* job = KIO::filePreview( list, QSize(1000, 0), &listP );
         job->setIgnoreMaximumSize();
         job->setAutoDelete( true );
         connect( job, SIGNAL( gotPreview( const KFileItem&, const QPixmap& ) ), SLOT( setPreview( const KFileItem&, const QPixmap& ) ) );

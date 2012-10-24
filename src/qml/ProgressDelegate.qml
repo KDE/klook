@@ -19,38 +19,14 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#ifndef WORKERTHREAD_H
-#define WORKERTHREAD_H
+import QtQuick 1.1
+import Widgets 1.0
 
-#include "file.h"
-
-#include <QtCore/QThread>
-#include <QtCore/QList>
-#include <QtCore/QStringList>
-#include <QtCore/QUrl>
-
-class WorkerThread : public QThread
-{
-    Q_OBJECT
-public:
-    explicit WorkerThread( const QStringList& urls, QObject *parent = 0 );
-
-protected:
-    void run();
-
-signals:
-    void fileProcessed( const File *file );
-    void fail();
-
-private:
-    QString getMime(const QUrl &url) const;
-    File::FileType getType(const QString&, const QString&) const;
-    void processUrl();
-
-    bool isFound; // found at least one supported file
-    QList<QUrl> m_urls;
-    QList<QByteArray> supportedImageFormats;
-    QStringList m_mimeTypes;
-};
-
-#endif // WORKERTHREAD_H
+Component {
+    Item {
+        AnimatedImage {
+            source: "images/loader.gif"
+            anchors.centerIn: parent
+        }
+    }
+}

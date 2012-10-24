@@ -24,7 +24,6 @@
 #include <QPlainTextEdit>
 #include <QFile>
 #include <QTextCodec>
-#include <QDebug>
 #include <KImageCache>
 #include <kencodingprober.h>
 
@@ -83,14 +82,7 @@ bool MyText::isPreview() const
 void MyText::setPreview(bool preview)
 {
     m_isPreview = preview;
-    if (m_isPreview)
-    {
-        m_viewer->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-        m_viewer->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    }
-    else
-    {
-        m_viewer->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
-        m_viewer->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
-    }
+    Qt::ScrollBarPolicy policy = m_isPreview ? Qt::ScrollBarAlwaysOff : Qt::ScrollBarAsNeeded;
+    m_viewer->setVerticalScrollBarPolicy( policy );
+    m_viewer->setHorizontalScrollBarPolicy( policy );
 }

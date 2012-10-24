@@ -38,8 +38,8 @@ class PreviewGenerator : public QObject
     Q_OBJECT
 
 public:
-    static PreviewGenerator *createInstance();
-    void setFiles( const QStringList& list );
+    static PreviewGenerator *instance();
+    void setFiles(KUrl::List list);
 
     QPixmap getPreviewPixmap( QString filePath );
     void setModel( FileModel *model );
@@ -51,16 +51,15 @@ public slots:
 private slots:
     void setPreview( const KFileItem&, const QPixmap& );
     void previewFailed( KFileItem );
-    void deleteJob();
 
 private:
     explicit PreviewGenerator( QObject *parent = 0 );
 
-    void notifyModel( const QString& filePath );
+    void notifyModel(KUrl url);
 
-    static PreviewGenerator*    instance;
+    static PreviewGenerator* m_instance;
 
-    QHash<QString, QPixmap> previews;
+    QHash<KUrl, QPixmap> previews;
 
     QPixmap             defaultPreview;
     QPixmap             videoPixmap;

@@ -28,15 +28,13 @@
 #include <QtDeclarative/QDeclarativeView>
 #include <QVariant>
 
-#include "file.h"
-
 class QRect;
-class WorkerThread;
 class PreviewGenerator;
+class File;
 class FileModel;
 class QPoint;
 
-typedef enum WidgetRegion
+enum WidgetRegion
 {
     FRAME_REGION,
     HEADER_REGION,
@@ -49,8 +47,7 @@ typedef enum WidgetRegion
     BOTTOM_LEFT_CORNER_REGION,
     BOTTOM_RIGHT_CORNER_REGION,
     ARROW_NULL_REGION
-
-} WidgetRegion;
+};
 
 typedef enum ArrowPosition
 {
@@ -61,7 +58,6 @@ typedef enum ArrowPosition
 
 } ArrowPosition;
 
-
 class DeclarativeViewer : public QDeclarativeView
 {
     Q_OBJECT
@@ -69,86 +65,67 @@ public:
     explicit DeclarativeViewer( QWidget *parent = 0 );
     virtual ~DeclarativeViewer();
 
-    void updateSize( const File* file );
+    void init(QStringList urls, bool embedded = false, const QRect& rc = QRect( 0, 0, 0, 0 ), int indexToShow = 0 );
+    Q_INVOKABLE void updateMenu(int index);
 
-    void init(const QStringList& urls, bool embedded = false, const QRect& rc = QRect( 0, 0, 0, 0 ), const int indexToShow = 0 );
+
+protected:
+    void resizeEvent(QResizeEvent *event);
 
 signals:
-    void newItem(QString name, File::FileType type, QString mime);
     void sizeChanged();
+
+    /**
+     * @brief Informs QML to set fullscreen state
+     */
     void setFullScreenState();
     void setEmbeddedState();
     void setStartWindow();
 
 public slots:
-
-    void startWorkingThread();
-    void updateContent( int );
-    void setActualSize();
     void setFullScreen();
-    void onSetGallery( bool );
+    void onSetGallery(bool );
 
     void onMetaDataChanged();
 
-    void setEmbedded( bool );
-    void setRectIcon( const QRect& );
-    void setUrls( const QStringList& );
-
 private slots:
-    void newFileProcessed(const File* file);
-    void showNoFilesNotification();
     void focusChanged(QWidget*, QWidget*);
 
 protected:
-    QSize getActualSize();
-    WidgetRegion calculateWindowRegion( const QPoint& mousePos );
-
     void mousePressEvent( QMouseEvent* event );
     void mouseMoveEvent( QMouseEvent* event );
     void mouseReleaseEvent( QMouseEvent* event );
 
-    void setActualSizeParam(bool);
-
-    void changeContent();
-
-    void setRegisterTypes();
-
-    void createVideoObject( const QString& filePath );
-    QSize calculateViewSize( const QSize& sz );
-
-    QSize inscribedRectToRect( const QSize& sz1, const QSize& sz2 );
-    void centerWidget( const QSize& sz );
-
-    void skipTaskBar();
-    bool checkComposite();
-
-    void showWidget( const QSize& sz );
-
 private:
-
+    friend class KLookApp;
     enum ViewMode
     {
         Single,
         Multi
     };
 
+    QSize getPreferredSize(const QString &path, int type) const;
+    WidgetRegion calculateWindowRegion( const QPoint& mousePos );
+    void setEmbedded(bool);
+
+    void initModel(QStringList urls);
     void setViewMode( ViewMode mode );
-    QSize getTextWindowSize( QString url );
+    void registerTypes();
+    QSize getTextWindowSize( QString url ) const;
+    void createVideoObject( QUrl url );
+
+    void centerWidget( const QSize& sz );
 
     QPoint          m_lastMousePosition;
     bool            m_isSingleMode;
     bool            m_moving;
     bool            m_resize;
-    bool            m_startFullScreen;
     bool            m_isEmbedded;
     bool            m_isGallery;
     QRect           m_rcIcon;
     QRect           m_rcArrow;
-    QStringList     m_urls;
 
-    const File*     m_currentFile;
-
-    QList<const File*>    m_files;
+    File*     m_currentFile;
 
     bool            m_isActualSize;
     WidgetRegion    m_region;
@@ -156,17 +133,12 @@ private:
     Phonon::MediaObject* m_mediaObject;
     Phonon::VideoWidget* m_videoWidget;
 
-    int m_width;
-    int m_height;
-
-    bool                m_compositing;
-    WorkerThread*       m_thread;
     PreviewGenerator*   m_previewGenerator;
     FileModel*          m_fileModel;
     ArrowPosition       m_posArrow;
-    int                 m_indexToShow;
 };
 
-QApplication *createApplication( int& argc, char** argv );
+QSize calculateViewSize(const QSize& sz, const QRect &desktop);
+QSize inscribedRectToRect(const QSize& sz1, const QSize& sz2);
 
 #endif // DECLARATIVEVIEWER_H

@@ -25,8 +25,8 @@ import Widgets 1.0
 
 Item {
     id: gridDelegate;
-    width: photosGridView.cellWidth
-    height: photosGridView.cellHeight
+    width: galleryGridView.cellWidth
+    height: galleryGridView.cellHeight
 
     Component {
         id: imgVideoDelegate

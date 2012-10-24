@@ -22,27 +22,24 @@
 #ifndef FILEMODEL_H
 #define FILEMODEL_H
 
-#include <QAbstractListModel>
-#include <QList>
-#include <QObject>
-#include <QDir>
-#include <QDateTime>
-#include <QThread>
+#include <QtCore/QAbstractListModel>
+#include <QtCore/QList>
+#include <QtCore/QObject>
+#include <QtCore/QDir>
+#include <QtCore/QDateTime>
+#include <QtCore/QThread>
 
-#include "file.h"
-
+class File;
 class ListItem;
 class DirectoryItem;
 class QTimer;
-
-
 
 class FileModel : public QAbstractListModel
 {
   Q_OBJECT
 
 public:
-    explicit FileModel( ListItem* prototype, QObject* parent = 0 );
+    explicit FileModel(QObject* parent = 0);
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const;
 
@@ -51,112 +48,26 @@ public:
 
     const QHash<int, QByteArray> & roleNames () const;
     void appendRow( ListItem* item );
-    void refreshRow( const QModelIndex &index );
+    void appendRows(QList<ListItem *> items);
+    void refreshRow(int row );
     QModelIndex indexFromRowNumber( int row );
     void reset();
 
-    void refreshItem(ListItem *item);
+    void setRoleNames(const QHash<int,QByteArray> &roleNames) { QAbstractItemModel::setRoleNames(roleNames); }
 
-public slots:
-    void append(QString path, File::FileType type, QString mime);
-    void scanDirectory(int index);
-    int count();
+    Q_INVOKABLE void load(int row);
+    Q_INVOKABLE File *file(int index);
+    Q_INVOKABLE int count() const;
+
+private slots:
+    void handleItemChange();
 
 private:
+    QModelIndex indexFromItem(ListItem *item);
+
     ListItem* m_prototype;
     QList<ListItem*> m_list;
-};
-
-class ListItem: public QObject
-{
-    Q_OBJECT
-
-public:
-    enum
-    {
-        FilePathRole = Qt::UserRole + 1,
-        TypeRole,
-        LastModifiedRole,
-        ContentSizeRole,
-        CountRole,       // object count for folders
-        MimeRole
-    };
-
-    ListItem(QString filePath, QString fileType, QString mime, QObject* parent = 0)
-        : QObject( parent ), m_path( filePath ), m_type( fileType ), m_mime(mime) {}
-    ListItem(QObject *parent = 0)
-        : QObject(parent) {}
-    virtual ~ListItem() {}
-
-    QHash<int, QByteArray> roleNames() const;
-
-public slots:
-    bool loaded();
-    void setLoaded( bool b );
-    virtual QVariant data( int role ) const;
-    virtual QString path() const;
-    virtual QString type() const;
-    virtual QString mime() const;
-
-    void setPath(QString path) { m_path = path; }
-    void setMimeType(QString type) { m_type = type; }
-
-signals:
-    void dataChanged();
-    void imageChanged();
-
-private:
-    QString m_path;
-    QString m_type;
-    bool m_isLoaded;
-    QString m_mime;
-};
-
-class DirectorySizeFinder : public QThread
-{
-public:
-    DirectorySizeFinder( QString path, QObject* parent = 0 )
-        : QThread( parent ), path( path ), m_size( 0 ), count( 0 ) {}
-    virtual void run ();
-
-    qint64 size() const { return m_size; }
-    int fileCount() const { return count; }
-
-private:
-    QString path;
-    qint64 m_size;
-    int count;
-};
-
-class DirectoryItem : public ListItem
-{
-    Q_OBJECT
-public:
-    DirectoryItem( QString filePath, QString type, QObject* parent = 0 );
-    ~DirectoryItem();
-    QVariant data( int role ) const;
-    void startScan();
-private slots:
-    void timeout();
-
-private:
-    QString formatSize(qint64 size);
-    void notifyModel();
-
-    bool isScanned;
-    QDir dir;
-    DirectorySizeFinder *sizeFinder;
-    QTimer *timer;
-    qint64 size;
-    int count;
-};
-
-class UnsupportedItem : public ListItem
-{
-    Q_OBJECT
-public:
-    UnsupportedItem(QString filePath, QString type, QString mime, QObject* parent = 0);
-    QVariant data( int role ) const;
+    File *m_currentLoadingFile;
 };
 
 #endif // FILEMODEL_H
