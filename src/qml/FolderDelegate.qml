@@ -93,6 +93,7 @@ Component {
             id: sizeWaitAnimation
             anchors.top: modified.bottom
             anchors.left: size.right
+            anchors.leftMargin: 10
             source: "images/loader.gif"
             visible: !dirSizeComplete
         }
@@ -108,6 +109,7 @@ Component {
             id: contentWaitAnimation
             anchors.top: size.bottom
             anchors.left: content.right
+            anchors.leftMargin: 10
             source: "images/loader.gif"
             visible: !dirSizeComplete
         }
@@ -122,18 +124,12 @@ Component {
                 }
             }
         }
-        Connections{
-            target: mainWindow
-            onStateChanged: {
-                if (mainWindow.state === 'fullscreen') {
-                    sizeWaitAnimation.source = "images/white-loader.gif"
-                    contentWaitAnimation.source = "images/white-loader.gif"
-                }
-                else {
-                    sizeWaitAnimation.source = "images/loader.gif"
-                    contentWaitAnimation.source = "images/loader.gif"
-                }
+        states: [
+            State {
+                name: "fullscreen"; when: mainWindow.state === 'fullscreen'
+                PropertyChanges { target: sizeWaitAnimation; source: "images/white-loader.gif" }
+                PropertyChanges { target: contentWaitAnimation; source: "images/white-loader.gif" }
             }
-        }
+        ]
     }
 }
