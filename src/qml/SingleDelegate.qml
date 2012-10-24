@@ -80,6 +80,19 @@ Item {
         id: progressDelegate
     }
 
+    Component {
+        id: fileDoesNotExist
+        Text {
+            id: fileNameLabel
+            anchors.fill: parent
+            text: "File does not exist"
+            font.pointSize: 24
+            elide: Text.ElideMiddle
+            horizontalAlignment:  Text.AlignHCenter
+            verticalAlignment:  Text.AlignVCenter
+        }
+    }
+
     // function for getting delegate of loader element
     function bestDelegate(t) {
         if(!isLoaded) {
@@ -106,6 +119,9 @@ Item {
         }
         else if (t === File.OkularFile) {
             return okularDelegate;
+        }
+        else if(t === File.NotExists) {
+            return fileDoesNotExist
         }
         else {
             return mimeDelegate;

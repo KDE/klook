@@ -625,6 +625,7 @@ Rectangle {
                     if (((mainWindow.currentFileType === File.Directory) ||
                          (mainWindow.currentFileType === File.Audio)  ||
                          (mainWindow.currentFileType === File.MimetypeFallback) ||
+                         (mainWindow.currentFileType === File.NotExists) ||
                          (mainWindow.currentFileType === File.Undefined)) &&
                             (albumWrapper.state == "fullscreen" ))
                         return "#dadada"

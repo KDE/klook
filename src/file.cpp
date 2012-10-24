@@ -173,7 +173,7 @@ void File::slotDownloadResult(KJob *job)
 
 void File::resultMimetypeJob(KJob *job)
 {
-    if(!job->error())
+    if (!job->error())
     {
         setMime(dynamic_cast<KIO::MimetypeJob *>(job)->mimetype());
         FileType t = getFileType(mime(), url().fileName());
@@ -184,8 +184,12 @@ void File::resultMimetypeJob(KJob *job)
             download();
         }
 
-        emit dataChanged();
     }
+    else {
+        setType(File::NotExists);
+    }
+
+    emit dataChanged();
 }
 
 void File::loadType()

@@ -6,6 +6,7 @@
 #include <KIO/StatJob>
 #include <KLocale>
 #include <QFileInfo>
+
 ListItemContent::ListItemContent(File *file, QObject *parent)
     : QObject(parent)
     , m_file(file)

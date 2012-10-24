@@ -43,7 +43,8 @@ public:
         Directory,
         Audio,
         OkularFile,
-        MimetypeFallback
+        MimetypeFallback,
+        NotExists
     };
     File( QObject* parent );
     File( KUrl url = KUrl(), QObject* parent = 0);
