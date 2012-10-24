@@ -76,16 +76,34 @@ Component {
             id: modified
             anchors.top: itemType.bottom
             anchors.left: mimeIcon.right
-            text: lastModifiedStr + " " + lastModified
+            text: (statComplete)? lastModifiedStr + " " + lastModified : lastModifiedStr
             elide: Text.ElideNone
             wrapMode: Text.NoWrap
+        }
+
+        AnimatedImage {
+            id: modifiedWaitAnimation
+            anchors.top: itemType.bottom
+            anchors.left: modified.right
+            anchors.leftMargin: 10
+            source: "images/loader.gif"
+            visible: !statComplete
         }
 
         InfoItem {
             id: size
             anchors.top: modified.bottom
             anchors.left: mimeIcon.right
-            text: sizeStr + " " + contentSize
+            text:  (statComplete)? sizeStr + " " + contentSize : sizeStr
+        }        
+
+        AnimatedImage {
+            id: sizeWaitAnimation
+            anchors.top: modified.bottom
+            anchors.left: size.right
+            anchors.leftMargin: 10
+            source: "images/loader.gif"
+            visible: !statComplete
         }
 
         Connections{
@@ -100,5 +118,13 @@ Component {
                 }
             }
         }
+
+        states: [
+            State {
+                name: "fullscreen"; when: mainWindow.state === 'fullscreen'
+                PropertyChanges { target: modifiedWaitAnimation; source: "images/white-loader.gif" }
+                PropertyChanges { target: sizeWaitAnimation; source: "images/white-loader.gif" }
+            }
+        ]
     }
 }
