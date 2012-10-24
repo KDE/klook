@@ -48,6 +48,8 @@ public:
     };
     File( QObject* parent );
     File( KUrl url = KUrl(), QObject* parent = 0);
+    ~File();
+
     KUrl url() const;
     void setUrl( QUrl url );
 

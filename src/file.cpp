@@ -54,6 +54,11 @@ File::File(KUrl url, QObject* parent)
     m_isLoaded = m_url.isLocalFile();
 }
 
+File::~File()
+{
+    stopDownload();
+}
+
 KUrl File::url() const
 {
     return m_url;
