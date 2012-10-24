@@ -5,6 +5,7 @@
 ListItem::ListItem(File *file, QObject *parent)
     : QObject(parent), m_file(file), m_content(0)
 {
+    m_file->setParent(this);
     connect(file, SIGNAL(dataChanged()), SIGNAL(dataChanged()));
 }
 
@@ -28,7 +29,6 @@ QString ListItem::mime() const
 {
     return m_file->mime();
 }
-
 QVariant ListItem::data( int role ) const
 {
     switch ( role )

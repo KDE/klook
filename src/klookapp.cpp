@@ -32,12 +32,18 @@
 #include <KStandardDirs>
 
 #include "declarativeviewer.h"
+#include "filemodel.h"
 
 
 KLookApp::KLookApp()
     : KUniqueApplication()
     , m_viewer(0)
 {
+}
+
+KLookApp::~KLookApp()
+{
+    delete m_viewer->m_fileModel;
 }
 
 bool KLookApp::isEmbeddedParam() const

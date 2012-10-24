@@ -32,6 +32,7 @@ class KLookApp : public KUniqueApplication
 
 public:
     KLookApp();
+    ~KLookApp();
     virtual int newInstance();
 
 private:

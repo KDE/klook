@@ -97,6 +97,7 @@ protected:
     void mouseReleaseEvent( QMouseEvent* event );
 
 private:
+    friend class KLookApp;
     enum ViewMode
     {
         Single,

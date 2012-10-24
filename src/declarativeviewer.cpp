@@ -101,7 +101,7 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
 
 DeclarativeViewer::~DeclarativeViewer()
 {
-
+    delete PreviewGenerator::instance();
 }
 
 void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, int indexToShow )
@@ -326,7 +326,7 @@ void DeclarativeViewer::initModel(QStringList urls)
     QList<ListItem *> items;
     foreach(QString str, urls) {
         File *file = new File(KUrl(str));
-        items.append(new ListItem(file, this));
+        items.append(new ListItem(file, m_fileModel));
     }
     m_fileModel->appendRows(items);
 }
