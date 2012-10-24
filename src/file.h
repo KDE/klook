@@ -44,7 +44,7 @@ public:
         Audio,
         OkularFile,
         MimetypeFallback,
-        NotExists
+        Error
     };
     File( QObject* parent );
     File( KUrl url = KUrl(), QObject* parent = 0);
@@ -65,13 +65,14 @@ public:
     void stopDownload();
     QString tempFilePath() const;
 
+    QString error() const;
+
 public slots:
     void slotDownloadResult(KJob *job);
     void resultMimetypeJob(KJob *job);
 
 signals:
     void dataChanged();
-    void error(QString errorText);
 
 private:
     void loadType();
@@ -80,8 +81,9 @@ private:
 
     KUrl m_url;
     KIO::FileCopyJob *m_job;
-    mutable FileType m_type;
-    mutable QString m_mime;
+    QString m_error;
+    FileType m_type;
+    QString m_mime;
     QTemporaryFile *m_tempFile;
     bool m_isLoaded;
     bool m_mimeJobStarted;

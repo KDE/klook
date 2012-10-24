@@ -85,9 +85,9 @@ Item {
         Text {
             id: fileNameLabel
             anchors.fill: parent
-            text: "File does not exist"
+            text: error
             font.pointSize: 24
-            elide: Text.ElideMiddle
+            wrapMode: Text.WordWrap
             horizontalAlignment:  Text.AlignHCenter
             verticalAlignment:  Text.AlignVCenter
         }
@@ -120,7 +120,7 @@ Item {
         else if (t === File.OkularFile) {
             return okularDelegate;
         }
-        else if(t === File.NotExists) {
+        else if(t === File.Error) {
             return fileDoesNotExist
         }
         else {

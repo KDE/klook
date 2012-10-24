@@ -159,16 +159,23 @@ QString File::tempFilePath() const
     return m_tempFile ? m_tempFile->fileName() : QString();
 }
 
+QString File::error() const
+{
+    return m_error;
+}
+
 void File::slotDownloadResult(KJob *job)
 {
     m_downloadInProgress = false;
-    if(job->error())
-        emit error(job->errorText());
-    else
-    {
-        m_isLoaded = true;
-        emit dataChanged();
+    if (job->error()) {
+        setType(Error);
+        m_error = job->errorString();
     }
+    else {
+        m_isLoaded = true;
+    }
+
+    emit dataChanged();
 }
 
 void File::resultMimetypeJob(KJob *job)
@@ -183,10 +190,11 @@ void File::resultMimetypeJob(KJob *job)
         if(needDownload()) {
             download();
         }
-
     }
+
     else {
-        setType(File::NotExists);
+        setType(File::Error);
+        m_error = job->errorString();
     }
 
     emit dataChanged();

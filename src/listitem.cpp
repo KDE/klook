@@ -48,6 +48,9 @@ QVariant ListItem::data( int role ) const
     case LoadedRole:
         return m_file->isLoaded();
 
+    case ErrorRole:
+        return m_file->error();
+
     default:
         break;
     }
@@ -74,6 +77,7 @@ QHash<int, QByteArray> ListItem::roleNames()
     QHash<int, QByteArray> names;
     names[StatCompleteRole] = "statComplete";
     names[DirSizeCompleteRole] = "dirSizeComplete";
+    names[ErrorRole] = "error";
     names[FilePathRole] = "filePath";
     names[FileNameRole] = "fileName";
     names[UrlRole] = "fileUrl";

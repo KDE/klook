@@ -25,7 +25,8 @@ public:
         LocalFileRole, // is file local??
         DownloadInProgress,
         StatCompleteRole, // for fallback content
-        DirSizeCompleteRole // for dir size job
+        DirSizeCompleteRole, // for dir size job
+        ErrorRole
     };
 
     ListItem(File *file, QObject *parent);
