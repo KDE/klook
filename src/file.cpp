@@ -34,21 +34,21 @@
 
 File::File(QObject* parent)
     : QObject(parent)
-    , m_job(0)
-    , m_type(Undefined)
+    , m_type(Progress)
     , m_tempFile(0)
     , m_isLoaded(0)
+    , m_job(0)
 {
 }
 
 File::File(KUrl url, QObject* parent)
     : QObject( parent )
     , m_url(url)
-    , m_job(0)
-    , m_type(File::Undefined)
+    , m_type(File::Progress)
     , m_tempFile(0)
     , m_isLoaded(0)
     , m_mimeJobStarted(false)
+    , m_job(0)
     , m_downloadInProgress(false)
 {
     m_isLoaded = m_url.isLocalFile();
@@ -92,7 +92,7 @@ void File::setMime(const QString &mime)
 
 void File::load()
 {
-    if(type() == Undefined) {
+    if(type() == Progress) {
         if(!m_mimeJobStarted)
             loadType();
         else
@@ -243,7 +243,7 @@ File::FileType getFileType(const QString& mime, const QString& name)
             if ( m_mimeTypes.contains( mime ) )
                 type = File::Video;
 
-            if ( type == File::Undefined )
+            if ( type == File::Progress )
             {
                 if ( right == QLatin1String( "3gpp" ) ||
                      right == QLatin1String( "mp4" ) ||

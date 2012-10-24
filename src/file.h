@@ -36,7 +36,7 @@ class File : public QObject
 public:
     enum FileType
     {
-        Undefined = 0,
+        Progress = 0,
         Image,
         Video,
         Txt,

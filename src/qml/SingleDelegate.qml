@@ -97,8 +97,8 @@ Item {
     function bestDelegate(t) {
         mainWidget.updateMenu(photosListView.currentIndex)
 
-        if(!isLoaded) {
-            mainWindow.currentFileType = File.Undefined
+        if(!isLoaded || t === File.Progress) {
+            mainWindow.currentFileType = File.Progress
             return progressDelegate
         }
 

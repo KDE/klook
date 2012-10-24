@@ -58,7 +58,7 @@ QVariant ListItem::data( int role ) const
     // instantiate content only when roles really require it
     if(!m_content) {
         const int type = m_file->type();
-        if(m_file->type() == File::Undefined)
+        if(m_file->type() == File::Progress)
             return QVariant();
 
         QObject *parent = const_cast<QObject *>(qobject_cast<const QObject *>(this));

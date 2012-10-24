@@ -130,7 +130,7 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
     m_currentFile = m_fileModel->file(indexToShow);
 
     QSize startingSize = m_currentFile->url().isLocalFile() ?
-                         getPreferredSize(m_currentFile->url().toLocalFile(), File::Undefined) :
+                         getPreferredSize(m_currentFile->url().toLocalFile(), File::Progress) :
                          QSize();
     KWindowSystem::setState( winId(), NET::SkipTaskbar );
     centerWidget(startingSize.isValid() ? startingSize : QSize(min_width, min_height));
@@ -240,7 +240,7 @@ void DeclarativeViewer::setFullScreen()
     QSize preferredSize;
     File::FileType type = m_currentFile->type();
 
-    if (type != File::Undefined) {
+    if (type != File::Progress) {
         if (m_currentFile->url().isLocalFile()) {
             preferredSize = getPreferredSize(m_currentFile->url().toLocalFile(), type);
         }
