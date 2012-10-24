@@ -37,7 +37,7 @@ Component {
             fillMode: Image.PreserveAspectFit
             asynchronous: true
             smooth: true;
-            visible: albumWrapper.state === "fullscreen"
+            visible: albumWrapper.state === ""
             width: getIconWidth( paintedWidth, paintedHeight, getMaxTextWidth() )
 
             Behavior on opacity { NumberAnimation { duration: 500 } }

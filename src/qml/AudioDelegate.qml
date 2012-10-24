@@ -45,7 +45,7 @@ Component {
             fillMode: Image.PreserveAspectFit
             asynchronous: true
             smooth: true;
-            visible: albumWrapper.state === "fullscreen"
+            visible: albumWrapper.state === ""
             width: getIconWidth( paintedWidth, paintedHeight, getMaxTextWidth() )
 
             Behavior on opacity { NumberAnimation { duration: 500 } }
@@ -154,7 +154,7 @@ Component {
                 {
                     audioIcon.opacity = 1
                     audio.source = filePath
-                    if ( albumWrapper.state === "fullscreen" )
+                    if ( albumWrapper.state === "" )
                         audio.play()
 
                     if ( audio.playing )

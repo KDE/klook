@@ -69,7 +69,7 @@ Rectangle {
             mainWindow.state = 'embedded'
         else
             mainWindow.state = 'windowed'
-        albumWrapper.state = 'fullscreen'
+        albumWrapper.state = ""
         photosListView.focus = true
     }
 
@@ -104,7 +104,7 @@ Rectangle {
         }
 
         if ( ( mainWindow.state === "windowed" ) ) {
-            if ( ( albumWrapper.state === 'fullscreen' ) &&
+            if ( ( albumWrapper.state === "" ) &&
                     ( ( currentFileType === File.Video ) || ( currentFileType === File.Audio ) ) )
                 panel.visible = true
             else
@@ -177,7 +177,7 @@ Rectangle {
     Keys.onReturnPressed:
     {
         if (galleryGridView.currentIndex !== -1)
-            albumWrapper.state = 'fullscreen'
+            albumWrapper.state = ""
 
         setGalleryView( albumWrapper.state === 'inGrid' )
     }
@@ -195,7 +195,7 @@ Rectangle {
         if ( photosListView.currentIndex === -1 )
             photosListView.currentIndex = 0
 
-        if ( albumWrapper.state === 'fullscreen' )
+        if ( albumWrapper.state === '' )
         {
             albumWrapper.state = 'inGrid'
             galleryGridView.currentIndex = photosListView.currentIndex
@@ -206,7 +206,7 @@ Rectangle {
             {
                 galleryGridView.currentIndex = photosListView.currentIndex
             }
-            albumWrapper.state = 'fullscreen'
+            albumWrapper.state = ""
         }
 
         setGalleryView( albumWrapper.state === 'inGrid' )
@@ -360,7 +360,7 @@ Rectangle {
             anchors.bottomMargin: 2
             anchors.topMargin: 2
             anchors.fill: parent
-            color:  "#333333" //( effects === 'on' ) ? "#c8000000" :  "#333333"
+            color:  "#dadada"
             border.width: 0
             border.color: "#000000"
 
@@ -370,8 +370,7 @@ Rectangle {
 
             Item {
                 id: albumWrapper;
-                anchors.fill: parent
-                state: 'fullscreen'
+                anchors.fill: parent                
 
                 Component {
                     id: highlight
@@ -387,21 +386,26 @@ Rectangle {
                 }
 
                 GridView {
-                    id: galleryGridView; model: fileModel; delegate: Delegate{}
-                    width: drawer.width; height: drawer.height
+                    id: galleryGridView
+                    width: drawer.width;
+                    height: drawer.height
                     anchors.fill: parent ; anchors.margins: 10
+                    model: fileModel
+                    delegate: Delegate{}
                     cellWidth: getCellSize( galleryGridView.count ).width
                     cellHeight: getCellSize( galleryGridView.count ).height
+                    highlight:  highlight
+                    highlightFollowsCurrentItem: false
+                    snapMode: GridView.SnapToRow
+                    clip: true
+                    visible: false
 
                     onCurrentIndexChanged:
                     {
                         mainWidget.updateMenu(currentIndex)
                     }
 
-                    highlight:  highlight
-                    highlightFollowsCurrentItem: false
-                    snapMode: GridView.SnapToRow
-                    clip: true
+
 
                     MouseArea {
                         id: mouseAreaGrid
@@ -431,7 +435,7 @@ Rectangle {
 
                         onClicked: {
                             if ( ( albumWrapper.state == 'inGrid' ) && ( galleryGridView.currentIndex !== -1 ) ) {
-                                albumWrapper.state = 'fullscreen'
+                                albumWrapper.state = ""
                             }
                             setGalleryView( albumWrapper.state === 'inGrid' )
                             panel.state = mainWindow.updatePanelState()
@@ -505,7 +509,7 @@ Rectangle {
                 }
                 states: [
                     State {
-                        name: 'inGrid'
+                        name: "inGrid"
                         PropertyChanges { target: albumsShade; opacity: 1 }
                         PropertyChanges { target: galleryGridView; visible: true }
                         PropertyChanges { target: galleryGridView; focus: true }
@@ -513,31 +517,19 @@ Rectangle {
                         PropertyChanges { target: photosListView; focus: false  }
                         PropertyChanges { target: prevButton; state: 'disabled' }
                         PropertyChanges { target: nextButton; state: 'disabled' }
-                    },
-                    State {
-                        name: 'fullscreen';
-                        PropertyChanges { target: galleryGridView; interactive: false }
-                        PropertyChanges { target: galleryGridView; visible: false }
-                        PropertyChanges { target: galleryGridView; focus: false }
-                        PropertyChanges { target: photosListView; visible: true  }
-                        PropertyChanges { target: photosListView; focus: true  }
-                        PropertyChanges { target: prevButton; state: getPrevButtonState() }
-                        PropertyChanges { target: nextButton; state: getNextButtonState() }
-                        PropertyChanges { target: panel; prevButtonState: getPrevButtonState() }
-                        PropertyChanges { target: panel; nextButtonState: getNextButtonState() }
                     }
                 ]
 
                 transitions: [
                     Transition {
-                        from: 'inGrid'; to: '*'
+                        from: "inGrid"; to: "*"
                         NumberAnimation { properties: "y,opacity"; easing.type: Easing.OutQuad; duration: 100 }
                     }
                 ]
 
                 onStateChanged:
                 {
-                    if (albumWrapper.state === 'inGrid')
+                    if (albumWrapper.state === "inGrid")
                         previewGenerator.start()
                     else
                     {
@@ -619,17 +611,6 @@ Rectangle {
                 anchors.leftMargin: 2
                 anchors.bottomMargin: 2
                 anchors.topMargin: 1
-                color: {
-                    console.debug("Changing color!" + mainWindow.currentFileType)
-                    if (((mainWindow.currentFileType === File.Directory) ||
-                         (mainWindow.currentFileType === File.Audio)  ||
-                         (mainWindow.currentFileType === File.MimetypeFallback) ||
-                         (mainWindow.currentFileType === File.Undefined)) &&
-                            (albumWrapper.state == "fullscreen" ))
-                        return "#dadada"
-                    else
-                        return "#333333"
-                }
             }
 
             PropertyChanges {
@@ -667,13 +648,9 @@ Rectangle {
                 anchors.leftMargin: 0
                 anchors.bottomMargin: 0
                 anchors.topMargin: 0
-                //                color: "#333333"
+                color: "#333333"
             }
-            PropertyChanges {
-                target: drawerBorder;
-                color: "#3feaeaea"
-                visible: false
-            }
+            PropertyChanges { target: drawerBorder; visible: false }
       },
         State {
             name: "embedded"
@@ -706,10 +683,6 @@ Rectangle {
                 anchors.leftMargin: 1
                 anchors.bottomMargin: 1
                 anchors.topMargin: 1
-                color: (((mainWindow.currentFileType == File.Directory) ||
-                         (mainWindow.currentFileType == File.Audio ) ||
-                         (mainWindow.currentFileType === File.MimetypeFallback)) &&
-                        (albumWrapper.state == "fullscreen")) ? "#dadada" : "#333333"
             }
         }
     ]

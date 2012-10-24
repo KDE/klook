@@ -25,8 +25,16 @@ import Widgets 1.0
 Component {
     Item {
         AnimatedImage {
+            id: animation
             source: "images/loader.gif"
             anchors.centerIn: parent
         }
+        states: [
+            State {
+                name: "fullscreen"; when: mainWindow.state === 'fullscreen'
+                PropertyChanges { target: animation; source: "images/white-loader.gif" }
+            }
+        ]
     }
+
 }

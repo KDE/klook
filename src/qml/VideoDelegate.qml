@@ -34,14 +34,14 @@ Component {
             opacity: 0
             source: filePath
             anchors.fill: parent
-            visible: albumWrapper.state === 'fullscreen' && video.ready
+            visible: (albumWrapper.state === "") && video.ready
 
             Component.onCompleted: {
                 video.opacity = 1
                 video.setPlayerParent()
                 video.source = filePath
                 mainWindow.updatePanel()
-                if ( albumWrapper.state === "fullscreen" )
+                if ( albumWrapper.state === "" )
                     video.play()
 
                 if ( video.playing )

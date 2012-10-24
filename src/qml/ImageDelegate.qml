@@ -23,8 +23,9 @@ import QtQuick 1.1
 import Widgets 1.0
 
 Component {
-    Item {
+    Rectangle {
         id: imageItem
+        color: "#333333"
 
         Image {
             id: img
@@ -34,7 +35,7 @@ Component {
             fillMode: Image.PreserveAspectFit
             asynchronous: true
             smooth: true;
-            visible: albumWrapper.state === "fullscreen"
+            visible: albumWrapper.state === ""
             width: Math.min( sourceSize.width, parent.width )
             height: Math.min( sourceSize.height, parent.height )
 

@@ -84,9 +84,6 @@ public slots:
     void setPreview( bool preview );
     void setPlayerParent();
 
-protected:
-  void paint( QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget );
-
 Q_SIGNALS:
     void clicked( bool );
     void sourceChanged();
