@@ -50,7 +50,7 @@ Rectangle {
     {
         if ( mainWindow.state === 'fullscreen' )
             mainWindow.state = 'windowed'
-        cppObject.setFullScreen()
+        mainWidget.setFullScreen()
     }
 
     function setFullScreenState()
@@ -395,7 +395,7 @@ Rectangle {
 
                     onCurrentIndexChanged:
                     {
-                        cppObject.updateContent ( currentIndex )
+                        mainWidget.updateContent ( currentIndex )
                     }
 
                     highlight:  highlight
@@ -426,7 +426,7 @@ Rectangle {
                                     openButton.state = 'disabled'
                                 galleryGridView.currentIndex = -1
                             }
-                            cppObject.updateContent( mouseIndex )
+                            mainWidget.updateContent( mouseIndex )
                         }
 
                         onClicked: {
@@ -473,7 +473,7 @@ Rectangle {
                     onCurrentIndexChanged:
                     {
                         fileModel.load(currentIndex)
-                        cppObject.updateContent ( currentIndex )
+                        mainWidget.updateContent ( currentIndex )
                         updateMenuButtons()
                     }
 

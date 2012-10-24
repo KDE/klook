@@ -166,7 +166,7 @@ void DeclarativeViewer::registerTypes()
     rootContext()->setContextProperty( "DHeight", r.height() );
     rootContext()->setContextProperty( "fileModel", m_fileModel );
     rootContext()->setContextProperty( "previewGenerator", PreviewGenerator::instance() );
-    rootContext()->setContextProperty( "cppObject",  this );
+    rootContext()->setContextProperty( "mainWidget",  this );
     rootContext()->setContextProperty( "actualSize", "off" );
     rootContext()->setContextProperty( "openText", ki18n( "Open in..." ).toString() );
     rootContext()->setContextProperty( "fileName", "" );
