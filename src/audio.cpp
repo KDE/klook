@@ -156,9 +156,9 @@ void Audio::setPreview( bool preview )
 }
 
 void Audio::stateChanged( Phonon::State newState, Phonon::State oldState )
-{
+{    
     Q_UNUSED( newState )
-    if ( oldState == Phonon::LoadingState )
+    if (( oldState == Phonon::LoadingState ) || ( oldState == Phonon::StoppedState ))
     {
         setReady( true );
     }

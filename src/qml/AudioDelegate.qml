@@ -27,6 +27,7 @@ Component {
 
     Item
     {
+
         id: audioItem
 
         signal ready()
@@ -41,7 +42,7 @@ Component {
             anchors.bottomMargin: iconHeightMargin + panel.height
             source: "images/audio.png"
             clip: true
-            opacity: 0
+            //opacity: 0
             fillMode: Image.PreserveAspectFit
             asynchronous: true
             smooth: true;
@@ -92,6 +93,17 @@ Component {
         Audio {
             id: audio
 
+            Component.onCompleted: {
+                audio.source = filePath
+                //audioIcon.opacity = 1
+                if ( albumWrapper.state === "" )
+                    audio.play()
+                if ( audio.playing )
+                    panel.playButtonState = 'Play'
+                else
+                    panel.playButtonState = 'Pause'
+            }
+
             onTicked:
             {
                 if ( playing )
@@ -110,7 +122,7 @@ Component {
             {
                 title.text = "<b>" + audio.title + "</b>"
                 artist.text = artistStr + " <b>" + audio.artist + "</b>"
-                artist.visible = ( audio.artist != "" )
+                artist.visible = ( audio.artist !== "" )
 
                 var h = audio.totalTime / ( 1000 * 3600 )
                 var strFmt = ( h >= 1 ) ? "hh:mm:ss" : "m:ss"
@@ -144,26 +156,6 @@ Component {
                     audio.pause()
                 else
                     audio.play()
-            }
-        }
-
-        Connections{
-            target: photosListView;
-            onCurrentIndexChanged: {
-                if ( listItem.ListView.isCurrentItem )
-                {
-                    audioIcon.opacity = 1
-                    audio.source = filePath
-                    if ( albumWrapper.state === "" )
-                        audio.play()
-
-                    if ( audio.playing )
-                        panel.playButtonState = 'Play'
-                    else
-                        panel.playButtonState = 'Pause'
-                }
-                else
-                    audioIcon.opacity = 0
             }
         }
     }

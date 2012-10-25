@@ -501,9 +501,7 @@ Rectangle {
                         PropertyChanges { target: galleryGridView; visible: true }
                         PropertyChanges { target: galleryGridView; focus: true }
                         PropertyChanges { target: photosListView; visible: false }
-                        PropertyChanges { target: photosListView; focus: false  }
-                        PropertyChanges { target: prevButton; state: 'disabled' }
-                        PropertyChanges { target: nextButton; state: 'disabled' }
+                        PropertyChanges { target: photosListView; focus: false  }                        
                     }
                 ]
 
@@ -515,13 +513,16 @@ Rectangle {
                 ]
 
                 onStateChanged:
-                {
-                    if (albumWrapper.state === "inGrid")
+                {                    
+                    if (albumWrapper.state === "inGrid") {
                         previewGenerator.start()
-                    else
-                    {
+                        prevButton.state = 'disabled'
+                        nextButton.state = 'disabled'
+                    } else {
                         previewGenerator.stop()
-                        photosListView.positionViewAtIndex( galleryGridView.currentIndex, ListView.Contain )
+                        photosListView.currentIndex = galleryGridView.currentIndex
+                        photosListView.positionViewAtIndex( photosListView.currentIndex, ListView.Contain )
+                        updateMenuButtons()
                     }
                 }
             }

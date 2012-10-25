@@ -185,6 +185,6 @@ void Video::setPreview( bool preview )
 void Video::stateChanged( Phonon::State newState, Phonon::State oldState )
 {
     Q_UNUSED( newState )
-    if (oldState == Phonon::LoadingState)
+    if ((oldState == Phonon::LoadingState) || (oldState == Phonon::StoppedState))
         setReady( true );
 }
