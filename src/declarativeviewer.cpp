@@ -457,7 +457,7 @@ void DeclarativeViewer::updateMenu(int index)
 
     rootContext()->setContextProperty("openText", openText);
     rootContext()->setContextProperty("fileName", file->url().fileName());
-    rootContext()->setContextProperty("fileUrl", file->url().url());
+    rootContext()->setContextProperty("fileUrl", file->url().pathOrUrl());
 }
 
 WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )
