@@ -38,12 +38,9 @@ Component {
 
             Component.onCompleted: {
                 video.opacity = 1
-                video.setPlayerParent()
                 video.source = filePath
-                mainWindow.updatePanel()
                 if ( albumWrapper.state === "" )
                     video.play()
-
                 if ( video.playing )
                     panel.playButtonState = 'Play'
                 else

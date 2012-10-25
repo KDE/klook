@@ -136,7 +136,8 @@ Item {
         anchors.fill: parent
         sourceComponent: bestDelegate(type)
         onLoaded: {
-            mainWindow.updatePanel()
+            if (((type === File.Video) || (type === File.Audio)) && (index === photosListView.currentIndex ))
+                mainWindow.updatePanel()
         }
     }
 }

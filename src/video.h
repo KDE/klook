@@ -83,8 +83,7 @@ public slots:
     void stateChanged(Phonon::State oldState, Phonon::State newState);
 
     bool isPreview() const;
-    void setPreview( bool preview );
-    void setPlayerParent();
+    void setPreview( bool preview );    
 
 Q_SIGNALS:
     void clicked( bool );
@@ -96,7 +95,7 @@ Q_SIGNALS:
     void ready();
 
 private:
-    static Phonon::VideoPlayer* m_player;
+    Phonon::VideoPlayer* m_player;
 
     QWidget*        m_wid;
     QHBoxLayout*    m_layout;

@@ -28,8 +28,6 @@
 #include <KDE/Phonon/VideoWidget>
 #include <KDE/Phonon/AudioOutput>
 
-Phonon::VideoPlayer* Video::m_player = 0;
-
 Video::Video(QGraphicsItem* parent)
     : QGraphicsProxyWidget(parent)
     , m_layout(0)
@@ -37,18 +35,17 @@ Video::Video(QGraphicsItem* parent)
     , m_videoHeight(480)
     , m_isPreview(false)
     , m_isReady(false)
+    , m_player(0)
 {
     m_wid = new QWidget();
 
-    if (!m_player)
-    {
-        m_player = new Phonon::VideoPlayer(Phonon::VideoCategory, m_wid);
-        m_player->setAttribute(Qt::WA_NoSystemBackground);
-        m_player->mediaObject()->setTickInterval( 1000 );
-    }
+    m_player = new Phonon::VideoPlayer(Phonon::VideoCategory, m_wid);
+    m_player->setAttribute(Qt::WA_NoSystemBackground);
+    m_player->mediaObject()->setTickInterval( 1000 );
 
     m_layout = new QHBoxLayout();
     m_layout->setMargin(0);
+    m_layout->addWidget(m_player);
     m_wid->setLayout(m_layout);
     setWidget(m_wid);
 
@@ -62,17 +59,7 @@ Video::Video(QGraphicsItem* parent)
 
 Video::~Video()
 {
-    QObjectList list = m_wid->children();
-    if (list.size() > 1)
-    {
-        m_player->stop();
-        m_player->setParent(0);
-    }
-}
 
-void Video::setPlayerParent()
-{
-    m_layout->addWidget(m_player);
 }
 
 void Video::setPause()

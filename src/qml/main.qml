@@ -94,29 +94,17 @@ Rectangle {
     {
         controlPanelTimer.stop()
         panel.opacity = 1
-
-        //Disable panel in embedded mode
-        if ( mainWindow.state === "embedded" ) {
-            console.log("disable panel")
+        //Hide panel in gallery
+        if ( albumWrapper.state === "inGrid" ) {
             panel.visible = false
             return
-
         }
-
-        if ( ( mainWindow.state === "windowed" ) ) {
-            if ( ( albumWrapper.state === "" ) &&
-                    ( ( currentFileType === File.Video ) || ( currentFileType === File.Audio ) ) )
-                panel.visible = true
-            else
-                panel.visible = false
+        //Hide panel in normal mode if content isnt video or audio
+        if (( mainWindow.state === "windowed" ) && (mainWindow.currentFileType !== File.Video) && (mainWindow.currentFileType !== File.Audio)) {
+            panel.visible = false
+            return
         }
-        else {
-            if ( albumWrapper.state === 'inGrid' )
-                panel.visible = false
-            else
-                panel.visible = true
-        }
-
+        panel.visible = true
         if ( !mouseControl.containsMouse ) {
             controlPanelTimer.start()
         }
@@ -370,7 +358,7 @@ Rectangle {
 
             Item {
                 id: albumWrapper;
-                anchors.fill: parent                
+                anchors.fill: parent
 
                 Component {
                     id: highlight
@@ -406,7 +394,6 @@ Rectangle {
                     }
 
 
-
                     MouseArea {
                         id: mouseAreaGrid
                         anchors.fill: parent
@@ -439,7 +426,6 @@ Rectangle {
                             }
                             setGalleryView( albumWrapper.state === 'inGrid' )
                             panel.state = mainWindow.updatePanelState()
-                            mainWindow.updatePanel()
                         }
 
                     }
@@ -478,6 +464,7 @@ Rectangle {
                     {
                         fileModel.load(currentIndex)
                         updateMenuButtons()
+                        updatePanel()
                     }
 
                 }
@@ -546,12 +533,16 @@ Rectangle {
 
                 Connections{
                     target: mainWindow
-                    onStateChanged: { updatePanel() }
+                    onStateChanged: {
+                        updatePanel()
+                    }
                 }
 
                 Connections{
                     target: albumWrapper
-                    onStateChanged: { updatePanel() }
+                    onStateChanged: {
+                        updatePanel()
+                    }
                 }
             }
 
@@ -651,7 +642,7 @@ Rectangle {
                 color: "#333333"
             }
             PropertyChanges { target: drawerBorder; visible: false }
-      },
+        },
         State {
             name: "embedded"
             PropertyChanges {target: mainWindow;  border.width: 0; }
