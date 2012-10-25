@@ -23,9 +23,9 @@
 
 #include <QFileInfo>
 
-#include <KDE/Phonon/MediaObject>
-#include <KDE/Phonon/VideoWidget>
-#include <KDE/Phonon/AudioOutput>
+#include <Phonon/MediaObject>
+#include <Phonon/VideoWidget>
+#include <Phonon/AudioOutput>
 
 Audio::Audio( QDeclarativeItem* parent )
     : QDeclarativeItem( parent )

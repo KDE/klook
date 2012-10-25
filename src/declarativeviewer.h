@@ -22,8 +22,8 @@
 #ifndef DECLARATIVEVIEWER_H
 #define DECLARATIVEVIEWER_H
 
-#include <KDE/Phonon/MediaObject>
-#include <KDE/Phonon/VideoWidget>
+#include <Phonon/MediaObject>
+#include <Phonon/VideoWidget>
 
 #include <QtDeclarative/QDeclarativeView>
 #include <QVariant>

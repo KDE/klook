@@ -23,7 +23,7 @@
 
 #include <KIO/JobClasses>
 #include <KIO/NetAccess>
-#include <KDE/Phonon/BackendCapabilities>
+#include <Phonon/BackendCapabilities>
 #include <KMimeType>
 #include <QtCore/QTemporaryFile>
 #include <QtCore/QMetaType>

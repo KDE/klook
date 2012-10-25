@@ -26,8 +26,8 @@
 #include <QTime>
 
 #include <QDeclarativeItem>
-#include <KDE/Phonon/MediaObject>
-#include <KDE/Phonon/AudioOutput>
+#include <Phonon/MediaObject>
+#include <Phonon/AudioOutput>
 #include <KUrl>
 
 class QHBoxLayout;
