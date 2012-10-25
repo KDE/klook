@@ -116,6 +116,7 @@ void File::download()
     if (m_tempFile->open()) {
         m_downloadInProgress = true;
         m_job = KIO::file_copy(m_url, KUrl(m_tempFile->fileName()), -1, KIO::Overwrite | KIO::HideProgressInfo);
+        m_job->setAutoDelete(false);
         connect(m_job, SIGNAL(result(KJob *)), SLOT(slotDownloadResult(KJob *)));
         KIO::getJobTracker()->registerJob( m_job );
     }
@@ -152,9 +153,10 @@ void File::stopDownload()
         m_isLoaded = false;
         m_job->kill();
         KIO::getJobTracker()->unregisterJob(m_job);
+        delete m_job;
+        m_job = 0;
         delete m_tempFile;
         m_tempFile = 0;
-        m_job = 0;
     }
 }
 
@@ -178,6 +180,10 @@ void File::slotDownloadResult(KJob *job)
     else {
         m_isLoaded = true;
     }
+
+    KIO::getJobTracker()->unregisterJob(job);
+    job->deleteLater();
+    m_job = 0;
 
     emit dataChanged();
 }
