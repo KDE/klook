@@ -460,6 +460,22 @@ void DeclarativeViewer::updateMenu(int index)
     rootContext()->setContextProperty("fileUrl", file->url().pathOrUrl());
 }
 
+void DeclarativeViewer::resizeToPreferredSize(int index)
+{
+    File *file = m_fileModel->file(index);
+    const QString path = file->url().isLocalFile() ? file->url().toLocalFile() : file->tempFilePath();
+    QSize preferredSize = getPreferredSize(path, file->type());
+
+    // this is necessary for following comparisons to geometry
+    if (!preferredSize.isValid() || (preferredSize.width() < minimumSize().width()) ||
+        preferredSize.height() < minimumSize().height()) {
+        preferredSize = minimumSize();
+    }
+
+    if (preferredSize != geometry().size())
+        centerWidget(preferredSize);
+}
+
 WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )
 {
     QPointF pos;

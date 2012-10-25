@@ -138,6 +138,14 @@ Item {
         onLoaded: {
             if (((type === File.Video) || (type === File.Audio)) && (index === photosListView.currentIndex ))
                 mainWindow.updatePanel()
+
+            // we need to resize klook to preferred size when opening file
+            // we can't do that on startup because file can be unavailable
+            if(!mainWindow.firstFileLoaded && index === photosListView.currentIndex && type != File.Progress) {
+                console.log("Resize")
+                mainWidget.resizeToPreferredSize(photosListView.currentIndex)
+                mainWindow.firstFileLoaded = true
+            }
         }
     }
 }

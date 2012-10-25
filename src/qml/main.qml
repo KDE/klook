@@ -38,6 +38,7 @@ Rectangle {
     anchors.rightMargin: 0
     anchors.bottomMargin: 0
 
+    property bool firstFileLoaded: false
     property int currentFileType
 
     property alias mainState: mainWindow.state

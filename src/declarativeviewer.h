@@ -67,7 +67,7 @@ public:
 
     void init(QStringList urls, bool embedded = false, const QRect& rc = QRect( 0, 0, 0, 0 ), int indexToShow = 0 );
     Q_INVOKABLE void updateMenu(int index);
-
+    Q_INVOKABLE void resizeToPreferredSize(int index);
 
 protected:
     void resizeEvent(QResizeEvent *event);
