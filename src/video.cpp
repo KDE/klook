@@ -116,11 +116,9 @@ QString Video::source() const
     return m_player->mediaObject()->currentSource().url().toString();
 }
 
-void Video::setSource(const QString& source)
+void Video::setSource(const KUrl &source)
 {
-    QUrl url(source);
-
-    m_player->mediaObject()->setCurrentSource(url);
+    m_player->mediaObject()->setCurrentSource(source);
     emit sourceChanged();
 }
 

@@ -28,6 +28,7 @@
 #include <QDeclarativeItem>
 #include <KDE/Phonon/MediaObject>
 #include <KDE/Phonon/AudioOutput>
+#include <KUrl>
 
 class QHBoxLayout;
 
@@ -55,7 +56,7 @@ public:
 
 public slots:
     QString source() const;
-    void setSource( const QString& source );
+    void setSource(const KUrl &source );
 
     bool playing() const;
     bool paused() const;

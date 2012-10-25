@@ -77,11 +77,9 @@ QString Audio::source() const
     return m_mediaObject->currentSource().url().toString();
 }
 
-void Audio::setSource( const QString& source )
+void Audio::setSource( const KUrl& source )
 {
-    QUrl url( source );
-
-    m_mediaObject->setCurrentSource( url );
+    m_mediaObject->setCurrentSource(source);
     emit sourceChanged();
 }
 

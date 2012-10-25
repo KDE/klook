@@ -25,8 +25,10 @@
 
 #include <QGraphicsProxyWidget>
 #include <KDE/Phonon/VideoPlayer>
+#include <KUrl>
 
 class QHBoxLayout;
+
 
 class Video : public QGraphicsProxyWidget
 {
@@ -48,7 +50,7 @@ public:
 
 public slots:
     QString source() const;
-    void setSource( const QString& source );
+    void setSource( const KUrl& source );
 
     bool playing() const;
     bool paused() const;

@@ -126,8 +126,7 @@ bool File:: needDownload()
 {
     bool r = true;
     FileType t = type();
-    if(t == File::Audio || t == File::Image
-            || t == File::Video || t == File::Txt) {
+    if(t == File::Image || t == File::Txt) {
         r = true;
     }
     else if(t != File::Directory) {
