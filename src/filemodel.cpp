@@ -101,11 +101,16 @@ void FileModel::load(int row)
         return;
 
     // stop previous download
-    if(m_currentLoadingFile && m_currentLoadingFile->downloadInProgress()) {
-        m_currentLoadingFile->stopDownload();
+    if(m_currentLoadingFile) {
+        m_currentLoadingFile->setCurrent(false);
+        // this is redundant. need to remove later
+        if(m_currentLoadingFile->downloadInProgress()) {
+            m_currentLoadingFile->stopDownload();
+        }
     }
 
     File *f = file(row);
+    f->setCurrent(true);
     f->load();
     m_currentLoadingFile = f;
 }

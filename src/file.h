@@ -56,6 +56,11 @@ public:
     File::FileType type();
     void setType(FileType type);
 
+    void setCurrent(bool isCurrent)
+    {
+        m_isCurrent = isCurrent;
+    }
+
     QString mime();
     void setMime(const QString &mime);
 
@@ -90,6 +95,7 @@ private:
     bool m_isLoaded;
     bool m_mimeJobStarted;
     bool m_downloadInProgress;
+    bool m_isCurrent;
 };
 
 File::FileType getFileType(const QString& mime, const QString& name);

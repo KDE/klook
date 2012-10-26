@@ -50,6 +50,7 @@ File::File(KUrl url, QObject* parent)
     , m_mimeJobStarted(false)
     , m_job(0)
     , m_downloadInProgress(false)
+    , m_isCurrent(false)
 {
     m_isLoaded = m_url.isLocalFile();
 }
@@ -98,7 +99,7 @@ void File::load()
         else
             return;
     }
-    else if(needDownload()) {
+    else if(needDownload() && m_isCurrent) {
         download();
     }
 }
@@ -197,7 +198,7 @@ void File::resultMimetypeJob(KJob *job)
         setType(t);
 
         // now that we know file type we can download file if necessary
-        if(needDownload()) {
+        if(needDownload() && m_isCurrent) {
             download();
         }
     }
