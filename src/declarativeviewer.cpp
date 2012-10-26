@@ -442,6 +442,7 @@ void DeclarativeViewer::updateMenu(int index)
         rootContext()->setContextProperty("fileName",  ki18n( "Elements: " ).toString() + QString::number(m_fileModel->rowCount()));
         return;
     }
+    m_currentFile = m_fileModel->file(index);
 
     File *file = m_fileModel->file(index);
     QString openText;
