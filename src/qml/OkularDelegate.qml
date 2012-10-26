@@ -23,20 +23,21 @@ import QtQuick 1.1
 import Widgets 1.0
 
 Component {
+
     Item {
         id: t
+        property variant part: p
+
         KPart {
-            id: part
-            url: filePath
+            id: p
             width: parent.width
             height: parent.height
-        }
-        Connections {
-            target: photosListView
-            onCurrentIndexChanged: {
-                if ( listItem.ListView.isCurrentItem ) {
-                    mouseControl.enabled = mainWindow.state == 'fullscreen' ? true : false
+
+            Component.onCompleted: {
+                if (index == photosListView.currentIndex) {
+                    part.url = fileUrl
                     part.setPartParent()
+                    mouseControl.enabled = mainWindow.state == 'fullscreen' ? true : false
                 }
                 else
                     mouseControl.enabled = true
@@ -44,3 +45,4 @@ Component {
         }
     }
 }
+
