@@ -132,6 +132,9 @@ bool File:: needDownload()
         r = true;
     }
     else if(t != File::Directory) {
+        return false;
+    }
+    else {
         r = false;
     }
     return !url().isLocalFile() && r;
@@ -198,8 +201,12 @@ void File::resultMimetypeJob(KJob *job)
         setType(t);
 
         // now that we know file type we can download file if necessary
-        if(needDownload() && m_isCurrent) {
-            download();
+        if(needDownload()) {
+            if(m_isCurrent)
+                download();
+        }
+        else {
+            m_isLoaded = true;
         }
     }
 
