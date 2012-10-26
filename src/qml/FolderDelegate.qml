@@ -78,7 +78,7 @@ Component {
             id: modified
             anchors.left: folderIcon.right
             anchors.top: itemType.bottom
-            text: lastModifiedStr + " " + lastModified
+            text: (statComplete)? lastModifiedStr + " " + lastModified : lastModifiedStr
             wrapMode: Text.NoWrap
         }
 
