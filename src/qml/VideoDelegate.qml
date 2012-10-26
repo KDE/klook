@@ -32,13 +32,13 @@ Component {
         Video {
             id: video
             opacity: 0
-            source: filePath
+            source: fileUrl
             anchors.fill: parent
             visible: (albumWrapper.state === "") && video.ready
 
             Component.onCompleted: {
                 video.opacity = 1
-                video.source = filePath
+                video.source = fileUrl
                 if ( albumWrapper.state === "" )
                     video.play()
                 if ( video.playing )
