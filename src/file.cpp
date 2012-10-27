@@ -34,21 +34,21 @@
 
 File::File(QObject* parent)
     : QObject(parent)
+    , m_job(0)
     , m_type(Undefined)
     , m_tempFile(0)
     , m_isLoaded(0)
-    , m_job(0)
 {
 }
 
 File::File(KUrl url, QObject* parent)
     : QObject( parent )
     , m_url(url)
+    , m_job(0)
     , m_type(File::Undefined)
     , m_tempFile(0)
     , m_isLoaded(0)
     , m_mimeJobStarted(false)
-    , m_job(0)
     , m_downloadInProgress(false)
 {
     m_isLoaded = m_url.isLocalFile();
