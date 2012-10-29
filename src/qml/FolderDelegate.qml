@@ -78,8 +78,17 @@ Component {
             id: modified
             anchors.left: folderIcon.right
             anchors.top: itemType.bottom
-            text: (statComplete)? lastModifiedStr + " " + lastModified : lastModifiedStr
+            text: (statComplete) ? lastModifiedStr + " " + lastModified : lastModifiedStr
             wrapMode: Text.NoWrap
+        }
+
+        AnimatedImage {
+            id: statWaitAnimation
+            anchors.top: itemType.bottom
+            anchors.left: modified.right
+            anchors.leftMargin: 10
+            source: "images/loader.gif"
+            visible: !statComplete
         }
 
         InfoItem {
@@ -129,6 +138,7 @@ Component {
                 name: "fullscreen"; when: mainWindow.state === 'fullscreen'
                 PropertyChanges { target: sizeWaitAnimation; source: "images/white-loader.gif" }
                 PropertyChanges { target: contentWaitAnimation; source: "images/white-loader.gif" }
+                PropertyChanges { target: statWaitAnimation; source: "images/white-loader.gif" }
             }
         ]
     }

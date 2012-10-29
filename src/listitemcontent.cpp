@@ -5,7 +5,6 @@
 #include <kio/directorysizejob.h>
 #include <KIO/StatJob>
 #include <KLocale>
-#include <QFileInfo>
 
 ListItemContent::ListItemContent(File *file, QObject *parent)
     : QObject(parent)
@@ -21,7 +20,7 @@ File *ListItemContent::file() const
 ListItemFallbackContent::ListItemFallbackContent(File *file, QObject *parent)
     : ListItemContent(file, parent), m_size(0), m_statComplete(false)
 {
-    KIO::StatJob *job = KIO::stat(file->url(), KIO::HideProgressInfo);
+    KIO::StatJob *job = KIO::stat(file->url(),	KIO::StatJob::DestinationSide, 1, KIO::HideProgressInfo);
     connect(job, SIGNAL(result(KJob*)), SLOT(handleStatJob(KJob*)));
 }
 
@@ -29,7 +28,10 @@ QVariant ListItemFallbackContent::data(int role) const
 {
     if ( role == ListItem::LastModifiedRole )
     {
-        return KGlobal::locale()->formatDate(m_modificationTime.date());
+        QString modificationDate = m_modificationTime.date().isNull()
+                ? ki18n("Unknown").toString()
+                : KGlobal::locale()->formatDate(m_modificationTime.date());
+        return modificationDate;
     }
     else if ( role == ListItem::ContentSizeRole )
     {
@@ -47,7 +49,10 @@ void ListItemFallbackContent::handleStatJob(KJob *job)
     if(job && !job->error()) {
         const KIO::UDSEntry entry = static_cast<KIO::StatJob*>(job)->statResult();
         m_size = entry.numberValue(KIO::UDSEntry::UDS_SIZE);
-        m_modificationTime = QDateTime::fromTime_t(entry.numberValue(KIO::UDSEntry::UDS_MODIFICATION_TIME));
+        time_t mtime = entry.numberValue( KIO::UDSEntry::UDS_MODIFICATION_TIME, -1 );
+        if (mtime != -1) {
+            m_modificationTime = QDateTime::fromTime_t(mtime);
+        }
         m_statComplete = true;
         emit dataChanged();
     }
@@ -61,9 +66,6 @@ ListItemDirectoryContent::ListItemDirectoryContent(File *file, QObject *parent)
 {
     KIO::DirectorySizeJob *job = KIO::directorySize(file->url());
     connect(job, SIGNAL(result(KJob *)), SLOT(handleDirSizeJob(KJob *)));
-
-    KIO::StatJob *statJob = KIO::stat(file->url(), KIO::HideProgressInfo);
-    connect(statJob, SIGNAL(result(KJob *)), SLOT(handleStatJob(KJob*)));
 }
 
 QVariant ListItemDirectoryContent::data(int role) const
