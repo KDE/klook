@@ -34,21 +34,21 @@
 
 File::File(QObject* parent)
     : QObject(parent)
+    , m_job(0)
     , m_type(Progress)
     , m_tempFile(0)
     , m_isLoaded(0)
-    , m_job(0)
 {
 }
 
 File::File(KUrl url, QObject* parent)
     : QObject( parent )
     , m_url(url)
+    , m_job(0)
     , m_type(File::Progress)
     , m_tempFile(0)
     , m_isLoaded(0)
     , m_mimeJobStarted(false)
-    , m_job(0)
     , m_downloadInProgress(false)
     , m_isCurrent(false)
 {

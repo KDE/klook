@@ -30,12 +30,12 @@
 
 Video::Video(QGraphicsItem* parent)
     : QGraphicsProxyWidget(parent)
+    , m_player(0)
     , m_layout(0)
     , m_videoWidth(640)
     , m_videoHeight(480)
     , m_isPreview(false)
     , m_isReady(false)
-    , m_player(0)
 {
     m_wid = new QWidget();
 
