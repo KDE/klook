@@ -2,8 +2,8 @@
 
 Summary:	Quick preview feature
 Name:		klook
-Version:	1.0
-Release:	3
+Version:	1.1
+Release:	1
 License:	GPLv3
 Group:		Graphical desktop/KDE
 Source:		%{name}-%{version}.tar.gz
