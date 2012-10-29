@@ -137,11 +137,14 @@ Component {
             {
                 if ( listItem.ListView.isCurrentItem )
                 {
-                    audio.play_or_pause();
-                    if ( audio.playing )
+                    if ( audio.playing ) {
+                        audio.pause()
                         panel.playButtonState = 'Play'
-                    else
+                    }
+                    else {
+                        audio.play()
                         panel.playButtonState = 'Pause'
+                    }
                 }
             }
         }

@@ -69,11 +69,14 @@ Component {
             {
                 if ( listItem.ListView.isCurrentItem )
                 {
-                    video.play_or_pause();
-                    if ( video.playing )
+                    if ( video.playing ) {
+                        video.pause()
                         panel.playButtonState = 'Play'
-                    else
+                    }
+                    else {
+                        video.play()
                         panel.playButtonState = 'Pause'
+                    }
                 }
             }
         }
