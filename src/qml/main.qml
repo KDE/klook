@@ -154,16 +154,23 @@ Rectangle {
             return "normal"
     }
 
+    function quit()
+    {
+        photosListView.model = undefined
+        galleryGridView.model = undefined
+        Qt.quit()
+    }
+
     Keys.onEscapePressed: {
         if ( mainWindow.state === 'fullscreen' )
             setFullScreen();
         else
-            Qt.quit()
+            quit()
     }
 
     Keys.onSpacePressed:
     {
-        Qt.quit()
+        quit()
     }
 
     Keys.onReturnPressed:
@@ -309,7 +316,7 @@ Rectangle {
             anchors.right: parent.right; anchors.rightMargin: 6; anchors.verticalCenter: parent.verticalCenter
             name: 'close'
 
-            onButtonClick: Qt.quit()
+            onButtonClick: quit()//Qt.quit()
         }
 
         Button {
@@ -325,7 +332,7 @@ Rectangle {
 
             onButtonClick: {
                 Qt.openUrlExternally( fileUrl )
-                Qt.quit()
+                quit()
             }
         }
     }

@@ -131,8 +131,8 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
     m_currentFile = m_fileModel->file(indexToShow);
 
     QSize startingSize = m_currentFile->url().isLocalFile() ?
-                         getPreferredSize(m_currentFile->url().toLocalFile(), File::Progress) :
-                         QSize();
+                getPreferredSize(m_currentFile->url().toLocalFile(), File::Progress) :
+                QSize();
     KWindowSystem::setState( winId(), NET::SkipTaskbar );
     centerWidget(startingSize.isValid() ? startingSize : QSize(min_width, min_height));
     emit setStartWindow();
@@ -295,7 +295,7 @@ QSize DeclarativeViewer::getPreferredSize(const QString &path, int type) const
              type == File::MimetypeFallback) {
         int width = min_width;
         if (type == File::Directory ||
-            type == File::MimetypeFallback)
+                type == File::MimetypeFallback)
             width += 100;
         return QSize (width, min_height);
     }
@@ -423,8 +423,8 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
         int w = sz.width();
         int h = sz.height();
         QRect rect( ( rectDesktop.width() - w ) / 2,
-                      ( rectDesktop.height() - h ) / 2,
-                      w , h  );
+                    ( rectDesktop.height() - h ) / 2,
+                    w , h  );
         rect.moveTop( rect.y() - height_offset / 2 );
         setGeometry( rect );
         //move(QApplication::desktop()->screen()->rect().center() - rect().center());
@@ -470,7 +470,7 @@ void DeclarativeViewer::resizeToPreferredSize(int index)
 
     // this is necessary for following comparisons to geometry
     if (!preferredSize.isValid() || (preferredSize.width() < minimumSize().width()) ||
-        preferredSize.height() < minimumSize().height()) {
+            preferredSize.height() < minimumSize().height()) {
         preferredSize = minimumSize();
     }
 

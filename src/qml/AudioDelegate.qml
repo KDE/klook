@@ -104,26 +104,29 @@ Component {
                     panel.playButtonState = 'Pause'
             }
 
-            onTicked:
-            {
-                if ( playing )
-                {
+            onTicked: {
+                if ( playing )  {
                     panel.videoSlider.value = tick * 1000 / audio.totalTime; // tick and totalTime in msec
                 }
             }
 
-            onPlayFinished:
-            {
+            onPlayFinished: {
                 panel.playButtonState = 'Play'
                 panel.videoSlider.value = 0
             }
 
-            onReady:
-            {
+            onReady: {
                 title.text = "<b>" + audio.title + "</b>"
                 artist.text = artistStr + " <b>" + audio.artist + "</b>"
                 artist.visible = ( audio.artist !== "" )
+                updateDuration()
+            }
 
+            onTotalTimeChanged: {
+                updateDuration()
+            }
+
+            function updateDuration() {
                 var h = audio.totalTime / ( 1000 * 3600 )
                 var strFmt = ( h >= 1 ) ? "hh:mm:ss" : "m:ss"
 
