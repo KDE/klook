@@ -42,7 +42,7 @@ KLookApp::KLookApp()
 }
 
 KLookApp::~KLookApp()
-{
+{    
     delete m_viewer->m_fileModel;
 }
 

@@ -27,7 +27,6 @@
 #include <QtCore/QObject>
 #include <QtCore/QDir>
 #include <QtCore/QDateTime>
-#include <QtCore/QThread>
 
 class File;
 class ListItem;
