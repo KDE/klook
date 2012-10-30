@@ -108,7 +108,8 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
 {
     if(!urls.size()) {
         qDebug() << "No files to display. Closing...";
-        close();
+        qApp->exit();
+        return;
     }
 
     rootContext()->setContextProperty("indexToShow", indexToShow);
