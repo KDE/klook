@@ -100,11 +100,14 @@ Rectangle {
             panel.visible = false
             return
         }
+
         //Hide panel in normal mode if content isnt video or audio
-        if (( mainWindow.state === "windowed" ) && (mainWindow.currentFileType !== File.Video) && (mainWindow.currentFileType !== File.Audio)) {
+        if ((mainWindow.state === "windowed" || mainWindow.state === "embedded")
+            && (mainWindow.currentFileType !== File.Video && mainWindow.currentFileType !== File.Audio)) {
             panel.visible = false
             return
         }
+
         panel.visible = true
         if ( !mouseControl.containsMouse ) {
             controlPanelTimer.start()

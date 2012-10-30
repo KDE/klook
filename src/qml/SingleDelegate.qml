@@ -136,7 +136,7 @@ Item {
         anchors.fill: parent
         sourceComponent: bestDelegate(type)
         onLoaded: {
-            if (((type === File.Video) || (type === File.Audio)) && (index === photosListView.currentIndex ))
+            if (index === photosListView.currentIndex)
                 mainWindow.updatePanel()
 
             // we need to resize klook to preferred size when opening file
