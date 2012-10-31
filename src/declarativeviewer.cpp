@@ -65,8 +65,6 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
     , m_isGallery(false)
     , m_currentFile(0)
     , m_region(FRAME_REGION)
-    , m_mediaObject(0)
-    , m_videoWidget(0)
 {
     setOptimizationFlags( QGraphicsView::DontSavePainterState );
     setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
@@ -185,51 +183,6 @@ void DeclarativeViewer::registerTypes()
     rootContext()->setContextProperty( "elementsStr", ki18n( "Elements:" ).toString() );
 }
 
-void DeclarativeViewer::createVideoObject( QUrl url )
-{
-    // UGLY HACK to get video widget size hint
-    // it should be replaced with proper solution
-    delete m_videoWidget;
-    delete m_mediaObject;
-
-    m_mediaObject = new Phonon::MediaObject();
-    m_mediaObject->setCurrentSource(url);
-    m_videoWidget = new Phonon::VideoWidget();
-    m_videoWidget->hide();
-
-    Phonon::createPath( m_mediaObject, m_videoWidget );
-    QObject::connect( m_mediaObject, SIGNAL( metaDataChanged() ), this, SLOT( onMetaDataChanged() ) );
-}
-
-void DeclarativeViewer::onMetaDataChanged()
-{
-    // calculate video size hint
-    // TODO: ask QML component about size hint
-    if(m_videoWidget) {
-        delete m_videoWidget;
-        m_videoWidget = 0;
-
-        QDesktopWidget dw;
-        QSize sz = calculateViewSize(m_videoWidget->sizeHint(), dw.screenGeometry(this));
-        // + margins values in windowed mode
-        sz.setWidth(sz.width() + ( m_isEmbedded ? 0 : 6 )) ;
-        sz.setHeight( sz.height() + ( m_isEmbedded ? 0 : height_offset +4 ) );
-
-        if (!isFullScreen() && sz == size()) {
-            showFullScreen();
-        }
-        else {
-            centerWidget( sz );
-        }
-    }
-
-    if(m_mediaObject) {
-        QObject::disconnect( m_mediaObject, SIGNAL( metaDataChanged() ), this, SLOT( onMetaDataChanged() ) );
-        delete m_mediaObject;
-        m_mediaObject = 0;
-    }
-}
-
 void DeclarativeViewer::setFullScreen()
 {
     if (m_isGallery) {
@@ -279,7 +232,16 @@ QSize DeclarativeViewer::getPreferredSize(const QString &path, int type) const
 {
     //TODO: use virtual functions for this
     if (type == File::Video) {
-        // video size is calculated separately
+        QHash<int, QSize>::const_iterator it = m_videoSizeHints.find(m_fileModel->rowFromFile(m_currentFile));
+        if(it != m_videoSizeHints.constEnd()) {
+            QDesktopWidget dw;
+            QSize sz = calculateViewSize(it.value(), dw.screenGeometry(this));
+
+            // + margins values in windowed mode
+            sz.setWidth(sz.width() + ( m_isEmbedded ? 0 : 6 )) ;
+            sz.setHeight( sz.height() + ( m_isEmbedded ? 0 : height_offset +4 ) );
+            return sz;
+        }
         return QSize();
     }
     else if (type == File::Image) {
@@ -476,6 +438,11 @@ void DeclarativeViewer::resizeToPreferredSize(int index)
 
     if (preferredSize != geometry().size())
         centerWidget(preferredSize);
+}
+
+void DeclarativeViewer::setVideoSizeHint(int width, int height, int index)
+{
+    m_videoSizeHints.insert(index, QSize(width, height));
 }
 
 WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )

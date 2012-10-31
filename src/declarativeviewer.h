@@ -22,11 +22,9 @@
 #ifndef DECLARATIVEVIEWER_H
 #define DECLARATIVEVIEWER_H
 
-#include <Phonon/MediaObject>
-#include <Phonon/VideoWidget>
-
 #include <QtDeclarative/QDeclarativeView>
 #include <QVariant>
+#include <QPair>
 
 class QRect;
 class PreviewGenerator;
@@ -69,6 +67,17 @@ public:
     Q_INVOKABLE void updateMenu(int index);
     Q_INVOKABLE void resizeToPreferredSize(int index);
 
+    /**
+     *
+     * @brief Hack to pass video's size hint from QML to C++ side.
+     *        To ensure that that size hint is used for right video
+     *        index is passed along.
+     * @param width
+     * @param height
+     * @param index
+     */
+    Q_INVOKABLE void setVideoSizeHint(int width, int height, int index);
+
 protected:
     void resizeEvent(QResizeEvent *event);
 
@@ -84,9 +93,7 @@ signals:
 
 public slots:
     void setFullScreen();
-    void onSetGallery(bool );
-
-    void onMetaDataChanged();
+    void onSetGallery(bool);
 
 private slots:
     void focusChanged(QWidget*, QWidget*);
@@ -130,12 +137,11 @@ private:
     bool            m_isActualSize;
     WidgetRegion    m_region;
 
-    Phonon::MediaObject* m_mediaObject;
-    Phonon::VideoWidget* m_videoWidget;
-
     PreviewGenerator*   m_previewGenerator;
     FileModel*          m_fileModel;
     ArrowPosition       m_posArrow;
+
+    QHash<int, QSize> m_videoSizeHints;
 };
 
 QSize calculateViewSize(const QSize& sz, const QRect &desktop);

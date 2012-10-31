@@ -45,12 +45,28 @@ Component {
                     panel.playButtonState = 'Play'
                 else
                     panel.playButtonState = 'Pause'
+
+                video.sizeHintReady.connect(setSizeHint)
+
+            }
+
+            function setSizeHint(w, h)
+            {
+                if (index === photosListView.currentIndex) {
+                    mainWidget.setVideoSizeHint(w, h, index)
+
+                    // this is duplicated from SingleDelegate because video size can'be known
+                    // until now
+                    if(!mainWindow.firstFileLoaded) {
+                        mainWidget.resizeToPreferredSize(photosListView.currentIndex)
+                        mainWindow.firstFileLoaded = true
+                    }
+                }
             }
 
             onTicked:
             {
-                if ( playing )
-                {
+                if (playing) {
                     panel.videoSlider.value = tick * 1000 / video.totalTime; // tick and totalTime in msec
                 }
             }
@@ -96,3 +112,4 @@ Component {
 
     }
 }
+

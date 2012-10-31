@@ -83,9 +83,9 @@ public slots:
     void stateChanged(Phonon::State oldState, Phonon::State newState);
 
     bool isPreview() const;
-    void setPreview( bool preview );    
+    void setPreview( bool preview );
 
-Q_SIGNALS:
+signals:
     void clicked( bool );
     void sourceChanged();
     void totalTimeChanged();
@@ -93,6 +93,7 @@ Q_SIGNALS:
     void ticked( QVariant tick );
     void playFinished();
     void ready();
+    void sizeHintReady(int width, int height);
 
 private:
     Phonon::VideoPlayer* m_player;

@@ -113,8 +113,8 @@ void Video::onMetaDataChanged()
 {
     m_videoWidth = m_player->videoWidget()->sizeHint().width();
     m_videoHeight = m_player->videoWidget()->sizeHint().height();
-
     QObject::disconnect(m_player->mediaObject(), SIGNAL(metaDataChanged()), this, SLOT(onMetaDataChanged()));
+    emit sizeHintReady(m_videoWidth, m_videoHeight);
 }
 
 qlonglong Video::position() const

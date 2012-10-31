@@ -95,6 +95,14 @@ void FileModel::reset()
     endRemoveRows();
 }
 
+int FileModel::rowFromFile(const File *file) const
+{
+    for(int i = 0; i < m_list.size(); i++)
+        if(m_list[i]->file() == file)
+            return i;
+    return -1;
+}
+
 void FileModel::load(int row)
 {
     if(row >= rowCount() || row < 0)

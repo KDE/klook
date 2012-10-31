@@ -140,10 +140,14 @@ Item {
                 mainWindow.updatePanel()
 
             // we need to resize klook to preferred size when opening file
-            // we can't do that on startup because file can be unavailable
+            // it can't be done on startup because file can be unavailable
             if(!mainWindow.firstFileLoaded && index === photosListView.currentIndex && type != File.Progress) {
-                mainWidget.resizeToPreferredSize(photosListView.currentIndex)
-                mainWindow.firstFileLoaded = true
+                // size hint for video is known after loading
+                // so video delegate will have to do resize by itself
+                if(type != File.Video) {
+                    mainWidget.resizeToPreferredSize(photosListView.currentIndex)
+                    mainWindow.firstFileLoaded = true
+                }
             }
         }
     }
