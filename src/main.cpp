@@ -27,7 +27,7 @@
 
 #include "klookapp.h"
 
-static const char description[] = I18N_NOOP( "KLook is a quick preview feature" );
+static const char description[] = I18N_NOOP( "KLook is a quick file content preview program" );
 static const char version[] = "1.1";
 
 int main(int argc, char *argv[])
