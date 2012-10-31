@@ -24,6 +24,7 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QDir>
+#include <QDebug>
 #include <QGraphicsObject>
 
 #include <kcmdlineargs.h>
@@ -42,7 +43,7 @@ KLookApp::KLookApp()
 }
 
 KLookApp::~KLookApp()
-{    
+{
     delete m_viewer->m_fileModel;
 }
 
