@@ -37,6 +37,7 @@
 #include "mimeprovider.h"
 #include "filemodel.h"
 #include "kpartsdeclarativeitem.h"
+#include "kpartswidget.h"
 
 #include "plasma/windoweffects.h"
 

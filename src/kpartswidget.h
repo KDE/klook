@@ -10,16 +10,14 @@ class KPartsWidget : public KParts::MainWindow
 {
     Q_OBJECT
 public:
-    static KPartsWidget *instance();
+    KPartsWidget(QWidget *parent = 0);
+
     QString url() const { return m_part->url().url(); }
     void setUrl(const QString &url);
 
     QStringList supportedMimeTypes() const;
 
 private:
-    KPartsWidget(QWidget *parent = 0);
-
-    static KPartsWidget *m_instance;
     QPointer<KParts::ReadOnlyPart> m_part;
     KService::Ptr m_service;
 };

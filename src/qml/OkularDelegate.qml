@@ -26,17 +26,13 @@ Component {
 
     Item {
         id: t
-        property variant part: p
-
         KPart {
-            id: p
+            url: fileUrl
             width: parent.width
             height: parent.height
 
             Component.onCompleted: {
                 if (index == photosListView.currentIndex) {
-                    part.url = fileUrl
-                    part.setPartParent()
                     mouseControl.enabled = mainWindow.state == 'fullscreen' ? true : false
                 }
                 else

@@ -3,29 +3,24 @@
 
 #include <QGraphicsProxyWidget>
 
-#include "kpartswidget.h"
+class KPartsWidget;
 
 class KPartsDeclarativeItem : public QGraphicsProxyWidget
 {
     Q_OBJECT
 
     Q_PROPERTY(QString url READ url WRITE setUrl NOTIFY urlChanged)
-
 public:
     explicit KPartsDeclarativeItem(QGraphicsItem * parent = 0, Qt::WindowFlags wFlags = 0);
-    ~KPartsDeclarativeItem();
+
+    Q_INVOKABLE QString url() const;
+    Q_INVOKABLE void setUrl(QString url);
 
 signals:
     void urlChanged();
 
-public slots:
-    QString url() const;
-    void setUrl(QString url);
-    void setPartParent();
-
 private:
-    KPartsWidget* m_partWidget;
-    QWidget *m_dummy;    
+    KPartsWidget *m_partWidget;
 };
 
 #endif // KPARTSDECLARATIVEITEM_H
