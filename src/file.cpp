@@ -230,7 +230,6 @@ void File::loadType()
 File::FileType getFileType(const QString& mime, const QString& name)
 {
     static QList<QByteArray> supportedImageFormats = QImageReader::supportedImageFormats();
-    static QStringList m_mimeTypes = Phonon::BackendCapabilities::availableMimeTypes();
 
     // this method is a complete mess right now
     // information about supported types should not be hardcoded
@@ -253,22 +252,21 @@ File::FileType getFileType(const QString& mime, const QString& name)
         }
         else if (left == QLatin1String("video")) {
             QString right = mime.mid(delimiter + 1);
-            if (m_mimeTypes.contains(mime)) {
+            if (Phonon::BackendCapabilities::isMimeTypeAvailable(mime)) {
                 type = File::Video;
             }
 
-            if (type == File::Progress) {
+            if (type == File::MimetypeFallback)
                 if (right == QLatin1String("3gpp") ||
-                     right == QLatin1String("mp4") ||
-                     right == QLatin1String("x-theora+ogg")) {
+                        right == QLatin1String("mp4") ||
+                        right == QLatin1String("x-theora+ogg")) {
                     type = File::Video;
                 }
-            }
         }
         else if (left == QLatin1String("audio")) {
             QString right = mime.mid(delimiter + 1);
 
-            if (m_mimeTypes.contains(mime)) {
+            if (Phonon::BackendCapabilities::isMimeTypeAvailable(mime)) {
                 type = File::Audio;
             }
 
