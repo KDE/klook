@@ -10,7 +10,7 @@ KPartsWidget::KPartsWidget(QWidget *parent)
 {
     m_service = KService::serviceByDesktopPath("okular_part.desktop");
 
-    if( m_service )
+    if(m_service)
     {
         m_part = m_service->createInstance<KParts::ReadOnlyPart>(0, QVariantList() << "Print/Preview");
         if(m_part)

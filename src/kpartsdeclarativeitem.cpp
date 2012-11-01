@@ -11,7 +11,7 @@ KPartsDeclarativeItem::KPartsDeclarativeItem(QGraphicsItem * parent, Qt::WindowF
     m_partWidget = KPartsWidget::instance();
 
     QVBoxLayout *layout = new QVBoxLayout;
-    layout->setMargin( 0 );
+    layout->setMargin(0);
     m_dummy->setLayout(layout);
 
     setWidget(m_dummy);

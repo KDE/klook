@@ -55,8 +55,8 @@ static int arrowIconHeight = 16;
 static int min_width = 600;
 static int min_height = 427;
 
-DeclarativeViewer::DeclarativeViewer( QWidget* parent )
-    : QDeclarativeView( parent )
+DeclarativeViewer::DeclarativeViewer(QWidget* parent)
+    : QDeclarativeView(parent)
     , m_lastMousePosition(0, 0)
     , m_isSingleMode(true)
     , m_moving(false)
@@ -66,15 +66,15 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
     , m_currentFile(0)
     , m_region(FRAME_REGION)
 {
-    setOptimizationFlags( QGraphicsView::DontSavePainterState );
-    setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
+    setOptimizationFlags(QGraphicsView::DontSavePainterState);
+    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
     setMouseTracking(true);
 
-    engine()->addImageProvider( "preview", new PreviewProvider );
-    engine()->addImageProvider( "mime", new MimeProvider );
+    engine()->addImageProvider("preview", new PreviewProvider);
+    engine()->addImageProvider("mime", new MimeProvider);
 
-    setResizeMode( QDeclarativeView::SizeRootObjectToView );
+    setResizeMode(QDeclarativeView::SizeRootObjectToView);
 
     setMinimumSize(min_width, min_height);
 
@@ -88,10 +88,10 @@ DeclarativeViewer::DeclarativeViewer( QWidget* parent )
     registerTypes();
 
     //Remove standart KDE title
-    setWindowFlags( Qt::CustomizeWindowHint | Qt::FramelessWindowHint );
+    setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
 
-    setAttribute( Qt::WA_TranslucentBackground);
-    setStyleSheet( "background:transparent;" );
+    setAttribute(Qt::WA_TranslucentBackground);
+    setStyleSheet("background:transparent;");
 
     connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), SLOT(focusChanged(QWidget*, QWidget*)));
     connect(engine(), SIGNAL(quit()), SLOT(close()));
@@ -102,7 +102,7 @@ DeclarativeViewer::~DeclarativeViewer()
     delete PreviewGenerator::instance();
 }
 
-void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, int indexToShow )
+void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, int indexToShow)
 {
     if(!urls.size()) {
         qDebug() << "No files to display. Closing...";
@@ -116,7 +116,7 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
 
     m_rcIcon = rc;
 
-    setViewMode( urls.count() > 1 ? Multi : Single);
+    setViewMode(urls.count() > 1 ? Multi : Single);
     rootContext()->setContextProperty("embedded", m_isEmbedded);
     setEmbedded(embedded);
 
@@ -131,7 +131,7 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
     QSize startingSize = m_currentFile->url().isLocalFile() ?
                 getPreferredSize(m_currentFile->url().toLocalFile(), File::Progress) :
                 QSize();
-    KWindowSystem::setState( winId(), NET::SkipTaskbar );
+    KWindowSystem::setState(winId(), NET::SkipTaskbar);
     centerWidget(startingSize.isValid() ? startingSize : QSize(min_width, min_height));
     emit setStartWindow();
 }
@@ -150,37 +150,37 @@ void DeclarativeViewer::resizeEvent(QResizeEvent *event)
 
 void DeclarativeViewer::registerTypes()
 {
-    qmlRegisterType<Video>( "Widgets", 1, 0, "Video" );
-    qmlRegisterType<Audio>( "Widgets", 1, 0, "Audio" );
-    qmlRegisterType<MyText>( "Widgets", 1, 0, "PlainText" );
+    qmlRegisterType<Video>("Widgets", 1, 0, "Video");
+    qmlRegisterType<Audio>("Widgets", 1, 0, "Audio");
+    qmlRegisterType<MyText>("Widgets", 1, 0, "PlainText");
     qmlRegisterType<KPartsDeclarativeItem>("Widgets", 1, 0, "KPart");
 
     qmlRegisterUncreatableType<File>("Widgets", 1, 0, "File", "This type is registered only for its enums"); // to use File::FileType enum
 
     QDesktopWidget dw;
-    QRect r = dw.screenGeometry( this );
+    QRect r = dw.screenGeometry(this);
 
-    rootContext()->setContextProperty( "DWigth", r.width() );
-    rootContext()->setContextProperty( "DHeight", r.height() );
-    rootContext()->setContextProperty( "fileModel", m_fileModel );
-    rootContext()->setContextProperty( "previewGenerator", PreviewGenerator::instance() );
-    rootContext()->setContextProperty( "mainWidget",  this );
-    rootContext()->setContextProperty( "actualSize", "off" );
-    rootContext()->setContextProperty( "openText", ki18n( "Open in..." ).toString() );
-    rootContext()->setContextProperty( "fileName", "" );
-    rootContext()->setContextProperty( "fileUrl", "" );
-    rootContext()->setContextProperty( "fileType", "Undefined" );
-    rootContext()->setContextProperty( "viewMode", "single" );
-    rootContext()->setContextProperty( "embedded", m_isEmbedded );
-    rootContext()->setContextProperty( "embeddedLayout", "null" );
-    rootContext()->setContextProperty( "arrowX", .0 );
-    rootContext()->setContextProperty( "arrowY", .0 );
-    rootContext()->setContextProperty( "artistStr", ki18n( "Artist:" ).toString() );
-    rootContext()->setContextProperty( "totalTimeStr", ki18n( "Total time:" ).toString() );
-    rootContext()->setContextProperty( "folderStr", ki18n( "Folder" ).toString() );
-    rootContext()->setContextProperty( "lastModifiedStr", ki18n( "Last Modified:" ).toString() );
-    rootContext()->setContextProperty( "sizeStr", ki18n( "Size:" ).toString() );
-    rootContext()->setContextProperty( "elementsStr", ki18n( "Elements:" ).toString() );
+    rootContext()->setContextProperty("DWigth", r.width());
+    rootContext()->setContextProperty("DHeight", r.height());
+    rootContext()->setContextProperty("fileModel", m_fileModel);
+    rootContext()->setContextProperty("previewGenerator", PreviewGenerator::instance());
+    rootContext()->setContextProperty("mainWidget",  this);
+    rootContext()->setContextProperty("actualSize", "off");
+    rootContext()->setContextProperty("openText", ki18n("Open in...").toString());
+    rootContext()->setContextProperty("fileName", "");
+    rootContext()->setContextProperty("fileUrl", "");
+    rootContext()->setContextProperty("fileType", "Undefined");
+    rootContext()->setContextProperty("viewMode", "single");
+    rootContext()->setContextProperty("embedded", m_isEmbedded);
+    rootContext()->setContextProperty("embeddedLayout", "null");
+    rootContext()->setContextProperty("arrowX", .0);
+    rootContext()->setContextProperty("arrowY", .0);
+    rootContext()->setContextProperty("artistStr", ki18n("Artist:").toString());
+    rootContext()->setContextProperty("totalTimeStr", ki18n("Total time:").toString());
+    rootContext()->setContextProperty("folderStr", ki18n("Folder").toString());
+    rootContext()->setContextProperty("lastModifiedStr", ki18n("Last Modified:").toString());
+    rootContext()->setContextProperty("sizeStr", ki18n("Size:").toString());
+    rootContext()->setContextProperty("elementsStr", ki18n("Elements:").toString());
 }
 
 void DeclarativeViewer::setFullScreen()
@@ -238,8 +238,8 @@ QSize DeclarativeViewer::getPreferredSize(const QString &path, int type) const
             QSize sz = calculateViewSize(it.value(), dw.screenGeometry(this));
 
             // + margins values in windowed mode
-            sz.setWidth(sz.width() + ( m_isEmbedded ? 0 : 6 )) ;
-            sz.setHeight( sz.height() + ( m_isEmbedded ? 0 : height_offset +4 ) );
+            sz.setWidth(sz.width() + (m_isEmbedded ? 0 : 6)) ;
+            sz.setHeight(sz.height() + (m_isEmbedded ? 0 : height_offset +4));
             return sz;
         }
         return QSize();
@@ -264,7 +264,7 @@ QSize DeclarativeViewer::getPreferredSize(const QString &path, int type) const
     else if (type == File::Txt) {
         return getTextWindowSize(path);
     }
-    else if( type == File::OkularFile) {
+    else if(type == File::OkularFile) {
         return getDocumentWindowSize();
     }
     return QSize();
@@ -293,13 +293,13 @@ void DeclarativeViewer::initModel(QStringList urls)
     m_fileModel->appendRows(items);
 }
 
-void DeclarativeViewer::centerWidget( const QSize& sz )
+void DeclarativeViewer::centerWidget(const QSize& sz)
 {
     QDesktopWidget dw;
-    QRect rectDesktop = dw.screenGeometry( this );
+    QRect rectDesktop = dw.screenGeometry(this);
     QSize sz1 = sz;
 
-    if ( m_isEmbedded )
+    if (m_isEmbedded)
     {
         int iconOffset = 5;
         int desktopMargin = 70;
@@ -307,7 +307,7 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
         QRect top(rectDesktop.x() + desktopMargin,
                   rectDesktop.y() + desktopMargin ,
                   rectDesktop.width() - 2 * desktopMargin ,
-                  m_rcIcon.y() - desktopMargin - iconOffset );
+                  m_rcIcon.y() - desktopMargin - iconOffset);
 
         QRect left(rectDesktop.x() + desktopMargin,
                    rectDesktop.y() + desktopMargin,
@@ -323,16 +323,16 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
         int leftArea = left.width()*left.height();
         int rightArea = right.width()*right.height();
 
-        if ( ( topArea > leftArea ) && ( topArea > rightArea ) )
+        if ((topArea > leftArea) && (topArea > rightArea))
         {
             sz1.setHeight(sz1.height() + arrowIconHeight);
-            sz1 = inscribedRectToRect( sz1, top.size() );
+            sz1 = inscribedRectToRect(sz1, top.size());
             int x = m_rcIcon.x() + m_rcIcon.width()/2 - sz1.width()/2;
             int y = m_rcIcon.y() - iconOffset - sz1.height();
             x = qMax(x , desktopMargin);
             x = qMin(x, top.topRight().x() - sz1.width());
             QRect rect(x,y,sz1.width()+2,sz1.height()+2); // +2 - border width in embedded mode
-            rootContext()->setContextProperty( "embeddedLayout", "top" );
+            rootContext()->setContextProperty("embeddedLayout", "top");
             //Set arrow icon coordinates
             m_rcArrow.setX(m_rcIcon.x() + m_rcIcon.width()/2 - arrowIconWidth/2 -rect.x());
             m_rcArrow.setY(rect.height() - arrowIconHeight);
@@ -341,54 +341,54 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
             m_posArrow = BOTTOM;
             setGeometry(rect);
         }
-        else if ( leftArea > rightArea )
+        else if (leftArea > rightArea)
         {
             sz1.setWidth(sz1.width()+ arrowIconHeight);
-            sz1 = inscribedRectToRect( sz1, left.size() );
+            sz1 = inscribedRectToRect(sz1, left.size());
             int x = m_rcIcon.x() - sz1.width() - iconOffset;
             int y = m_rcIcon.y() + m_rcIcon.height()/2 - sz1.height()/2;
             y = qMax(y , desktopMargin);
-            y = qMin(y, left.bottomLeft().y() -sz1.height() );
+            y = qMin(y, left.bottomLeft().y() -sz1.height());
             QRect rect(x,y,sz1.width()+2,sz1.height()+2);
-            rootContext()->setContextProperty( "embeddedLayout", "left" );
+            rootContext()->setContextProperty("embeddedLayout", "left");
             //Set arrow icon coordinates
             m_rcArrow.setX(rect.width() - arrowIconHeight);
             m_rcArrow.setY(m_rcIcon.y() + m_rcIcon.height()/2 - arrowIconWidth/2 - rect.y());
             m_rcArrow.setWidth(arrowIconHeight);
-            m_rcArrow.setHeight(arrowIconWidth );
+            m_rcArrow.setHeight(arrowIconWidth);
             m_posArrow = RIGHT;
             setGeometry(rect);
         }
         else
         {
             sz1.setWidth(sz1.width()+ arrowIconHeight);
-            sz1 = inscribedRectToRect( sz1, right.size() );
+            sz1 = inscribedRectToRect(sz1, right.size());
             int x = m_rcIcon.topRight().x() + iconOffset;
             int y = m_rcIcon.y() + m_rcIcon.height()/2 - sz1.height()/2;
             y = qMax(y , desktopMargin);
-            y = qMin(y, right.bottomLeft().y() - sz1.height() );
+            y = qMin(y, right.bottomLeft().y() - sz1.height());
             QRect rect(x,y,sz1.width()+2,sz1.height()+2);
-            rootContext()->setContextProperty( "embeddedLayout", "right" );
+            rootContext()->setContextProperty("embeddedLayout", "right");
             //Set arrow icon coordinates
             m_rcArrow.setX(0);
             m_rcArrow.setY(m_rcIcon.y() + m_rcIcon.height()/2 - arrowIconWidth/2 - rect.y());
             m_rcArrow.setWidth(arrowIconHeight);
-            m_rcArrow.setHeight(arrowIconWidth );
+            m_rcArrow.setHeight(arrowIconWidth);
             m_posArrow = LEFT;
             setGeometry(rect);
         }
-        rootContext()->setContextProperty( "arrowX", m_rcArrow.x());
-        rootContext()->setContextProperty( "arrowY", m_rcArrow.y());
+        rootContext()->setContextProperty("arrowX", m_rcArrow.x());
+        rootContext()->setContextProperty("arrowY", m_rcArrow.y());
         emit setEmbeddedState();
     }
     else {
         int w = sz.width();
         int h = sz.height();
-        QRect rect( ( rectDesktop.width() - w ) / 2,
-                    ( rectDesktop.height() - h ) / 2,
-                    w , h  );
-        rect.moveTop( rect.y() - height_offset / 2 );
-        setGeometry( rect );
+        QRect rect((rectDesktop.width() - w) / 2,
+                    (rectDesktop.height() - h) / 2,
+                    w , h);
+        rect.moveTop(rect.y() - height_offset / 2);
+        setGeometry(rect);
         //move(QApplication::desktop()->screen()->rect().center() - rect().center());
     }
 
@@ -401,8 +401,8 @@ void DeclarativeViewer::centerWidget( const QSize& sz )
 void DeclarativeViewer::updateMenu(int index)
 {
     if(index == -1) {
-        rootContext()->setContextProperty("openText",  ki18n( "Open in..." ).toString() );
-        rootContext()->setContextProperty("fileName",  ki18n( "Elements: " ).toString() + QString::number(m_fileModel->rowCount()));
+        rootContext()->setContextProperty("openText",  ki18n("Open in...").toString());
+        rootContext()->setContextProperty("fileName",  ki18n("Elements: ").toString() + QString::number(m_fileModel->rowCount()));
         return;
     }
     m_currentFile = m_fileModel->file(index);
@@ -417,7 +417,7 @@ void DeclarativeViewer::updateMenu(int index)
     }
 
     if(openText.isEmpty())
-        openText = ki18n( "Open" ).toString();
+        openText = ki18n("Open").toString();
 
     rootContext()->setContextProperty("openText", openText);
     rootContext()->setContextProperty("fileName", file->url().fileName());
@@ -445,7 +445,7 @@ void DeclarativeViewer::setVideoSizeHint(int width, int height, int index)
     m_videoSizeHints.insert(index, QSize(width, height));
 }
 
-WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )
+WidgetRegion DeclarativeViewer::calculateWindowRegion(const QPoint& mousePos)
 {
     QPointF pos;
     pos = mousePos;
@@ -456,19 +456,19 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )
         if (m_posArrow == BOTTOM)
         {
             QRect r1(r.bottomLeft().x(), r.bottomLeft().y()-arrowIconHeight, r.width(),arrowIconHeight);
-            region.setRects( &r1,1);
+            region.setRects(&r1,1);
             region = region.subtracted(QRegion(m_rcArrow));
         }
         else if (m_posArrow == LEFT)
         {
             QRect r2(r.x(), r.y(), m_rcArrow.width(), r.height());
-            region.setRects( &r2,1);
+            region.setRects(&r2,1);
             region = region.subtracted(QRegion(m_rcArrow));
         }
         else if (m_posArrow == RIGHT)
         {
             QRect r3(r.topRight().x() - m_rcArrow.width(), r.y(), m_rcArrow.width(), r.height());
-            region.setRects( &r3,1);
+            region.setRects(&r3,1);
             region = region.subtracted(QRegion(m_rcArrow));
         }
         if (region.contains(pos.toPoint()))
@@ -481,46 +481,46 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )
 
     QRectF r = rect();
     QRectF headerTitle;
-    QRectF header1( 6 + 42 * 2, border_width + 1, 60, header_height - border_width + 1 );
-    QRectF header2( r.width() - 42 * 2 - 12 - 6, border_width + 1, 12, header_height- border_width + 1 );
+    QRectF header1(6 + 42 * 2, border_width + 1, 60, header_height - border_width + 1);
+    QRectF header2(r.width() - 42 * 2 - 12 - 6, border_width + 1, 12, header_height- border_width + 1);
     QRegion headerR;
 
-    if ( m_isSingleMode )
+    if (m_isSingleMode)
     {
-        headerTitle.setRect( border_width + 1,
+        headerTitle.setRect(border_width + 1,
                              border_width + 1,
                              r.width() - border_width - 270,
-                             header_height - border_width + 1 );
-        headerR = headerR.united( headerTitle.toRect() );
-        headerR = headerR.united( header2.toRect() );
+                             header_height - border_width + 1);
+        headerR = headerR.united(headerTitle.toRect());
+        headerR = headerR.united(header2.toRect());
     }
     else
     {
-        headerTitle.setRect( 6 + 42 * 3 + 12,
+        headerTitle.setRect(6 + 42 * 3 + 12,
                              border_width + 1,
                              r.width() - 414,
-                             header_height - border_width + 1 );
-        headerR = headerR.united( headerTitle.toRect() );
-        headerR = headerR.united( header1.toRect() );
-        headerR = headerR.united( header2.toRect() );
+                             header_height - border_width + 1);
+        headerR = headerR.united(headerTitle.toRect());
+        headerR = headerR.united(header1.toRect());
+        headerR = headerR.united(header2.toRect());
     }
 
-    QRectF topBorder( 0, 0, r.width(), border_width );
-    QRectF leftBorder( 0, 0, border_width, r.height() );
-    QRectF rightBorder( r.width()-border_width, 0, border_width, r.height() );
-    QRectF bottomBorder( 0, r.height()-border_width, r.width(), border_width );
+    QRectF topBorder(0, 0, r.width(), border_width);
+    QRectF leftBorder(0, 0, border_width, r.height());
+    QRectF rightBorder(r.width()-border_width, 0, border_width, r.height());
+    QRectF bottomBorder(0, r.height()-border_width, r.width(), border_width);
 
-    if ( headerR.contains( pos.toPoint() ) )
+    if (headerR.contains(pos.toPoint()))
     {
         return HEADER_REGION;
     }
-    else if ( topBorder.contains( pos ) )
+    else if (topBorder.contains(pos))
     {
-        if ( leftBorder.contains( pos ) )
+        if (leftBorder.contains(pos))
         {
             return TOP_LEFT_CORNER_REGION;
         }
-        else if ( rightBorder.contains( pos ) )
+        else if (rightBorder.contains(pos))
         {
             return TOP_RIGHT_CORNER_REGION;
         }
@@ -529,13 +529,13 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )
             return TOP_BORDER_REGION;
         }
     }
-    else if ( bottomBorder.contains( pos ) )
+    else if (bottomBorder.contains(pos))
     {
-        if ( leftBorder.contains( pos ) )
+        if (leftBorder.contains(pos))
         {
             return BOTTOM_LEFT_CORNER_REGION;
         }
-        else if ( rightBorder.contains( pos ) )
+        else if (rightBorder.contains(pos))
         {
             return BOTTOM_RIGHT_CORNER_REGION;
         }
@@ -544,11 +544,11 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )
             return BOTTOM_BORDER_REGION;
         }
     }
-    else if ( leftBorder.contains( pos ) )
+    else if (leftBorder.contains(pos))
     {
         return LEFT_BORDER_REGION;
     }
-    else if ( rightBorder.contains( pos ) )
+    else if (rightBorder.contains(pos))
     {
         return RIGHT_BORDER_REGION;
     }
@@ -556,22 +556,22 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion( const QPoint& mousePos )
     return FRAME_REGION;
 }
 
-void DeclarativeViewer::mousePressEvent( QMouseEvent* event )
+void DeclarativeViewer::mousePressEvent(QMouseEvent* event)
 {
     if (!m_isEmbedded)
     {
-        if ( !isFullScreen() )
+        if (!isFullScreen())
         {
-            m_region = calculateWindowRegion( event->pos() );
-            if ( event->button() == Qt::LeftButton )
+            m_region = calculateWindowRegion(event->pos());
+            if (event->button() == Qt::LeftButton)
             {
-                if ( m_region == HEADER_REGION )
+                if (m_region == HEADER_REGION)
                 {
                     m_moving = true;
                     m_lastMousePosition = event->globalPos();
-                    setCursor( QCursor( Qt::SizeAllCursor ) );
+                    setCursor(QCursor(Qt::SizeAllCursor));
                 }
-                else if ( m_region != FRAME_REGION )
+                else if (m_region != FRAME_REGION)
                 {
                     m_resize = true;
                     m_lastMousePosition = event->globalPos();
@@ -582,7 +582,7 @@ void DeclarativeViewer::mousePressEvent( QMouseEvent* event )
     }
     else
     {
-        if ( calculateWindowRegion( event->pos() ) == ARROW_NULL_REGION )
+        if (calculateWindowRegion(event->pos()) == ARROW_NULL_REGION)
         {
             close();
         }
@@ -591,204 +591,204 @@ void DeclarativeViewer::mousePressEvent( QMouseEvent* event )
     QDeclarativeView::mousePressEvent(event);
 }
 
-void DeclarativeViewer::mouseMoveEvent( QMouseEvent* event )
+void DeclarativeViewer::mouseMoveEvent(QMouseEvent* event)
 {
-    QDeclarativeView::mouseMoveEvent( event );
-    if ( isFullScreen() )
+    QDeclarativeView::mouseMoveEvent(event);
+    if (isFullScreen())
     {
         return;
     }
 
-    if ( m_isEmbedded )
+    if (m_isEmbedded)
     {
         return;
     }
 
-    if ( event->buttons().testFlag( Qt::LeftButton ) && m_moving )
+    if (event->buttons().testFlag(Qt::LeftButton) && m_moving)
     {
-        if ( viewport()->cursor().shape() != ( Qt::SizeAllCursor ) )
-            viewport()->setCursor( QCursor( Qt::SizeAllCursor ) );
-        window()->move( window()->pos() + ( event->globalPos() - m_lastMousePosition ) );
+        if (viewport()->cursor().shape() != (Qt::SizeAllCursor))
+            viewport()->setCursor(QCursor(Qt::SizeAllCursor));
+        window()->move(window()->pos() + (event->globalPos() - m_lastMousePosition));
         m_lastMousePosition = event->globalPos();
     }
-    else if ( event->buttons().testFlag( Qt::LeftButton ) && m_resize )
+    else if (event->buttons().testFlag(Qt::LeftButton) && m_resize)
     {
-        QPoint p = mapToGlobal( event->pos()) - geometry().topLeft();
+        QPoint p = mapToGlobal(event->pos()) - geometry().topLeft();
         QPoint offset = event->globalPos() - m_lastMousePosition;
-        switch ( m_region )
+        switch (m_region)
         {
         case LEFT_BORDER_REGION:
-            if ( offset.x() * ( -1 ) + width() > minimumWidth() )
+            if (offset.x() * (-1) + width() > minimumWidth())
             {
-                window()->move( ( window()->pos() + offset ).x(), y() );
-                resize( offset.x() * ( -1 ) + width(), height() );
+                window()->move((window()->pos() + offset).x(), y());
+                resize(offset.x() * (-1) + width(), height());
                 m_lastMousePosition = event->globalPos();
             }
             break;
         case TOP_BORDER_REGION:
             if (offset.y()*(-1) + height() > minimumHeight())
             {
-                window()->move( x(), (window()->pos() + offset).y() );
-                resize( width(), offset.y() * ( -1 ) + height() );
+                window()->move(x(), (window()->pos() + offset).y());
+                resize(width(), offset.y() * (-1) + height());
                 m_lastMousePosition = event->globalPos();
             }
             break;
         case TOP_LEFT_CORNER_REGION:
-            if ( offset.x() * ( -1 ) + width() > minimumWidth() )
+            if (offset.x() * (-1) + width() > minimumWidth())
             {
-                window()->move( ( window()->pos() + offset).x(), y() );
-                resize( offset.x() * ( -1 ) + width(), height() );
-                m_lastMousePosition.setX( event->globalPos().x() );
+                window()->move((window()->pos() + offset).x(), y());
+                resize(offset.x() * (-1) + width(), height());
+                m_lastMousePosition.setX(event->globalPos().x());
             }
-            if ( offset.y() * ( -1 ) + height() > minimumHeight() )
+            if (offset.y() * (-1) + height() > minimumHeight())
             {
-                window()->move( x(), ( window()->pos() + offset ).y() );
-                resize( width(), offset.y() * ( -1 ) + height() );
-                m_lastMousePosition.setY( event->globalPos().y() );
+                window()->move(x(), (window()->pos() + offset).y());
+                resize(width(), offset.y() * (-1) + height());
+                m_lastMousePosition.setY(event->globalPos().y());
             }
             break;
         case TOP_RIGHT_CORNER_REGION:
-            resize( p.x(), height() );
-            if ( offset.y() * ( -1 ) + height() > minimumHeight() )
+            resize(p.x(), height());
+            if (offset.y() * (-1) + height() > minimumHeight())
             {
-                window()->move( x(), ( window()->pos() + offset ).y() );
-                resize( width(), offset.y() * ( -1 ) + height() );
-                m_lastMousePosition.setY( event->globalPos().y() );
+                window()->move(x(), (window()->pos() + offset).y());
+                resize(width(), offset.y() * (-1) + height());
+                m_lastMousePosition.setY(event->globalPos().y());
             }
             break;
         case BOTTOM_LEFT_CORNER_REGION:
-            resize( width() , p.y() );
-            if ( offset.x() * ( -1 ) + width() > minimumWidth() )
+            resize(width() , p.y());
+            if (offset.x() * (-1) + width() > minimumWidth())
             {
-                window()->move( ( window()->pos() + offset ).x(), y() );
-                resize( offset.x() * ( -1 ) + width(), height() );
-                m_lastMousePosition.setX( event->globalPos().x() );
+                window()->move((window()->pos() + offset).x(), y());
+                resize(offset.x() * (-1) + width(), height());
+                m_lastMousePosition.setX(event->globalPos().x());
             }
             break;
         case RIGHT_BORDER_REGION:
-            resize( p.x(), height() );
+            resize(p.x(), height());
             break;
         case BOTTOM_BORDER_REGION:
-            resize( width() , p.y() );
+            resize(width() , p.y());
             break;
         default:
-            resize( p.x(), p.y() );
+            resize(p.x(), p.y());
         }
     }
     else
     {
-        m_region = calculateWindowRegion( event->pos() );
-        if ( ( m_region == TOP_BORDER_REGION ) || ( m_region == BOTTOM_BORDER_REGION ) )
+        m_region = calculateWindowRegion(event->pos());
+        if ((m_region == TOP_BORDER_REGION) || (m_region == BOTTOM_BORDER_REGION))
         {
-            if ( viewport()->cursor().shape() != ( Qt::SizeVerCursor ) )
+            if (viewport()->cursor().shape() != (Qt::SizeVerCursor))
             {
-                viewport()->setCursor( QCursor(Qt::SizeVerCursor) );
+                viewport()->setCursor(QCursor(Qt::SizeVerCursor));
             }
         }
-        else if ( ( m_region == LEFT_BORDER_REGION ) || ( m_region == RIGHT_BORDER_REGION ) )
+        else if ((m_region == LEFT_BORDER_REGION) || (m_region == RIGHT_BORDER_REGION))
         {
-            if ( viewport()->cursor().shape() != ( Qt::SizeHorCursor ) )
+            if (viewport()->cursor().shape() != (Qt::SizeHorCursor))
             {
-                viewport()->setCursor( QCursor(Qt::SizeHorCursor ) );
+                viewport()->setCursor(QCursor(Qt::SizeHorCursor));
             }
         }
-        else if ( ( m_region == TOP_LEFT_CORNER_REGION ) || ( m_region == BOTTOM_RIGHT_CORNER_REGION ) )
+        else if ((m_region == TOP_LEFT_CORNER_REGION) || (m_region == BOTTOM_RIGHT_CORNER_REGION))
         {
-            if ( viewport()->cursor().shape() != ( Qt::SizeFDiagCursor ) )
+            if (viewport()->cursor().shape() != (Qt::SizeFDiagCursor))
             {
-                viewport()->setCursor( QCursor( Qt::SizeFDiagCursor ) );
+                viewport()->setCursor(QCursor(Qt::SizeFDiagCursor));
             }
         }
-        else if ( ( m_region == TOP_RIGHT_CORNER_REGION ) || ( m_region == BOTTOM_LEFT_CORNER_REGION ) )
+        else if ((m_region == TOP_RIGHT_CORNER_REGION) || (m_region == BOTTOM_LEFT_CORNER_REGION))
         {
-            if ( viewport()->cursor().shape() != ( Qt::SizeBDiagCursor ) )
+            if (viewport()->cursor().shape() != (Qt::SizeBDiagCursor))
             {
-                viewport()->setCursor( QCursor( Qt::SizeBDiagCursor ) );
+                viewport()->setCursor(QCursor(Qt::SizeBDiagCursor));
             }
         }
-        else if ( viewport()->cursor().shape() != ( Qt::ArrowCursor ) )
+        else if (viewport()->cursor().shape() != (Qt::ArrowCursor))
         {
-            viewport()->setCursor( QCursor( Qt::ArrowCursor ) );
+            viewport()->setCursor(QCursor(Qt::ArrowCursor));
         }
     }
 }
 
-void DeclarativeViewer::mouseReleaseEvent( QMouseEvent* event )
+void DeclarativeViewer::mouseReleaseEvent(QMouseEvent* event)
 {
-    if ( !isFullScreen() )
+    if (!isFullScreen())
     {
-        if ( m_moving )
+        if (m_moving)
         {
             m_moving = false;
-            viewport()->setCursor( QCursor( Qt::ArrowCursor ) );
+            viewport()->setCursor(QCursor(Qt::ArrowCursor));
         }
 
-        if ( m_resize )
+        if (m_resize)
         {
             m_resize = false;
-            viewport()->setCursor( QCursor( Qt::ArrowCursor ) );
+            viewport()->setCursor(QCursor(Qt::ArrowCursor));
         }
         event->accept();
     }
-    QDeclarativeView::mouseReleaseEvent( event );
+    QDeclarativeView::mouseReleaseEvent(event);
 }
 
-void DeclarativeViewer::setViewMode( DeclarativeViewer::ViewMode mode )
+void DeclarativeViewer::setViewMode(DeclarativeViewer::ViewMode mode)
 {
-    m_isSingleMode = ( mode == Single );
-    rootContext()->setContextProperty( "viewMode", ( ( mode == Single ) ? "single" : "multi" ) );
+    m_isSingleMode = (mode == Single);
+    rootContext()->setContextProperty("viewMode", ((mode == Single) ? "single" : "multi"));
 }
 
-void DeclarativeViewer::onSetGallery( bool isGallery )
+void DeclarativeViewer::onSetGallery(bool isGallery)
 {
     m_isGallery = isGallery;
 }
 
 QSize DeclarativeViewer::getTextWindowSize(QString url) const
 {
-    QFile f( url );
-    if ( !f.open(QIODevice::ReadOnly | QIODevice::Text) )
+    QFile f(url);
+    if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
         return QSize();
 
     QString text = f.readAll();
-    QTextDocument* doc = new QTextDocument( text );
+    QTextDocument* doc = new QTextDocument(text);
     QSize size =  doc->documentLayout()->documentSize().toSize();
     delete doc;
 
-    size.setWidth( size.width() + 34 );
-    size.setHeight( size.height() + 10 );
+    size.setWidth(size.width() + 34);
+    size.setHeight(size.height() + 10);
 
     QDesktopWidget dw;
     QSize desktopSize = dw.screenGeometry(this).size();
 
     if (size.width() > desktopSize.width() * 0.8)
     {
-        size.setWidth( desktopSize.width() * 0.8 );
+        size.setWidth(desktopSize.width() * 0.8);
     }
-    if ( size.height() > desktopSize.height() * 0.8 )
+    if (size.height() > desktopSize.height() * 0.8)
     {
-        size.setHeight( desktopSize.height() * 0.8 );
+        size.setHeight(desktopSize.height() * 0.8);
     }
 
-    size.setHeight( size.height() + ( m_isEmbedded ? 0 : height_offset ) );
+    size.setHeight(size.height() + (m_isEmbedded ? 0 : height_offset));
 
-    size.setWidth( qMax(size.width(), minimumWidth()) ) ;
-    size.setHeight( qMax(size.height(), minimumHeight()) );
+    size.setWidth(qMax(size.width(), minimumWidth())) ;
+    size.setHeight(qMax(size.height(), minimumHeight()));
 
     return size;
 }
 
-void DeclarativeViewer::focusChanged( QWidget*, QWidget* now )
+void DeclarativeViewer::focusChanged(QWidget*, QWidget* now)
 {
     if (m_isEmbedded && !now) {
         close();
     }
 }
 
-void DeclarativeViewer::setEmbedded( bool state )
+void DeclarativeViewer::setEmbedded(bool state)
 {
     if (state) {
-        setWindowFlags( windowFlags() | Qt::ToolTip);
+        setWindowFlags(windowFlags() | Qt::ToolTip);
     }
     QSize minSize = state ? QSize(50, 50) : QSize(min_width, min_height);
     setMinimumSize(minSize);
@@ -810,7 +810,7 @@ QSize inscribedRectToRect(const QSize& sz1, const QSize& sz2)
 {
     QSize sz = sz1;
     if ((sz.height() > sz2.height()) || (sz.width() > sz2.width()))
-        sz.scale( sz2, Qt::KeepAspectRatio );
+        sz.scale(sz2, Qt::KeepAspectRatio);
     return sz;
 }
 

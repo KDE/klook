@@ -26,16 +26,16 @@ ListItemFallbackContent::ListItemFallbackContent(File *file, QObject *parent)
 
 QVariant ListItemFallbackContent::data(int role) const
 {
-    if ( role == ListItem::LastModifiedRole )
+    if (role == ListItem::LastModifiedRole)
     {
         QString modificationDate = m_modificationTime.date().isNull()
                 ? ki18n("Unknown").toString()
                 : KGlobal::locale()->formatDate(m_modificationTime.date());
         return modificationDate;
     }
-    else if ( role == ListItem::ContentSizeRole )
+    else if (role == ListItem::ContentSizeRole)
     {
-        return KGlobal::locale()->formatByteSize( m_size );
+        return KGlobal::locale()->formatByteSize(m_size);
     }
     else if(role == ListItem::StatCompleteRole) {
         return m_statComplete;
@@ -49,7 +49,7 @@ void ListItemFallbackContent::handleStatJob(KJob *job)
     if(job && !job->error()) {
         const KIO::UDSEntry entry = static_cast<KIO::StatJob*>(job)->statResult();
         m_size = entry.numberValue(KIO::UDSEntry::UDS_SIZE);
-        time_t mtime = entry.numberValue( KIO::UDSEntry::UDS_MODIFICATION_TIME, -1 );
+        time_t mtime = entry.numberValue(KIO::UDSEntry::UDS_MODIFICATION_TIME, -1);
         if (mtime != -1) {
             m_modificationTime = QDateTime::fromTime_t(mtime);
         }

@@ -27,19 +27,19 @@
 #include <Phonon/VideoWidget>
 #include <Phonon/AudioOutput>
 
-Audio::Audio( QDeclarativeItem* parent )
-    : QDeclarativeItem( parent )
-    , m_isPreview( false )
-    , m_isReady( false )
+Audio::Audio(QDeclarativeItem* parent)
+    : QDeclarativeItem(parent)
+    , m_isPreview(false)
+    , m_isReady(false)
 {
-    m_mediaObject = Phonon::createPlayer( Phonon::MusicCategory );
-    m_mediaObject->setTickInterval( 1000 );
+    m_mediaObject = Phonon::createPlayer(Phonon::MusicCategory);
+    m_mediaObject->setTickInterval(1000);
 
-    QObject::connect( m_mediaObject, SIGNAL( tick( qint64 ) ), SLOT( onTicked( qint64 ) ) );
-    QObject::connect( m_mediaObject, SIGNAL( totalTimeChanged( qint64 ) ), SLOT( onTotalTimeChanged( qint64 ) ) );
-    QObject::connect( m_mediaObject, SIGNAL( finished() ), SLOT( onFinished() ) );
-    QObject::connect( m_mediaObject, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ),
-                      SLOT( stateChanged( Phonon::State, Phonon::State ) ) );
+    QObject::connect(m_mediaObject, SIGNAL(tick(qint64)), SLOT(onTicked(qint64)));
+    QObject::connect(m_mediaObject, SIGNAL(totalTimeChanged(qint64)), SLOT(onTotalTimeChanged(qint64)));
+    QObject::connect(m_mediaObject, SIGNAL(finished()), SLOT(onFinished()));
+    QObject::connect(m_mediaObject, SIGNAL(stateChanged(Phonon::State, Phonon::State)),
+                      SLOT(stateChanged(Phonon::State, Phonon::State)));
 }
 
 Audio::~Audio()
@@ -49,7 +49,7 @@ Audio::~Audio()
 
 void Audio::setPause()
 {
-    if ( !isVisible() )
+    if (!isVisible())
         pause();
     else
         play();
@@ -60,7 +60,7 @@ bool Audio::isReady()
     return m_isReady;
 }
 
-void Audio::setReady( bool b )
+void Audio::setReady(bool b)
 {
     m_isReady = b;
     emit ready();
@@ -69,7 +69,7 @@ void Audio::setReady( bool b )
 void Audio::onFinished()
 {
     emit playFinished();
-    setPosition( 0 );
+    setPosition(0);
 }
 
 QString Audio::source() const
@@ -77,7 +77,7 @@ QString Audio::source() const
     return m_mediaObject->currentSource().url().toString();
 }
 
-void Audio::setSource( const KUrl& source )
+void Audio::setSource(const KUrl& source)
 {
     m_mediaObject->setCurrentSource(source);
     emit sourceChanged();
@@ -88,9 +88,9 @@ qlonglong Audio::position() const
     return m_mediaObject->currentTime();
 }
 
-void Audio::setPosition( qlonglong pos )
+void Audio::setPosition(qlonglong pos)
 {
-    m_mediaObject->seek( pos );
+    m_mediaObject->seek(pos);
     emit positionChanged();
 }
 
@@ -102,29 +102,29 @@ qlonglong Audio::totalTime() const
 QTime Audio::duration()
 {
     QTime t;
-    t = t.addMSecs( m_mediaObject->totalTime() );
+    t = t.addMSecs(m_mediaObject->totalTime());
     return t;
 }
 
-void Audio::onTotalTimeChanged( qint64 t )
+void Audio::onTotalTimeChanged(qint64 t)
 {
-    Q_UNUSED( t )
+    Q_UNUSED(t)
     emit totalTimeChanged();
 }
 
-void Audio::onTicked( qint64 t )
+void Audio::onTicked(qint64 t)
 {
-    emit ticked( QVariant( t ) );
+    emit ticked(QVariant(t));
 }
 
 bool Audio::playing() const
 {
-    return ( m_mediaObject->state() == Phonon::PlayingState );
+    return (m_mediaObject->state() == Phonon::PlayingState);
 }
 
 bool Audio::paused() const
 {
-    return ( m_mediaObject->state() == Phonon::PausedState );
+    return (m_mediaObject->state() == Phonon::PausedState);
 }
 
 void Audio::play()
@@ -139,7 +139,7 @@ void Audio::pause()
 
 void Audio::play_or_pause()
 {
-    if ( playing() )
+    if (playing())
         pause();
     else
         play();
@@ -150,26 +150,26 @@ bool Audio::isPreview() const
     return m_isPreview;
 }
 
-void Audio::setPreview( bool preview )
+void Audio::setPreview(bool preview)
 {
     m_isPreview = preview;
 }
 
-void Audio::stateChanged( Phonon::State newState, Phonon::State oldState )
+void Audio::stateChanged(Phonon::State newState, Phonon::State oldState)
 {    
-    Q_UNUSED( newState )
-    if (( oldState == Phonon::LoadingState ) || ( oldState == Phonon::StoppedState ))
+    Q_UNUSED(newState)
+    if ((oldState == Phonon::LoadingState) || (oldState == Phonon::StoppedState))
     {
-        setReady( true );
+        setReady(true);
     }
 }
 
 QString Audio::artist()
 {
     QString artists;
-    QStringList listArtists = m_mediaObject->metaData( "ARTIST" );
-    if ( !listArtists.empty() )
-        artists = listArtists.join( ", " );
+    QStringList listArtists = m_mediaObject->metaData("ARTIST");
+    if (!listArtists.empty())
+        artists = listArtists.join(", ");
 
     return artists;
 }
@@ -177,9 +177,9 @@ QString Audio::artist()
 QString Audio::album()
 {
     QString albums;
-    QStringList listAlbums = m_mediaObject->metaData( "ALBUM" );
-    if ( !listAlbums.empty() )
-        albums = listAlbums.join( ", " );
+    QStringList listAlbums = m_mediaObject->metaData("ALBUM");
+    if (!listAlbums.empty())
+        albums = listAlbums.join(", ");
 
     return albums;
 }
@@ -187,13 +187,13 @@ QString Audio::album()
 QString Audio::title()
 {
     QString titles;
-    QStringList listTitles = m_mediaObject->metaData( "TITLE" );
-    if ( !listTitles.empty() )
-        titles = listTitles.join( ", " );
+    QStringList listTitles = m_mediaObject->metaData("TITLE");
+    if (!listTitles.empty())
+        titles = listTitles.join(", ");
 
-    if ( titles.isEmpty() )
+    if (titles.isEmpty())
     {
-        QFileInfo fi( m_mediaObject->currentSource().url().path() );
+        QFileInfo fi(m_mediaObject->currentSource().url().path());
         titles = fi.fileName();
     }
 
@@ -203,9 +203,9 @@ QString Audio::title()
 QString Audio::composer()
 {
     QString composers;
-    QStringList listcomposers = m_mediaObject->metaData( "COMPOSER" );
-    if ( !listcomposers.empty() )
-        composers = listcomposers.join( ", " );
+    QStringList listcomposers = m_mediaObject->metaData("COMPOSER");
+    if (!listcomposers.empty())
+        composers = listcomposers.join(", ");
 
     return composers.toUtf8();
 }
@@ -213,9 +213,9 @@ QString Audio::composer()
 QString Audio::genre()
 {
     QString genres;
-    QStringList listgenres = m_mediaObject->metaData( "GENRE" );
-    if ( !listgenres.empty() )
-        genres = listgenres.join( ", " );
+    QStringList listgenres = m_mediaObject->metaData("GENRE");
+    if (!listgenres.empty())
+        genres = listgenres.join(", ");
 
     return genres;
 }

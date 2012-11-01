@@ -32,12 +32,12 @@ PreviewProvider::PreviewProvider()
 
 QPixmap PreviewProvider::requestPixmap(const QString& id, QSize* size, const QSize &requestedSize)
 {
-    QString str = id.left(id.lastIndexOf( '%' ));
+    QString str = id.left(id.lastIndexOf('%'));
 
     KUrl url(str);
     QPixmap pixmap = previewGenerator->getPreviewPixmap(url.url());
     if (requestedSize.isValid())
-        pixmap = pixmap.scaled( requestedSize, Qt::KeepAspectRatio );
+        pixmap = pixmap.scaled(requestedSize, Qt::KeepAspectRatio);
     if(size)
         *size = pixmap.size();
 

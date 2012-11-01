@@ -60,10 +60,10 @@ class DeclarativeViewer : public QDeclarativeView
 {
     Q_OBJECT
 public:
-    explicit DeclarativeViewer( QWidget *parent = 0 );
+    explicit DeclarativeViewer(QWidget *parent = 0);
     virtual ~DeclarativeViewer();
 
-    void init(QStringList urls, bool embedded = false, const QRect& rc = QRect( 0, 0, 0, 0 ), int indexToShow = 0 );
+    void init(QStringList urls, bool embedded = false, const QRect& rc = QRect(0, 0, 0, 0), int indexToShow = 0);
     Q_INVOKABLE void updateMenu(int index);
     Q_INVOKABLE void resizeToPreferredSize(int index);
 
@@ -99,9 +99,9 @@ private slots:
     void focusChanged(QWidget*, QWidget*);
 
 protected:
-    void mousePressEvent( QMouseEvent* event );
-    void mouseMoveEvent( QMouseEvent* event );
-    void mouseReleaseEvent( QMouseEvent* event );
+    void mousePressEvent(QMouseEvent* event);
+    void mouseMoveEvent(QMouseEvent* event);
+    void mouseReleaseEvent(QMouseEvent* event);
 
 private:
     friend class KLookApp;
@@ -112,16 +112,16 @@ private:
     };
 
     QSize getPreferredSize(const QString &path, int type) const;
-    WidgetRegion calculateWindowRegion( const QPoint& mousePos );
+    WidgetRegion calculateWindowRegion(const QPoint& mousePos);
     void setEmbedded(bool);
 
     void initModel(QStringList urls);
-    void setViewMode( ViewMode mode );
+    void setViewMode(ViewMode mode);
     void registerTypes();
-    QSize getTextWindowSize( QString url ) const;
-    void createVideoObject( QUrl url );
+    QSize getTextWindowSize(QString url) const;
+    void createVideoObject(QUrl url);
 
-    void centerWidget( const QSize& sz );
+    void centerWidget(const QSize& sz);
 
     QPoint          m_lastMousePosition;
     bool            m_isSingleMode;

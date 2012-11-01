@@ -33,16 +33,16 @@ class QHBoxLayout;
 class Video : public QGraphicsProxyWidget
 {
     Q_OBJECT
-    Q_PROPERTY( QString source READ source WRITE setSource NOTIFY sourceChanged )
-    Q_PROPERTY( bool playing READ playing )
-    Q_PROPERTY( bool paused READ paused )
-    Q_PROPERTY( bool muted READ muted WRITE setMuted )
-    Q_PROPERTY( qlonglong totalTime READ totalTime NOTIFY totalTimeChanged )
-    Q_PROPERTY( qlonglong position READ position WRITE setPosition NOTIFY positionChanged )
-    Q_PROPERTY( int videoWidth READ videoWidth )
-    Q_PROPERTY( int videoHeight READ videoHeight )
-    Q_PROPERTY( bool preview READ isPreview WRITE setPreview )
-    Q_PROPERTY( bool ready READ isReady WRITE setReady NOTIFY ready )
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(bool playing READ playing)
+    Q_PROPERTY(bool paused READ paused)
+    Q_PROPERTY(bool muted READ muted WRITE setMuted)
+    Q_PROPERTY(qlonglong totalTime READ totalTime NOTIFY totalTimeChanged)
+    Q_PROPERTY(qlonglong position READ position WRITE setPosition NOTIFY positionChanged)
+    Q_PROPERTY(int videoWidth READ videoWidth)
+    Q_PROPERTY(int videoHeight READ videoHeight)
+    Q_PROPERTY(bool preview READ isPreview WRITE setPreview)
+    Q_PROPERTY(bool ready READ isReady WRITE setReady NOTIFY ready)
 
 public:
     Video(QGraphicsItem* parent = 0);
@@ -50,7 +50,7 @@ public:
 
 public slots:
     QString source() const;
-    void setSource( const KUrl& source );
+    void setSource(const KUrl& source);
 
     bool playing() const;
     bool paused() const;
@@ -60,7 +60,7 @@ public slots:
     void setReady(bool b);
 
     bool muted() const;
-    void setMuted( bool m );
+    void setMuted(bool m);
 
     int videoWidth() const { return m_videoWidth; }
     int videoHeight() const { return m_videoHeight; }
@@ -68,14 +68,14 @@ public slots:
     qlonglong totalTime() const;
 
     qlonglong position() const;
-    void setPosition( qlonglong pos );
+    void setPosition(qlonglong pos);
 
     void play_or_pause();
     void play();
     void pause();
 
-    void onTotalTimeChanged( qint64 );
-    void onTicked( qint64 );
+    void onTotalTimeChanged(qint64);
+    void onTicked(qint64);
 
     void onFinished();
 
@@ -83,14 +83,14 @@ public slots:
     void stateChanged(Phonon::State oldState, Phonon::State newState);
 
     bool isPreview() const;
-    void setPreview( bool preview );
+    void setPreview(bool preview);
 
 signals:
-    void clicked( bool );
+    void clicked(bool);
     void sourceChanged();
     void totalTimeChanged();
     void positionChanged();
-    void ticked( QVariant tick );
+    void ticked(QVariant tick);
     void playFinished();
     void ready();
     void sizeHintReady(int width, int height);

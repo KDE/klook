@@ -46,12 +46,12 @@ public:
         MimetypeFallback,
         Error
     };
-    File( QObject* parent );
-    File( KUrl url = KUrl(), QObject* parent = 0);
+    File(QObject* parent);
+    File(KUrl url = KUrl(), QObject* parent = 0);
     ~File();
 
     KUrl url() const;
-    void setUrl( QUrl url );
+    void setUrl(QUrl url);
 
     File::FileType type();
     void setType(FileType type);

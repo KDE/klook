@@ -31,7 +31,7 @@ class MimeProvider
 {
 public:
     MimeProvider();
-    QPixmap requestPixmap( const QString& id, QSize* size, const QSize& requestedSize );
+    QPixmap requestPixmap(const QString& id, QSize* size, const QSize& requestedSize);
 };
 
 #endif // MIMEPROVIDER_H

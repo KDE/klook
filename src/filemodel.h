@@ -40,16 +40,16 @@ class FileModel : public QAbstractListModel
 public:
     explicit FileModel(QObject* parent = 0);
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
-    bool setData ( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    bool setData (const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
 
     const QHash<int, QByteArray> & roleNames () const;
-    void appendRow( ListItem* item );
+    void appendRow(ListItem* item);
     void appendRows(QList<ListItem *> items);
-    void refreshRow(int row );
-    QModelIndex indexFromRowNumber( int row );
+    void refreshRow(int row);
+    QModelIndex indexFromRowNumber(int row);
     void reset();
 
     void setRoleNames(const QHash<int,QByteArray> &roleNames) { QAbstractItemModel::setRoleNames(roleNames); }

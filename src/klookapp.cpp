@@ -57,15 +57,15 @@ QRect KLookApp::rectParam() const
 {
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     QRect rc;
-    if ( args->isSet( "x" ) && args->isSet( "y" ) &&
-         args->isSet( "w" ) && args->isSet( "h" ) )
+    if (args->isSet("x") && args->isSet("y") &&
+         args->isSet("w") && args->isSet("h"))
     {
         int x, y, w, h;
-        x = args->getOption( "x" ).toInt();
-        y = args->getOption( "y" ).toInt();
-        w = args->getOption( "w" ).toInt();
-        h = args->getOption( "h" ).toInt();
-        rc = QRect( x, y, w, h );
+        x = args->getOption("x").toInt();
+        y = args->getOption("y").toInt();
+        w = args->getOption("w").toInt();
+        h = args->getOption("h").toInt();
+        rc = QRect(x, y, w, h);
     }
     return rc;
 }
@@ -74,7 +74,7 @@ QStringList KLookApp::urlsParam() const
 {
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     QStringList urls;
-    for ( int i = 0; i < args->count(); i++ ) {	
+    for (int i = 0; i < args->count(); i++) {	
 	if (QFile::exists(args->cwd()))
 	  urls << QString(args->cwd()+ '/' + args->arg(i));
         else
@@ -113,10 +113,10 @@ int KLookApp::newInstance()
 
         QObject* rootObject = dynamic_cast<QObject*>(m_viewer->rootObject());
 
-        QObject::connect( m_viewer, SIGNAL( setFullScreenState() ), rootObject, SLOT( setFullScreenState() ) );
-        QObject::connect( m_viewer, SIGNAL( setEmbeddedState() ), rootObject, SLOT( setEmbeddedState() ) );
-        QObject::connect( m_viewer, SIGNAL( setStartWindow() ), rootObject, SLOT( setStartWindow() ) );
-        QObject::connect( rootObject, SIGNAL( setGalleryView( bool ) ), m_viewer, SLOT( onSetGallery( bool ) ) );
+        QObject::connect(m_viewer, SIGNAL(setFullScreenState()), rootObject, SLOT(setFullScreenState()));
+        QObject::connect(m_viewer, SIGNAL(setEmbeddedState()), rootObject, SLOT(setEmbeddedState()));
+        QObject::connect(m_viewer, SIGNAL(setStartWindow()), rootObject, SLOT(setStartWindow()));
+        QObject::connect(rootObject, SIGNAL(setGalleryView(bool)), m_viewer, SLOT(onSetGallery(bool)));
     }
 
     m_viewer->init(urls, embedded, rc, index);
@@ -127,5 +127,5 @@ int KLookApp::newInstance()
 bool KLookApp::isLocal() const
 {
     const QString appPath = applicationFilePath();
-    return !(appPath.startsWith( "/usr/bin" ) || appPath.startsWith( "/usr/local/bin" ));
+    return !(appPath.startsWith("/usr/bin") || appPath.startsWith("/usr/local/bin"));
 }

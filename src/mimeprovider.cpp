@@ -25,17 +25,17 @@
 #include <KMimeType>
 
 MimeProvider::MimeProvider()
-    : QDeclarativeImageProvider( Pixmap )
+    : QDeclarativeImageProvider(Pixmap)
 {
 }
 
-QPixmap MimeProvider::requestPixmap( const QString& id, QSize* size, const QSize &requestedSize )
+QPixmap MimeProvider::requestPixmap(const QString& id, QSize* size, const QSize &requestedSize)
 {
-    KIcon icon( KMimeType::iconNameForUrl( id ) );
+    KIcon icon(KMimeType::iconNameForUrl(id));
 
-    QPixmap pixmap = icon.isNull() ? QPixmap( ":images/pla-empty-box.png" ) : icon.pixmap( 1000 );
-    if ( requestedSize.isValid() )
-        pixmap = pixmap.scaled( requestedSize, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+    QPixmap pixmap = icon.isNull() ? QPixmap(":images/pla-empty-box.png") : icon.pixmap(1000);
+    if (requestedSize.isValid())
+        pixmap = pixmap.scaled(requestedSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     *size = pixmap.size();
 
     return pixmap;

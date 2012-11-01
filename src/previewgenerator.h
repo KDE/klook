@@ -41,19 +41,19 @@ public:
     static PreviewGenerator *instance();
     void setFiles(KUrl::List list);
 
-    QPixmap getPreviewPixmap( QString filePath );
-    void setModel( FileModel *model );
+    QPixmap getPreviewPixmap(QString filePath);
+    void setModel(FileModel *model);
 
 public slots:
     void start();
     void stop();
 
 private slots:
-    void setPreview( const KFileItem&, const QPixmap& );
-    void previewFailed( KFileItem );
+    void setPreview(const KFileItem&, const QPixmap&);
+    void previewFailed(KFileItem);
 
 private:
-    explicit PreviewGenerator( QObject *parent = 0 );
+    explicit PreviewGenerator(QObject *parent = 0);
 
     void notifyModel(KUrl url);
 

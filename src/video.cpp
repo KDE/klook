@@ -41,7 +41,7 @@ Video::Video(QGraphicsItem* parent)
 
     m_player = new Phonon::VideoPlayer(Phonon::VideoCategory, m_wid);
     m_player->setAttribute(Qt::WA_NoSystemBackground);
-    m_player->mediaObject()->setTickInterval( 1000 );
+    m_player->mediaObject()->setTickInterval(1000);
 
     m_layout = new QHBoxLayout();
     m_layout->setMargin(0);
@@ -95,7 +95,7 @@ bool Video::muted() const
 void Video::setMuted(bool m)
 {
     // !!!! Doesnt't work in phonon !!!!!
-    m_player->audioOutput()->setMuted( m );
+    m_player->audioOutput()->setMuted(m);
 }
 
 QString Video::source() const
@@ -122,9 +122,9 @@ qlonglong Video::position() const
     return m_player->mediaObject()->currentTime();
 }
 
-void Video::setPosition( qlonglong pos )
+void Video::setPosition(qlonglong pos)
 {
-    m_player->mediaObject()->seek( pos );
+    m_player->mediaObject()->seek(pos);
     emit positionChanged();
 }
 
@@ -133,15 +133,15 @@ qlonglong Video::totalTime() const
     return m_player->mediaObject()->totalTime();
 }
 
-void Video::onTotalTimeChanged( qint64 t )
+void Video::onTotalTimeChanged(qint64 t)
 {
-    Q_UNUSED( t )
+    Q_UNUSED(t)
     emit totalTimeChanged();
 }
 
-void Video::onTicked( qint64 t )
+void Video::onTicked(qint64 t)
 {
-    emit ticked( QVariant( t ) );
+    emit ticked(QVariant(t));
 }
 
 bool Video::playing() const
@@ -166,7 +166,7 @@ void Video::pause()
 
 void Video::play_or_pause()
 {
-    if ( m_player->isPlaying() )
+    if (m_player->isPlaying())
         m_player->pause();
     else
         m_player->play();
@@ -177,14 +177,14 @@ bool Video::isPreview() const
     return m_isPreview;
 }
 
-void Video::setPreview( bool preview )
+void Video::setPreview(bool preview)
 {
     m_isPreview = preview;
 }
 
-void Video::stateChanged( Phonon::State newState, Phonon::State oldState )
+void Video::stateChanged(Phonon::State newState, Phonon::State oldState)
 {
-    Q_UNUSED( newState )
+    Q_UNUSED(newState)
     if ((oldState == Phonon::LoadingState) || (oldState == Phonon::StoppedState))
-        setReady( true );
+        setReady(true);
 }

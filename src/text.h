@@ -29,11 +29,11 @@ class QPlainTextEdit;
 class MyText : public QGraphicsProxyWidget
 {
     Q_OBJECT
-    Q_PROPERTY( QString source READ source WRITE setSource NOTIFY sourceChanged )
-    Q_PROPERTY( bool preview READ isPreview WRITE setPreview )
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(bool preview READ isPreview WRITE setPreview)
 
 public:
-    MyText( QGraphicsItem* parent = 0 );
+    MyText(QGraphicsItem* parent = 0);
     ~MyText();
 
 public slots:

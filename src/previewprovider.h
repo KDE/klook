@@ -31,7 +31,7 @@ class PreviewProvider : public QDeclarativeImageProvider
 {
 public:
     PreviewProvider();
-    QPixmap requestPixmap( const QString& id, QSize* size, const QSize& requestedSize );
+    QPixmap requestPixmap(const QString& id, QSize* size, const QSize& requestedSize);
 
 private:
     PreviewGenerator* previewGenerator;

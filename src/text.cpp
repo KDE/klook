@@ -27,13 +27,13 @@
 #include <KImageCache>
 #include <kencodingprober.h>
 
-MyText::MyText( QGraphicsItem* parent )
+MyText::MyText(QGraphicsItem* parent)
     : QGraphicsProxyWidget(parent)
     , m_isPreview(false)
 {
     m_viewer = new QPlainTextEdit();
     m_viewer->setReadOnly(true);
-    m_viewer->viewport()->setCursor( Qt::ArrowCursor );
+    m_viewer->viewport()->setCursor(Qt::ArrowCursor);
     m_viewer->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     setWidget(m_viewer);
@@ -48,14 +48,14 @@ QString MyText::source() const
     return m_source;
 }
 
-void MyText::setSource( const QString& source )
+void MyText::setSource(const QString& source)
 {
-    if ( m_source == source )
+    if (m_source == source)
         return;
     m_source = source;
 
-    QFile f( m_source );
-    if (!f.open( QIODevice::ReadOnly | QIODevice::Text))
+    QFile f(m_source);
+    if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
 
     QByteArray data = f.readAll().data();
@@ -66,9 +66,9 @@ void MyText::setSource( const QString& source )
     if (prober.confidence() > 0.7)
         str = QTextCodec::codecForName(prober.encoding())->toUnicode(data);
     else
-        str = QString::fromUtf8( data );
+        str = QString::fromUtf8(data);
 
-    m_viewer->setPlainText( str );
+    m_viewer->setPlainText(str);
 
     emit sourceChanged();
     emit ready();
@@ -83,6 +83,6 @@ void MyText::setPreview(bool preview)
 {
     m_isPreview = preview;
     Qt::ScrollBarPolicy policy = m_isPreview ? Qt::ScrollBarAlwaysOff : Qt::ScrollBarAsNeeded;
-    m_viewer->setVerticalScrollBarPolicy( policy );
-    m_viewer->setHorizontalScrollBarPolicy( policy );
+    m_viewer->setVerticalScrollBarPolicy(policy);
+    m_viewer->setHorizontalScrollBarPolicy(policy);
 }

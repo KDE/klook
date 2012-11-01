@@ -35,28 +35,28 @@ class QHBoxLayout;
 class Audio : public QDeclarativeItem
 {
     Q_OBJECT
-    Q_PROPERTY( QString source READ source WRITE setSource NOTIFY sourceChanged )
-    Q_PROPERTY( bool playing READ playing )
-    Q_PROPERTY( bool paused READ paused )
-    Q_PROPERTY( qlonglong totalTime READ totalTime NOTIFY totalTimeChanged )
-    Q_PROPERTY( QTime duration READ duration )
-    Q_PROPERTY( qlonglong position READ position WRITE setPosition NOTIFY positionChanged )
-    Q_PROPERTY( bool preview READ isPreview WRITE setPreview )
-    Q_PROPERTY( bool ready READ isReady WRITE setReady NOTIFY ready )
+    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(bool playing READ playing)
+    Q_PROPERTY(bool paused READ paused)
+    Q_PROPERTY(qlonglong totalTime READ totalTime NOTIFY totalTimeChanged)
+    Q_PROPERTY(QTime duration READ duration)
+    Q_PROPERTY(qlonglong position READ position WRITE setPosition NOTIFY positionChanged)
+    Q_PROPERTY(bool preview READ isPreview WRITE setPreview)
+    Q_PROPERTY(bool ready READ isReady WRITE setReady NOTIFY ready)
 
-    Q_PROPERTY( QString artist READ artist NOTIFY artistChanged )
-    Q_PROPERTY( QString album READ album NOTIFY albumChanged )
-    Q_PROPERTY( QString title READ title NOTIFY titleChanged  )
-    Q_PROPERTY( QString composer READ composer  NOTIFY composerChanged )
-    Q_PROPERTY( QString genre READ genre  NOTIFY genreChanged )
+    Q_PROPERTY(QString artist READ artist NOTIFY artistChanged)
+    Q_PROPERTY(QString album READ album NOTIFY albumChanged)
+    Q_PROPERTY(QString title READ title NOTIFY titleChanged)
+    Q_PROPERTY(QString composer READ composer  NOTIFY composerChanged)
+    Q_PROPERTY(QString genre READ genre  NOTIFY genreChanged)
 
 public:
-    Audio( QDeclarativeItem* parent = 0 );
+    Audio(QDeclarativeItem* parent = 0);
     ~Audio();
 
 public slots:
     QString source() const;
-    void setSource(const KUrl &source );
+    void setSource(const KUrl &source);
 
     bool playing() const;
     bool paused() const;
@@ -69,7 +69,7 @@ public slots:
     QTime duration();
 
     qlonglong position() const;
-    void setPosition( qlonglong pos );
+    void setPosition(qlonglong pos);
 
     QString artist();
     QString album();
@@ -81,24 +81,24 @@ public slots:
     void play();
     void pause();
 
-    void onTotalTimeChanged( qint64 );
-    void onTicked( qint64 );
+    void onTotalTimeChanged(qint64);
+    void onTicked(qint64);
 
     void onFinished();
 
-    void stateChanged( Phonon::State oldState, Phonon::State newState );
+    void stateChanged(Phonon::State oldState, Phonon::State newState);
 
     bool isPreview() const;
-    void setPreview( bool preview );
+    void setPreview(bool preview);
 
 protected:
 
 Q_SIGNALS:
-    void clicked( bool );
+    void clicked(bool);
     void sourceChanged();
     void totalTimeChanged();
     void positionChanged();
-    void ticked( QVariant tick );
+    void ticked(QVariant tick);
     void playFinished();
     void ready();
 

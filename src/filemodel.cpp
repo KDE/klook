@@ -29,40 +29,40 @@
 #include <QtCore/QTimer>
 
 FileModel::FileModel(QObject *parent)
-    : QAbstractListModel( parent )
+    : QAbstractListModel(parent)
     , m_currentLoadingFile(0)
 {
 }
 
-int FileModel::rowCount( const QModelIndex &parent ) const
+int FileModel::rowCount(const QModelIndex &parent) const
 {
-    Q_UNUSED( parent )
+    Q_UNUSED(parent)
     return m_list.count();
 }
 
-QVariant FileModel::data( const QModelIndex &index, int role ) const
+QVariant FileModel::data(const QModelIndex &index, int role) const
 {
-    if ( index.row() < 0 || index.row() >= m_list.size() )
+    if (index.row() < 0 || index.row() >= m_list.size())
         return QVariant();
     return m_list.at(index.row())->data(role);
 }
 
-bool FileModel::setData( const QModelIndex &index, const QVariant &value, int role )
+bool FileModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if ( !index.isValid() )
+    if (!index.isValid())
         return false;
 
-    if ( role == ListItem::FilePathRole )
-        m_list[ index.row() ]->setPath( value.toString() );
-    else if ( role == ListItem::TypeRole )
-        m_list[ index.row() ]->setType( value.toInt() );
+    if (role == ListItem::FilePathRole)
+        m_list[ index.row() ]->setPath(value.toString());
+    else if (role == ListItem::TypeRole)
+        m_list[ index.row() ]->setType(value.toInt());
 
-    emit dataChanged( index, index );
+    emit dataChanged(index, index);
 
     return true;
 }
 
-void FileModel::appendRow( ListItem *item )
+void FileModel::appendRow(ListItem *item)
 {
     appendRows(QList<ListItem *>() << item);
 }
@@ -78,19 +78,19 @@ void FileModel::appendRows(QList<ListItem *> items)
 
 }
 
-void FileModel::refreshRow( int row )
+void FileModel::refreshRow(int row)
 {
-    emit dataChanged( index(row), index(row) );
+    emit dataChanged(index(row), index(row));
 }
 
-QModelIndex FileModel::indexFromRowNumber( int row )
+QModelIndex FileModel::indexFromRowNumber(int row)
 {
     return index(row);
 }
 
 void FileModel::reset()
 {
-    beginRemoveRows( QModelIndex(), 0, rowCount() - 1 );
+    beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
     m_list.clear();
     endRemoveRows();
 }

@@ -20,9 +20,9 @@ QString ListItem::path() const
     return result;
 }
 
-QVariant ListItem::data( int role ) const
+QVariant ListItem::data(int role) const
 {
-    switch ( role )
+    switch (role)
     {
     case FilePathRole:
         return path();
