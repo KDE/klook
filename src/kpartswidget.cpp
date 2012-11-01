@@ -10,11 +10,9 @@ KPartsWidget::KPartsWidget(QWidget *parent)
 {
     m_service = KService::serviceByDesktopPath("okular_part.desktop");
 
-    if(m_service)
-    {
+    if(m_service) {
         m_part = m_service->createInstance<KParts::ReadOnlyPart>(0, QVariantList() << "Print/Preview");
-        if(m_part)
-        {
+        if(m_part) {
             setCentralWidget(m_part->widget());
             // we don't need toolabrs being shown
             foreach(KToolBar *toolbar, toolBars())

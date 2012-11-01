@@ -299,8 +299,7 @@ void DeclarativeViewer::centerWidget(const QSize& sz)
     QRect rectDesktop = dw.screenGeometry(this);
     QSize sz1 = sz;
 
-    if (m_isEmbedded)
-    {
+    if (m_isEmbedded) {
         int iconOffset = 5;
         int desktopMargin = 70;
 
@@ -323,8 +322,7 @@ void DeclarativeViewer::centerWidget(const QSize& sz)
         int leftArea = left.width()*left.height();
         int rightArea = right.width()*right.height();
 
-        if ((topArea > leftArea) && (topArea > rightArea))
-        {
+        if ((topArea > leftArea) && (topArea > rightArea)) {
             sz1.setHeight(sz1.height() + arrowIconHeight);
             sz1 = inscribedRectToRect(sz1, top.size());
             int x = m_rcIcon.x() + m_rcIcon.width()/2 - sz1.width()/2;
@@ -341,8 +339,7 @@ void DeclarativeViewer::centerWidget(const QSize& sz)
             m_posArrow = BOTTOM;
             setGeometry(rect);
         }
-        else if (leftArea > rightArea)
-        {
+        else if (leftArea > rightArea) {
             sz1.setWidth(sz1.width()+ arrowIconHeight);
             sz1 = inscribedRectToRect(sz1, left.size());
             int x = m_rcIcon.x() - sz1.width() - iconOffset;
@@ -359,8 +356,7 @@ void DeclarativeViewer::centerWidget(const QSize& sz)
             m_posArrow = RIGHT;
             setGeometry(rect);
         }
-        else
-        {
+        else {
             sz1.setWidth(sz1.width()+ arrowIconHeight);
             sz1 = inscribedRectToRect(sz1, right.size());
             int x = m_rcIcon.topRight().x() + iconOffset;
@@ -449,30 +445,25 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion(const QPoint& mousePos)
 {
     QPointF pos;
     pos = mousePos;
-    if (m_isEmbedded)
-    {
+    if (m_isEmbedded) {
         QRegion region;
         QRect r = rect();
-        if (m_posArrow == BOTTOM)
-        {
+        if (m_posArrow == BOTTOM) {
             QRect r1(r.bottomLeft().x(), r.bottomLeft().y()-arrowIconHeight, r.width(),arrowIconHeight);
             region.setRects(&r1,1);
             region = region.subtracted(QRegion(m_rcArrow));
         }
-        else if (m_posArrow == LEFT)
-        {
+        else if (m_posArrow == LEFT) {
             QRect r2(r.x(), r.y(), m_rcArrow.width(), r.height());
             region.setRects(&r2,1);
             region = region.subtracted(QRegion(m_rcArrow));
         }
-        else if (m_posArrow == RIGHT)
-        {
+        else if (m_posArrow == RIGHT) {
             QRect r3(r.topRight().x() - m_rcArrow.width(), r.y(), m_rcArrow.width(), r.height());
             region.setRects(&r3,1);
             region = region.subtracted(QRegion(m_rcArrow));
         }
-        if (region.contains(pos.toPoint()))
-        {
+        if (region.contains(pos.toPoint())) {
             return ARROW_NULL_REGION;
         }
         return FRAME_REGION;
@@ -485,8 +476,7 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion(const QPoint& mousePos)
     QRectF header2(r.width() - 42 * 2 - 12 - 6, border_width + 1, 12, header_height- border_width + 1);
     QRegion headerR;
 
-    if (m_isSingleMode)
-    {
+    if (m_isSingleMode) {
         headerTitle.setRect(border_width + 1,
                              border_width + 1,
                              r.width() - border_width - 270,
@@ -494,8 +484,7 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion(const QPoint& mousePos)
         headerR = headerR.united(headerTitle.toRect());
         headerR = headerR.united(header2.toRect());
     }
-    else
-    {
+    else {
         headerTitle.setRect(6 + 42 * 3 + 12,
                              border_width + 1,
                              r.width() - 414,
@@ -510,46 +499,35 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion(const QPoint& mousePos)
     QRectF rightBorder(r.width()-border_width, 0, border_width, r.height());
     QRectF bottomBorder(0, r.height()-border_width, r.width(), border_width);
 
-    if (headerR.contains(pos.toPoint()))
-    {
+    if (headerR.contains(pos.toPoint())) {
         return HEADER_REGION;
     }
-    else if (topBorder.contains(pos))
-    {
-        if (leftBorder.contains(pos))
-        {
+    else if (topBorder.contains(pos)) {
+        if (leftBorder.contains(pos)) {
             return TOP_LEFT_CORNER_REGION;
         }
-        else if (rightBorder.contains(pos))
-        {
+        else if (rightBorder.contains(pos)) {
             return TOP_RIGHT_CORNER_REGION;
         }
-        else
-        {
+        else {
             return TOP_BORDER_REGION;
         }
     }
-    else if (bottomBorder.contains(pos))
-    {
-        if (leftBorder.contains(pos))
-        {
+    else if (bottomBorder.contains(pos)) {
+        if (leftBorder.contains(pos)) {
             return BOTTOM_LEFT_CORNER_REGION;
         }
-        else if (rightBorder.contains(pos))
-        {
+        else if (rightBorder.contains(pos)) {
             return BOTTOM_RIGHT_CORNER_REGION;
         }
-        else
-        {
+        else {
             return BOTTOM_BORDER_REGION;
         }
     }
-    else if (leftBorder.contains(pos))
-    {
+    else if (leftBorder.contains(pos)) {
         return LEFT_BORDER_REGION;
     }
-    else if (rightBorder.contains(pos))
-    {
+    else if (rightBorder.contains(pos)) {
         return RIGHT_BORDER_REGION;
     }
 
@@ -558,21 +536,16 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion(const QPoint& mousePos)
 
 void DeclarativeViewer::mousePressEvent(QMouseEvent* event)
 {
-    if (!m_isEmbedded)
-    {
-        if (!isFullScreen())
-        {
+    if (!m_isEmbedded) {
+        if (!isFullScreen()) {
             m_region = calculateWindowRegion(event->pos());
-            if (event->button() == Qt::LeftButton)
-            {
-                if (m_region == HEADER_REGION)
-                {
+            if (event->button() == Qt::LeftButton) {
+                if (m_region == HEADER_REGION) {
                     m_moving = true;
                     m_lastMousePosition = event->globalPos();
                     setCursor(QCursor(Qt::SizeAllCursor));
                 }
-                else if (m_region != FRAME_REGION)
-                {
+                else if (m_region != FRAME_REGION) {
                     m_resize = true;
                     m_lastMousePosition = event->globalPos();
                 }
@@ -580,10 +553,8 @@ void DeclarativeViewer::mousePressEvent(QMouseEvent* event)
             event->accept();
         }
     }
-    else
-    {
-        if (calculateWindowRegion(event->pos()) == ARROW_NULL_REGION)
-        {
+    else {
+        if (calculateWindowRegion(event->pos()) == ARROW_NULL_REGION) {
             close();
         }
     }
@@ -594,54 +565,45 @@ void DeclarativeViewer::mousePressEvent(QMouseEvent* event)
 void DeclarativeViewer::mouseMoveEvent(QMouseEvent* event)
 {
     QDeclarativeView::mouseMoveEvent(event);
-    if (isFullScreen())
-    {
+    if (isFullScreen()) {
         return;
     }
 
-    if (m_isEmbedded)
-    {
+    if (m_isEmbedded) {
         return;
     }
 
-    if (event->buttons().testFlag(Qt::LeftButton) && m_moving)
-    {
+    if (event->buttons().testFlag(Qt::LeftButton) && m_moving) {
         if (viewport()->cursor().shape() != (Qt::SizeAllCursor))
             viewport()->setCursor(QCursor(Qt::SizeAllCursor));
         window()->move(window()->pos() + (event->globalPos() - m_lastMousePosition));
         m_lastMousePosition = event->globalPos();
     }
-    else if (event->buttons().testFlag(Qt::LeftButton) && m_resize)
-    {
+    else if (event->buttons().testFlag(Qt::LeftButton) && m_resize) {
         QPoint p = mapToGlobal(event->pos()) - geometry().topLeft();
         QPoint offset = event->globalPos() - m_lastMousePosition;
-        switch (m_region)
-        {
+        switch (m_region) {
         case LEFT_BORDER_REGION:
-            if (offset.x() * (-1) + width() > minimumWidth())
-            {
+            if (offset.x() * (-1) + width() > minimumWidth()) {
                 window()->move((window()->pos() + offset).x(), y());
                 resize(offset.x() * (-1) + width(), height());
                 m_lastMousePosition = event->globalPos();
             }
             break;
         case TOP_BORDER_REGION:
-            if (offset.y()*(-1) + height() > minimumHeight())
-            {
+            if (offset.y()*(-1) + height() > minimumHeight()) {
                 window()->move(x(), (window()->pos() + offset).y());
                 resize(width(), offset.y() * (-1) + height());
                 m_lastMousePosition = event->globalPos();
             }
             break;
         case TOP_LEFT_CORNER_REGION:
-            if (offset.x() * (-1) + width() > minimumWidth())
-            {
+            if (offset.x() * (-1) + width() > minimumWidth()) {
                 window()->move((window()->pos() + offset).x(), y());
                 resize(offset.x() * (-1) + width(), height());
                 m_lastMousePosition.setX(event->globalPos().x());
             }
-            if (offset.y() * (-1) + height() > minimumHeight())
-            {
+            if (offset.y() * (-1) + height() > minimumHeight()) {
                 window()->move(x(), (window()->pos() + offset).y());
                 resize(width(), offset.y() * (-1) + height());
                 m_lastMousePosition.setY(event->globalPos().y());
@@ -649,8 +611,7 @@ void DeclarativeViewer::mouseMoveEvent(QMouseEvent* event)
             break;
         case TOP_RIGHT_CORNER_REGION:
             resize(p.x(), height());
-            if (offset.y() * (-1) + height() > minimumHeight())
-            {
+            if (offset.y() * (-1) + height() > minimumHeight()) {
                 window()->move(x(), (window()->pos() + offset).y());
                 resize(width(), offset.y() * (-1) + height());
                 m_lastMousePosition.setY(event->globalPos().y());
@@ -658,8 +619,7 @@ void DeclarativeViewer::mouseMoveEvent(QMouseEvent* event)
             break;
         case BOTTOM_LEFT_CORNER_REGION:
             resize(width() , p.y());
-            if (offset.x() * (-1) + width() > minimumWidth())
-            {
+            if (offset.x() * (-1) + width() > minimumWidth()) {
                 window()->move((window()->pos() + offset).x(), y());
                 resize(offset.x() * (-1) + width(), height());
                 m_lastMousePosition.setX(event->globalPos().x());
@@ -675,39 +635,29 @@ void DeclarativeViewer::mouseMoveEvent(QMouseEvent* event)
             resize(p.x(), p.y());
         }
     }
-    else
-    {
+    else {
         m_region = calculateWindowRegion(event->pos());
-        if ((m_region == TOP_BORDER_REGION) || (m_region == BOTTOM_BORDER_REGION))
-        {
-            if (viewport()->cursor().shape() != (Qt::SizeVerCursor))
-            {
+        if ((m_region == TOP_BORDER_REGION) || (m_region == BOTTOM_BORDER_REGION)) {
+            if (viewport()->cursor().shape() != (Qt::SizeVerCursor)) {
                 viewport()->setCursor(QCursor(Qt::SizeVerCursor));
             }
         }
-        else if ((m_region == LEFT_BORDER_REGION) || (m_region == RIGHT_BORDER_REGION))
-        {
-            if (viewport()->cursor().shape() != (Qt::SizeHorCursor))
-            {
+        else if ((m_region == LEFT_BORDER_REGION) || (m_region == RIGHT_BORDER_REGION)) {
+            if (viewport()->cursor().shape() != (Qt::SizeHorCursor)) {
                 viewport()->setCursor(QCursor(Qt::SizeHorCursor));
             }
         }
-        else if ((m_region == TOP_LEFT_CORNER_REGION) || (m_region == BOTTOM_RIGHT_CORNER_REGION))
-        {
-            if (viewport()->cursor().shape() != (Qt::SizeFDiagCursor))
-            {
+        else if ((m_region == TOP_LEFT_CORNER_REGION) || (m_region == BOTTOM_RIGHT_CORNER_REGION)) {
+            if (viewport()->cursor().shape() != (Qt::SizeFDiagCursor)) {
                 viewport()->setCursor(QCursor(Qt::SizeFDiagCursor));
             }
         }
-        else if ((m_region == TOP_RIGHT_CORNER_REGION) || (m_region == BOTTOM_LEFT_CORNER_REGION))
-        {
-            if (viewport()->cursor().shape() != (Qt::SizeBDiagCursor))
-            {
+        else if ((m_region == TOP_RIGHT_CORNER_REGION) || (m_region == BOTTOM_LEFT_CORNER_REGION)) {
+            if (viewport()->cursor().shape() != (Qt::SizeBDiagCursor)) {
                 viewport()->setCursor(QCursor(Qt::SizeBDiagCursor));
             }
         }
-        else if (viewport()->cursor().shape() != (Qt::ArrowCursor))
-        {
+        else if (viewport()->cursor().shape() != (Qt::ArrowCursor)) {
             viewport()->setCursor(QCursor(Qt::ArrowCursor));
         }
     }
@@ -715,16 +665,13 @@ void DeclarativeViewer::mouseMoveEvent(QMouseEvent* event)
 
 void DeclarativeViewer::mouseReleaseEvent(QMouseEvent* event)
 {
-    if (!isFullScreen())
-    {
-        if (m_moving)
-        {
+    if (!isFullScreen()) {
+        if (m_moving) {
             m_moving = false;
             viewport()->setCursor(QCursor(Qt::ArrowCursor));
         }
 
-        if (m_resize)
-        {
+        if (m_resize) {
             m_resize = false;
             viewport()->setCursor(QCursor(Qt::ArrowCursor));
         }
@@ -761,18 +708,16 @@ QSize DeclarativeViewer::getTextWindowSize(QString url) const
     QDesktopWidget dw;
     QSize desktopSize = dw.screenGeometry(this).size();
 
-    if (size.width() > desktopSize.width() * 0.8)
-    {
+    if (size.width() > desktopSize.width() * 0.8) {
         size.setWidth(desktopSize.width() * 0.8);
     }
-    if (size.height() > desktopSize.height() * 0.8)
-    {
+    if (size.height() > desktopSize.height() * 0.8) {
         size.setHeight(desktopSize.height() * 0.8);
     }
 
     size.setHeight(size.height() + (m_isEmbedded ? 0 : height_offset));
 
-    size.setWidth(qMax(size.width(), minimumWidth())) ;
+    size.setWidth(qMax(size.width(), minimumWidth()));
     size.setHeight(qMax(size.height(), minimumHeight()));
 
     return size;
@@ -813,5 +758,4 @@ QSize inscribedRectToRect(const QSize& sz1, const QSize& sz2)
         sz.scale(sz2, Qt::KeepAspectRatio);
     return sz;
 }
-
 

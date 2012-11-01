@@ -96,15 +96,13 @@ int KLookApp::newInstance()
     if (index >= urls.count())
         index = 0;
 
-    if(!m_viewer)
-    {
+    if(!m_viewer) {
         m_viewer = new DeclarativeViewer();
         QString qmlPath = KStandardDirs::locate("appdata", "main.qml");
         if (isLocal()) // this is hack for developers. should replace it with something better I guess
             qmlPath = "../src/qml/main.qml";
 
-        if(!QFile::exists(qmlPath))
-        {
+        if(!QFile::exists(qmlPath)) {
             qDebug() << "QML file not found";
             exit();
         }

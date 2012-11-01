@@ -158,8 +158,7 @@ void Audio::setPreview(bool preview)
 void Audio::stateChanged(Phonon::State newState, Phonon::State oldState)
 {    
     Q_UNUSED(newState)
-    if ((oldState == Phonon::LoadingState) || (oldState == Phonon::StoppedState))
-    {
+    if ((oldState == Phonon::LoadingState) || (oldState == Phonon::StoppedState)) {
         setReady(true);
     }
 }
@@ -191,8 +190,7 @@ QString Audio::title()
     if (!listTitles.empty())
         titles = listTitles.join(", ");
 
-    if (titles.isEmpty())
-    {
+    if (titles.isEmpty()) {
         QFileInfo fi(m_mediaObject->currentSource().url().path());
         titles = fi.fileName();
     }

@@ -26,8 +26,7 @@ ListItemFallbackContent::ListItemFallbackContent(File *file, QObject *parent)
 
 QVariant ListItemFallbackContent::data(int role) const
 {
-    if (role == ListItem::LastModifiedRole)
-    {
+    if (role == ListItem::LastModifiedRole) {
         QString modificationDate = m_modificationTime.date().isNull()
                 ? ki18n("Unknown").toString()
                 : KGlobal::locale()->formatDate(m_modificationTime.date());
@@ -70,8 +69,7 @@ ListItemDirectoryContent::ListItemDirectoryContent(File *file, QObject *parent)
 
 QVariant ListItemDirectoryContent::data(int role) const
 {
-    switch (role)
-    {
+    switch (role) {
     case ListItem::DirSizeCompleteRole:
         return m_isScanned;
 

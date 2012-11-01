@@ -50,10 +50,8 @@ PreviewGenerator::PreviewGenerator(QObject *parent)
 
 void PreviewGenerator::notifyModel(KUrl url)
 {
-    if (m_model)
-    {
-        for (int i = 0; i < m_model->rowCount(); i++)
-        {
+    if (m_model) {
+        for (int i = 0; i < m_model->rowCount(); i++) {
             if (m_model->file(i)->url() == url)
                 m_model->refreshRow(i);
         }
@@ -92,8 +90,7 @@ void PreviewGenerator::setFiles(KUrl::List list)
     stop();
     m_fileList.clear();
 
-    for (int i = 0; i < list.size(); i++)
-    {
+    for (int i = 0; i < list.size(); i++) {
         KFileItem fileItem(KFileItem::Unknown, KFileItem::Unknown, list[i].url(), false);
         m_fileList.append(fileItem);
     }
@@ -135,8 +132,7 @@ void PreviewGenerator::previewFailed(KFileItem item)
         job->setAutoDelete(true);
         connect(job, SIGNAL(gotPreview(const KFileItem&, const QPixmap&)), SLOT(setPreview(const KFileItem&, const QPixmap&)));
     }
-    else
-    {
+    else {
         KIcon icon(item.iconName(), 0, item.overlays());
         QPixmap pixmap = icon.pixmap(500);
         setPreview(item, pixmap);
