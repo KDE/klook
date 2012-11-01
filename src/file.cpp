@@ -243,14 +243,17 @@ File::FileType getFileType(const QString& mime, const QString& name)
 
         if (left == QLatin1String("image")) {
             QString right = mime.mid(delimiter + 1);
-            if (supportedImageFormats.contains(right.toLatin1()) || right == "x-xpixmap")
+            if (supportedImageFormats.contains(right.toLatin1()) || right == "x-xpixmap"
+                 || right == "x-xpixmap" || right == "x-portable-bitmap"
+                 || right == "x-portable-pixmap" || right == "x-portable-graymap"
+                 || right == "x-xbitmap")
                 type = File::Image;
             else if (supportedImageFormats.contains("svg") && (right == ("svg+xml") || right == ("svg+xml-compressed")))
                 type = File::Image;
         }
         else if (left == QLatin1String("video")) {
             QString right = mime.mid(delimiter + 1);
-            iif (m_mimeTypes.contains(mime)) {
+            if (m_mimeTypes.contains(mime)) {
                 type = File::Video;
             }
 
@@ -289,12 +292,12 @@ File::FileType getFileType(const QString& mime, const QString& name)
         }
     }
 
-    if(mime == "application/pdf" || 
+    if(mime == "application/pdf" ||
        mime == "application/vnd.oasis.opendocument.text" ||
-       mime == "application/x-vnd.oasis.opendocument.text" || 
+       mime == "application/x-vnd.oasis.opendocument.text" ||
        /*mime == "image/x-djvu" || mime == "image/vnd.djvu" ||*/
-       mime == "application/x-chm" || 
-       mime == "application/x-fictionbook+xml" || 
+       mime == "application/x-chm" ||
+       mime == "application/x-fictionbook+xml" ||
        mime == "application/xhtml+xml") {
         type = File::OkularFile;
     }
