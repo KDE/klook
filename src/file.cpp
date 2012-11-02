@@ -201,8 +201,9 @@ void File::resultMimetypeJob(KJob *job)
 
         // now that we know file type we can download file if necessary
         if(needDownload()) {
-            if(m_isCurrent)
+            if(m_isCurrent) {
                 download();
+            }
         }
         else {
             m_isLoaded = true;
@@ -249,37 +250,41 @@ File::FileType getFileType(const QString& mime, const QString& name)
         }
         else if (left == QLatin1String("video")) {
             QString right = mime.mid(delimiter + 1);
-            if (m_mimeTypes.contains(mime))
+            iif (m_mimeTypes.contains(mime)) {
                 type = File::Video;
+            }
 
             if (type == File::Progress) {
                 if (right == QLatin1String("3gpp") ||
                      right == QLatin1String("mp4") ||
-                     right == QLatin1String("x-theora+ogg"))
+                     right == QLatin1String("x-theora+ogg")) {
                     type = File::Video;
+                }
             }
         }
         else if (left == QLatin1String("audio")) {
             QString right = mime.mid(delimiter + 1);
 
-            if (m_mimeTypes.contains(mime))
+            if (m_mimeTypes.contains(mime)) {
                 type = File::Audio;
+            }
 
             if (type == File::MimetypeFallback) {
                 if (right == QLatin1String("ogg") ||
                      right == QLatin1String("mpeg") ||
                      right == QLatin1String("x-speex+ogg") ||
                      right == QLatin1String("x-vorbis+ogg") ||
-                     right == QLatin1String("x-flac+ogg"))
+                     right == QLatin1String("x-flac+ogg")) {
                     type = File::Audio;
+                }
             }
         }
         else if (left == QLatin1String("text") ||
                   mime == QLatin1String("application/x-zerosize") ||
-                  mime == QLatin1String("application/x-shellscript"))
+                  mime == QLatin1String("application/x-shellscript")) {
             type = File::Txt;
-        else if(mime.mid(delimiter + 1) == QLatin1String("directory"))
-        {
+        }
+        else if(mime.mid(delimiter + 1) == QLatin1String("directory")) {
             type = File::Directory;
         }
     }
@@ -296,10 +301,12 @@ File::FileType getFileType(const QString& mime, const QString& name)
 
     if (type == File::MimetypeFallback) {
         if (mime == QLatin1String("application/x-matroska") ||
-             mime == QLatin1String("application/vnd.rn-realmedia"))
+             mime == QLatin1String("application/vnd.rn-realmedia")) {
             type = File::Video;
-        else if (mime == QLatin1String("bmp"))
+        }
+        else if (mime == QLatin1String("bmp")) {
             type = File::Image;
+        }
         else if (mime == QLatin1String("application/octet-stream")) {
             QFileInfo fi(name);
             if (fi.suffix() == QLatin1String("mp3") ||
