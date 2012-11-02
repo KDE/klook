@@ -87,7 +87,7 @@ DeclarativeViewer::DeclarativeViewer(QWidget* parent)
 
     registerTypes();
 
-    //Remove standart KDE title
+    //Remove standard KDE title
     setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
 
     setAttribute(Qt::WA_TranslucentBackground);
@@ -121,8 +121,9 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
     setEmbedded(embedded);
 
     KUrl::List lst;
-    for(int i = 0; i < urls.size(); i++)
+    for(int i = 0; i < urls.size(); i++) {
         lst.append(KUrl(urls[i]));
+    }
     m_previewGenerator->setFiles(lst);
     m_previewGenerator->start();
 
