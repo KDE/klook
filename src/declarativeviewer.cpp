@@ -70,6 +70,7 @@ DeclarativeViewer::DeclarativeViewer(QWidget* parent)
     setOptimizationFlags(QGraphicsView::DontSavePainterState);
     setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
+
     setMouseTracking(true);
 
     engine()->addImageProvider("preview", new PreviewProvider);
@@ -95,7 +96,7 @@ DeclarativeViewer::DeclarativeViewer(QWidget* parent)
     setStyleSheet("background:transparent;");
 
     connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), SLOT(focusChanged(QWidget*, QWidget*)));
-    connect(engine(), SIGNAL(quit()), SLOT(close()));
+    connect(engine(), SIGNAL(quit()), qApp, SLOT(quit()));
 }
 
 DeclarativeViewer::~DeclarativeViewer()
