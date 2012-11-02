@@ -252,7 +252,11 @@ File::FileType getFileType(const QString& mime, const QString& name)
         }
         else if (left == QLatin1String("video")) {
             QString right = mime.mid(delimiter + 1);
-            if (Phonon::BackendCapabilities::isMimeTypeAvailable(mime)) {
+            // make a double check - for some reason isMimeTypeAvailable
+            // does not always correct - but documentation lists it as a
+            // preferred method to check it mimetype can bdecoded
+            if (Phonon::BackendCapabilities::isMimeTypeAvailable(mime)
+                || Phonon::BackendCapabilities::availableMimeTypes().contains(mime)) {
                 type = File::Video;
             }
 
