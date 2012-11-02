@@ -11,10 +11,69 @@ index 1a121f8..61ba0b6 100644
      kitemviews/kitemlistview.cpp
      kitemviews/kitemlistwidget.cpp
 diff --git a/dolphin/src/dolphinmainwindow.cpp b/dolphin/src/dolphinmainwindow.cpp
-index 63d7d68..9921d9f 100644
+index d83c9de..9921d9f 100644
 --- a/dolphin/src/dolphinmainwindow.cpp
 +++ b/dolphin/src/dolphinmainwindow.cpp
-@@ -2008,6 +2008,9 @@ void DolphinMainWindow::connectViewSignals(DolphinViewContainer* container)
+@@ -85,6 +85,8 @@
+ #include <QClipboard>
+ #include <QToolButton>
+ #include <QSplitter>
++#include <QProcess>
++#include <QApplication>
+ 
+ namespace {
+     // Used for GeneralSettings::version() to determine whether
+@@ -118,7 +120,8 @@ DolphinMainWindow::DolphinMainWindow() :
+     m_settingsDialog(),
+     m_controlButton(0),
+     m_updateToolBarTimer(0),
+-    m_lastHandleUrlStatJob(0)
++    m_lastHandleUrlStatJob(0),
++    m_isFocusOnTerminal(false)
+ {
+     // Workaround for a X11-issue in combination with KModifierInfo
+     // (see DolphinContextMenu::initializeModifierKeyInfo() for
+@@ -236,6 +239,8 @@ DolphinMainWindow::DolphinMainWindow() :
+     if (!showMenu) {
+         createControlButton();
+     }
++
++    connect (qApp, SIGNAL(focusChanged(QWidget*,QWidget*)), this, SLOT(focusChanged(QWidget*,QWidget*)));
+ }
+ 
+ DolphinMainWindow::~DolphinMainWindow()
+@@ -400,6 +405,15 @@ void DolphinMainWindow::slotSelectionChanged(const KFileItemList& selection)
+         compareFilesAction->setEnabled(false);
+     }
+ 
++
++    //KLook
++    QAction* openInKLook = actionCollection()->action("open_in_KLook");
++    if ((selectedUrlsCount > 0) && (!m_isFocusOnTerminal)){
++        openInKLook->setEnabled(true);
++    } else {
++        openInKLook->setEnabled(false);
++    }
++
+     emit selectionChanged(selection);
+ }
+ 
+@@ -1651,6 +1665,14 @@ void DolphinMainWindow::setupActions()
+     openInNewWindow->setText(i18nc("@action:inmenu", "Open in New Window"));
+     openInNewWindow->setIcon(KIcon("window-new"));
+     connect(openInNewWindow, SIGNAL(triggered()), this, SLOT(openInNewWindow()));
++
++    // KLook
++    KAction* openInKLook = actionCollection()->addAction("open_in_KLook");
++    openInKLook->setText(i18nc("@action:inmenu", "Preview"));
++    openInKLook->setShortcut(Qt::Key_Space);
++    openInKLook->setIcon(KIcon("klook"));
++    openInKLook->setEnabled(false);
++    connect(openInKLook, SIGNAL(triggered()), this, SLOT(previewItem()));
+ }
+ 
+ void DolphinMainWindow::setupDockWidgets()
+@@ -1986,6 +2008,9 @@ void DolphinMainWindow::connectViewSignals(DolphinViewContainer* container)
              this, SLOT(goBack()));
      connect(view, SIGNAL(goForwardRequested()),
              this, SLOT(goForward()));
@@ -24,11 +83,12 @@ index 63d7d68..9921d9f 100644
  
      const KUrlNavigator* navigator = container->urlNavigator();
      connect(navigator, SIGNAL(urlChanged(KUrl)),
-@@ -2154,12 +2157,20 @@ void DolphinMainWindow::UndoUiInterface::jobError(KIO::Job* job)
+@@ -2130,4 +2155,51 @@ void DolphinMainWindow::UndoUiInterface::jobError(KIO::Job* job)
+     }
+ }
  
- void DolphinMainWindow::previewItem()
- {
--    const KFileItemList list = m_activeViewContainer->view()->selectedItems();
++void DolphinMainWindow::previewItem()
++{
 +    KFileItemList list;
 +    int index = 0;
 +    if ( m_activeViewContainer->view()->selectedItemsCount() > 1) {
@@ -37,15 +97,94 @@ index 63d7d68..9921d9f 100644
 +        list = m_activeViewContainer->view()->sortedItems();
 +        index = list.indexOf( m_activeViewContainer->view()->selectedItems().at(0));
 +    }
-     QStringList urlList;
-     foreach(KFileItem item, list)
-     {
-         urlList.append(item.url().path());
-     }
++    QStringList urlList;
++    foreach(KFileItem item, list)
++    {
++        urlList.append(item.url().url());
++    }
 +    urlList.append("-i " + QString::number(index , 10));
-     if (!list.isEmpty())
-     {
-         QProcess* process = new QProcess();
++    if (!list.isEmpty())
++    {
++        QProcess* process = new QProcess();
++        connect(process,SIGNAL(finished(int)),process,SLOT(deleteLater()));
++        process->start(QString("klook"), urlList);
++    }
++}
++
++void DolphinMainWindow::focusChanged(QWidget *old, QWidget *now)
++{
++#ifndef Q_OS_WIN
++    if (now)
++    {
++        if (QString(now->metaObject()->className()).contains("Konsole::TerminalDisplay"))
++        {
++            QAction* openInKLook = actionCollection()->action("open_in_KLook");
++            m_isFocusOnTerminal = true;
++            openInKLook->setEnabled(false);
++        }
++    }
++    if (old)
++    {
++        if (QString(old->metaObject()->className()).contains("Konsole::TerminalDisplay"))
++        {
++            QAction* openInKLook = actionCollection()->action("open_in_KLook");
++            m_isFocusOnTerminal = false;
++            openInKLook->setEnabled(true);
++        }
++    }
++#endif
++}
+ #include "dolphinmainwindow.moc"
+diff --git a/dolphin/src/dolphinmainwindow.h b/dolphin/src/dolphinmainwindow.h
+index ab79fb0..f61f173 100644
+--- a/dolphin/src/dolphinmainwindow.h
++++ b/dolphin/src/dolphinmainwindow.h
+@@ -36,6 +36,7 @@
+ 
+ typedef KIO::FileUndoManager::CommandType CommandType;
+ 
++class DolphinDockWidget;
+ class DolphinViewActionHandler;
+ class DolphinApplication;
+ class DolphinSettingsDialog;
+@@ -51,6 +52,7 @@ class KUrl;
+ class QSplitter;
+ class QToolButton;
+ class QVBoxLayout;
++class Panel;
+ 
+ /**
+  * @short Main window for Dolphin.
+@@ -102,6 +104,8 @@ public:
+      */
+     KNewFileMenu* newFileMenu() const;
+ 
++    void focusChanged(QWidget *old, QWidget *now);
++
+ public slots:
+     /**
+      * Pastes the clipboard data into the currently selected folder
+@@ -367,6 +371,12 @@ private slots:
+     void openInNewTab();
+ 
+     /**
++     * Opens the selected files in KLook.
++     */
++
++    void previewItem();
++
++    /**
+      * Opens the selected folder in a new window.
+      */
+     void openInNewWindow();
+@@ -588,6 +598,7 @@ private:
+     QTimer* m_updateToolBarTimer;
+ 
+     KIO::Job* m_lastHandleUrlStatJob;
++    bool m_isFocusOnTerminal;
+ };
+ 
+ inline DolphinViewContainer* DolphinMainWindow::activeViewContainer() const
 diff --git a/dolphin/src/kitemviews/kfileitemlistwidget.cpp b/dolphin/src/kitemviews/kfileitemlistwidget.cpp
 index 3a77241..b816fb8 100644
 --- a/dolphin/src/kitemviews/kfileitemlistwidget.cpp
@@ -138,6 +277,185 @@ index a881526..0d4be2f 100644
  private slots:
      void slotViewScrollOffsetChanged(qreal current, qreal previous);
  
+diff --git a/dolphin/src/kitemviews/kitemlistklooktoggle.cpp b/dolphin/src/kitemviews/kitemlistklooktoggle.cpp
+new file mode 100644
+index 0000000..ea5200e
+--- /dev/null
++++ b/dolphin/src/kitemviews/kitemlistklooktoggle.cpp
+@@ -0,0 +1,106 @@
++/***************************************************************************
++ *   Copyright (C) 2011 by Peter Penz <peter.penz19@gmail.com>             *
++ *                                                                         *
++ *   This program is free software; you can redistribute it and/or modify  *
++ *   it under the terms of the GNU General Public License as published by  *
++ *   the Free Software Foundation; either version 2 of the License, or     *
++ *   (at your option) any later version.                                   *
++ *                                                                         *
++ *   This program is distributed in the hope that it will be useful,       *
++ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
++ *   GNU General Public License for more details.                          *
++ *                                                                         *
++ *   You should have received a copy of the GNU General Public License     *
++ *   along with this program; if not, write to the                         *
++ *   Free Software Foundation, Inc.,                                       *
++ *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA            *
++ ***************************************************************************/
++
++#include "kitemlistklooktoggle_p.h"
++
++#include <KIconEffect>
++#include <KIconLoader>
++#include <QPainter>
++
++#include <KDebug>
++
++KItemListKlookToggle::KItemListKlookToggle(QGraphicsItem* parent) :
++    QGraphicsWidget(parent, 0),    
++    m_hovered(false)
++{
++    setAcceptHoverEvents(true);
++}
++
++KItemListKlookToggle::~KItemListKlookToggle()
++{
++}
++/*
++void KItemListKlookToggle::setChecked(bool checked)
++{
++    if (m_checked != checked) {
++        m_checked = checked;
++        m_pixmap = QPixmap();
++        update();
++    }
++}
++*/
++/*
++bool KItemListKlookToggle::isChecked() const
++{
++    return m_checked;
++}
++*/
++void KItemListKlookToggle::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
++{
++    Q_UNUSED(option);
++    Q_UNUSED(widget);
++
++    if (m_pixmap.isNull()) {
++        updatePixmap();
++    }
++
++    const qreal x = (size().width()  - qreal(m_pixmap.width()))  / 2;
++    const qreal y = (size().height() - qreal(m_pixmap.height())) / 2;
++    painter->drawPixmap(x, y, m_pixmap);
++}
++
++void KItemListKlookToggle::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
++{
++    QGraphicsWidget::hoverEnterEvent(event);
++    m_hovered = true;
++    m_pixmap = QPixmap();
++}
++
++void KItemListKlookToggle::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
++{
++    QGraphicsWidget::hoverLeaveEvent(event);
++    m_hovered = false;
++    m_pixmap = QPixmap();
++}
++
++void KItemListKlookToggle::updatePixmap()
++{
++    const char* icon = "klook";
++
++    int iconSize = qMin(size().width(), size().height());
++    if (iconSize < KIconLoader::SizeSmallMedium) {
++        iconSize = KIconLoader::SizeSmall;
++    } else if (iconSize < KIconLoader::SizeMedium) {
++        iconSize = KIconLoader::SizeSmallMedium;
++    } else if (iconSize < KIconLoader::SizeLarge) {
++        iconSize = KIconLoader::SizeMedium;
++    } else if (iconSize < KIconLoader::SizeHuge) {
++        iconSize = KIconLoader::SizeLarge;
++    } else if (iconSize < KIconLoader::SizeEnormous) {
++        iconSize = KIconLoader::SizeHuge;
++    }
++
++    m_pixmap = KIconLoader::global()->loadIcon(QLatin1String(icon), KIconLoader::NoGroup, iconSize);
++
++    if (m_hovered) {
++        KIconLoader::global()->iconEffect()->apply(m_pixmap, KIconLoader::Desktop, KIconLoader::ActiveState);
++    }
++}
++
++#include "kitemlistklooktoggle_p.moc"
+diff --git a/dolphin/src/kitemviews/kitemlistklooktoggle_p.h b/dolphin/src/kitemviews/kitemlistklooktoggle_p.h
+new file mode 100644
+index 0000000..bf5923e
+--- /dev/null
++++ b/dolphin/src/kitemviews/kitemlistklooktoggle_p.h
+@@ -0,0 +1,61 @@
++/***************************************************************************
++ *   Copyright (C) 2011 by Peter Penz <peter.penz19@gmail.com>             *
++ *                                                                         *
++ *   This program is free software; you can redistribute it and/or modify  *
++ *   it under the terms of the GNU General Public License as published by  *
++ *   the Free Software Foundation; either version 2 of the License, or     *
++ *   (at your option) any later version.                                   *
++ *                                                                         *
++ *   This program is distributed in the hope that it will be useful,       *
++ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
++ *   GNU General Public License for more details.                          *
++ *                                                                         *
++ *   You should have received a copy of the GNU General Public License     *
++ *   along with this program; if not, write to the                         *
++ *   Free Software Foundation, Inc.,                                       *
++ *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA            *
++ ***************************************************************************/
++
++#ifndef KITEMLISTKLOOKTOGGLE_H
++#define KITEMLISTKLOOKTOGGLE_H
++
++#include <libdolphin_export.h>
++
++#include <QGraphicsWidget>
++#include <QPixmap>
++
++class QPropertyAnimation;
++
++/**
++ * @brief Allows to launch klook by clicking on icon overlay
++ */
++class LIBDOLPHINPRIVATE_EXPORT KItemListKlookToggle : public QGraphicsWidget
++{
++    Q_OBJECT
++
++public:
++    KItemListKlookToggle(QGraphicsItem* parent);
++    virtual ~KItemListKlookToggle();
++
++    //void setChecked(bool checked);
++    //bool isChecked() const;
++
++    virtual void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget = 0);
++
++protected:
++    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
++    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
++
++private:
++    void updatePixmap();
++
++private:
++    //bool m_checked;
++    bool m_hovered;
++    QPixmap m_pixmap;
++};
++
++#endif
++
++
 diff --git a/dolphin/src/kitemviews/kitemlistview.cpp b/dolphin/src/kitemviews/kitemlistview.cpp
 index 72b3fd8..1519923 100644
 --- a/dolphin/src/kitemviews/kitemlistview.cpp

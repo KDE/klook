@@ -69,7 +69,7 @@ QRect KLookApp::rectParam() const
     }
     return rc;
 }
-
+#include <QDebug>
 QStringList KLookApp::urlsParam() const
 {
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
