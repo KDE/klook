@@ -74,13 +74,8 @@ QStringList KLookApp::urlsParam() const
 {
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     QStringList urls;
-    for (int i = 0; i < args->count(); i++) {	
-      if (QFile::exists(args->cwd()+ '/' + args->arg(i))) {
-        urls << QString(args->cwd()+ '/' + args->arg(i));
-      }
-      else if (QFile::exists(args->arg(i))) {
+    for (int i = 0; i < args->count(); i++) {
         urls << args->arg(i);
-      }
     }
     return urls;
 }
