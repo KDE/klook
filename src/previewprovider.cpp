@@ -36,10 +36,14 @@ QPixmap PreviewProvider::requestPixmap(const QString& id, QSize* size, const QSi
 
     KUrl url(str);
     QPixmap pixmap = previewGenerator->getPreviewPixmap(url.url());
-    if (requestedSize.isValid())
+    
+    if (requestedSize.isValid()) {
         pixmap = pixmap.scaled(requestedSize, Qt::KeepAspectRatio);
-    if(size)
+    }
+
+    if(size) {
         *size = pixmap.size();
+    }
 
     return pixmap;
 }

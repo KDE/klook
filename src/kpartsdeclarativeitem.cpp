@@ -22,8 +22,9 @@ KPartsDeclarativeItem::~KPartsDeclarativeItem()
     // for some reason when I try to delete KPartsWidget it just crashes
     // so delete only part and reuse widget object
     QObjectList list = m_dummy->children();
-    if(list.size() > 1)
+    if(list.size() > 1) {
         m_partWidget->setParent(0);
+    }
 }
 
 

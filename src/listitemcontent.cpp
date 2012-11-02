@@ -32,8 +32,7 @@ QVariant ListItemFallbackContent::data(int role) const
                 : KGlobal::locale()->formatDate(m_modificationTime.date());
         return modificationDate;
     }
-    else if (role == ListItem::ContentSizeRole)
-    {
+    else if (role == ListItem::ContentSizeRole) {
         return KGlobal::locale()->formatByteSize(m_size);
     }
     else if(role == ListItem::StatCompleteRole) {

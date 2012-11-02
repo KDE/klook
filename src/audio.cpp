@@ -49,10 +49,12 @@ Audio::~Audio()
 
 void Audio::setPause()
 {
-    if (!isVisible())
+    if (!isVisible()) {
         pause();
-    else
+    }
+    else {
         play();
+    }
 }
 
 bool Audio::isReady()
@@ -139,10 +141,12 @@ void Audio::pause()
 
 void Audio::play_or_pause()
 {
-    if (playing())
+    if (playing()) {
         pause();
-    else
+    }
+    else {
         play();
+    }
 }
 
 bool Audio::isPreview() const
@@ -167,9 +171,9 @@ QString Audio::artist()
 {
     QString artists;
     QStringList listArtists = m_mediaObject->metaData("ARTIST");
-    if (!listArtists.empty())
+    if (!listArtists.empty()) {
         artists = listArtists.join(", ");
-
+    }
     return artists;
 }
 
@@ -177,9 +181,9 @@ QString Audio::album()
 {
     QString albums;
     QStringList listAlbums = m_mediaObject->metaData("ALBUM");
-    if (!listAlbums.empty())
+    if (!listAlbums.empty()) {
         albums = listAlbums.join(", ");
-
+    }
     return albums;
 }
 
@@ -187,8 +191,9 @@ QString Audio::title()
 {
     QString titles;
     QStringList listTitles = m_mediaObject->metaData("TITLE");
-    if (!listTitles.empty())
+    if (!listTitles.empty()) {
         titles = listTitles.join(", ");
+    } 
 
     if (titles.isEmpty()) {
         QFileInfo fi(m_mediaObject->currentSource().url().path());
@@ -202,8 +207,9 @@ QString Audio::composer()
 {
     QString composers;
     QStringList listcomposers = m_mediaObject->metaData("COMPOSER");
-    if (!listcomposers.empty())
+    if (!listcomposers.empty()) {
         composers = listcomposers.join(", ");
+    }
 
     return composers.toUtf8();
 }
@@ -212,8 +218,9 @@ QString Audio::genre()
 {
     QString genres;
     QStringList listgenres = m_mediaObject->metaData("GENRE");
-    if (!listgenres.empty())
+    if (!listgenres.empty()) {
         genres = listgenres.join(", ");
+    }
 
     return genres;
 }

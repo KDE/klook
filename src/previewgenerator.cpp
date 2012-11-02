@@ -52,8 +52,9 @@ void PreviewGenerator::notifyModel(KUrl url)
 {
     if (m_model) {
         for (int i = 0; i < m_model->rowCount(); i++) {
-            if (m_model->file(i)->url() == url)
+            if (m_model->file(i)->url() == url) {
                 m_model->refreshRow(i);
+            }
         }
     }
 }
@@ -72,16 +73,18 @@ void PreviewGenerator::setPreview(const KFileItem &item, const QPixmap &pixmap)
 
 QPixmap PreviewGenerator::getPreviewPixmap(QString filePath)
 {
-    if (previews.contains(filePath))
+    if (previews.contains(filePath)) {
         return previews[filePath];
+    }
 
     return defaultPreview;
 }
 
 PreviewGenerator * PreviewGenerator::instance()
 {
-    if (!m_instance)
+    if (!m_instance) {
         m_instance = new PreviewGenerator;
+    }
     return m_instance;
 }
 
@@ -103,8 +106,9 @@ void PreviewGenerator::setModel(FileModel* model)
 
 void PreviewGenerator::start()
 {
-    if (m_fileList.isEmpty())
+    if (m_fileList.isEmpty()) {
         return;
+    }
     m_job = KIO::filePreview(m_fileList, 1000, 0, 0, 0, true, false, &m_plugins);
     m_job->setIgnoreMaximumSize(true);
     m_job->setAutoDelete(false);
@@ -115,8 +119,9 @@ void PreviewGenerator::start()
 
 void PreviewGenerator::stop()
 {
-    if (m_job)
+    if (m_job) {
         m_job->kill();
+    }
     previews.clear();
 }
 

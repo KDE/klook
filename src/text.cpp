@@ -50,23 +50,27 @@ QString MyText::source() const
 
 void MyText::setSource(const QString& source)
 {
-    if (m_source == source)
+    if (m_source == source) {
         return;
+    }
     m_source = source;
 
-    QFile f(m_source);
-    if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+    QFile f(m_source); 
+    if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return;
+    }
 
     QByteArray data = f.readAll().data();
     KEncodingProber prober(KEncodingProber::Universal);
     prober.feed(data);
 
     QString str;
-    if (prober.confidence() > 0.7)
+    if (prober.confidence() > 0.7) {
         str = QTextCodec::codecForName(prober.encoding())->toUnicode(data);
-    else
+    }
+    else {
         str = QString::fromUtf8(data);
+    }
 
     m_viewer->setPlainText(str);
 

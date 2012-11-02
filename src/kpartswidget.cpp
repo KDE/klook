@@ -23,16 +23,18 @@ KPartsWidget::KPartsWidget(QWidget *parent)
 
 KPartsWidget *KPartsWidget::instance()
 {
-    if(!m_instance)
+    if(!m_instance) {
         m_instance = new KPartsWidget;
+    }
 
     return m_instance;
 }
 
 void KPartsWidget::setUrl(const QString &url)
 {
-    if(m_part)
+    if(m_part) {
         m_part->openUrl(url);
+    }
 }
 
 QStringList KPartsWidget::supportedMimeTypes() const

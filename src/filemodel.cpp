@@ -42,21 +42,24 @@ int FileModel::rowCount(const QModelIndex &parent) const
 
 QVariant FileModel::data(const QModelIndex &index, int role) const
 {
-    if (index.row() < 0 || index.row() >= m_list.size())
+    if (index.row() < 0 || index.row() >= m_list.size()) {
         return QVariant();
+    }
     return m_list.at(index.row())->data(role);
 }
 
 bool FileModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (!index.isValid())
+    if (!index.isValid()) {
         return false;
+    }
 
-    if (role == ListItem::FilePathRole)
+    if (role == ListItem::FilePathRole) {
         m_list[ index.row() ]->setPath(value.toString());
-    else if (role == ListItem::TypeRole)
+    }
+    else if (role == ListItem::TypeRole) {
         m_list[ index.row() ]->setType(value.toInt());
-
+    }
     emit dataChanged(index, index);
 
     return true;
@@ -98,15 +101,17 @@ void FileModel::reset()
 int FileModel::rowFromFile(const File *file) const
 {
     for(int i = 0; i < m_list.size(); i++)
-        if(m_list[i]->file() == file)
+        if(m_list[i]->file() == file) {
             return i;
+        }
     return -1;
 }
 
 void FileModel::load(int row)
 {
-    if(row >= rowCount() || row < 0)
+    if(row >= rowCount() || row < 0) {
         return;
+    }
 
     // stop previous download
     if(m_currentLoadingFile) {

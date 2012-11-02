@@ -75,10 +75,12 @@ QStringList KLookApp::urlsParam() const
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     QStringList urls;
     for (int i = 0; i < args->count(); i++) {	
-	if (QFile::exists(args->cwd()+ '/' + args->arg(i)))
-	  urls << QString(args->cwd()+ '/' + args->arg(i));
-    else if (QFile::exists(args->arg(i)))
-	  urls << args->arg(i);
+      if (QFile::exists(args->cwd()+ '/' + args->arg(i))) {
+        urls << QString(args->cwd()+ '/' + args->arg(i));
+      }
+      else if (QFile::exists(args->arg(i))) {
+        urls << args->arg(i);
+      }
     }
     return urls;
 }
@@ -93,9 +95,9 @@ int KLookApp::newInstance()
     bool embedded = isEmbeddedParam();
 
     int index = args->getOption("i").toInt();
-    if (index >= urls.count())
+    if (index >= urls.count()) {
         index = 0;
-
+    }
     if(!m_viewer) {
         m_viewer = new DeclarativeViewer();
         QString qmlPath = KStandardDirs::locate("appdata", "main.qml");

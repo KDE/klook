@@ -754,8 +754,9 @@ QSize calculateViewSize(const QSize& sz, const QRect &desktop)
 QSize inscribedRectToRect(const QSize& sz1, const QSize& sz2)
 {
     QSize sz = sz1;
-    if ((sz.height() > sz2.height()) || (sz.width() > sz2.width()))
+    if ((sz.height() > sz2.height()) || (sz.width() > sz2.width())) {
         sz.scale(sz2, Qt::KeepAspectRatio);
+    }
     return sz;
 }
 

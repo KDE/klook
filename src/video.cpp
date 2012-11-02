@@ -64,10 +64,12 @@ Video::~Video()
 
 void Video::setPause()
 {
-    if (!isVisible())
+    if (!isVisible()) {
         pause();
-    else
+    }
+    else {
         play();
+    }
 }
 
 bool Video::isReady()
@@ -166,10 +168,12 @@ void Video::pause()
 
 void Video::play_or_pause()
 {
-    if (m_player->isPlaying())
+    if (m_player->isPlaying()) {
         m_player->pause();
-    else
+    }
+    else { 
         m_player->play();
+    }
 }
 
 bool Video::isPreview() const
@@ -185,6 +189,7 @@ void Video::setPreview(bool preview)
 void Video::stateChanged(Phonon::State newState, Phonon::State oldState)
 {
     Q_UNUSED(newState)
-    if ((oldState == Phonon::LoadingState) || (oldState == Phonon::StoppedState))
+    if ((oldState == Phonon::LoadingState) || (oldState == Phonon::StoppedState)) {
         setReady(true);
+    }
 }

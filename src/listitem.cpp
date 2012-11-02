@@ -12,11 +12,12 @@ ListItem::ListItem(File *file, QObject *parent)
 QString ListItem::path() const
 {
     QString result;
-    if(!m_file->url().isLocalFile() && m_file->isLoaded())
+    if(!m_file->url().isLocalFile() && m_file->isLoaded()) {
         result = m_file->tempFilePath();
-    else
+    }
+    else {
         result = m_file->url().pathOrUrl();
-
+    }
     return result;
 }
 
@@ -57,14 +58,17 @@ QVariant ListItem::data(int role) const
     // instantiate content only when roles really require it
     if(!m_content) {
         const int type = m_file->type();
-        if(m_file->type() == File::Progress)
+        if(m_file->type() == File::Progress) {
             return QVariant();
+        }
 
         QObject *parent = const_cast<QObject *>(qobject_cast<const QObject *>(this));
-        if(type == File::Directory)
+        if(type == File::Directory) {
             m_content = new ListItemDirectoryContent(m_file, parent);
-        else
+        }
+        else {
             m_content = new ListItemFallbackContent(m_file, parent);
+        }
         connect(m_content, SIGNAL(dataChanged()), SIGNAL(dataChanged()));
     }
 
