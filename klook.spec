@@ -7,6 +7,10 @@ Release:	1
 License:	GPLv3
 Group:		Graphical desktop/KDE
 Source:		%{name}-%{version}.tar.gz
+Requires: 	okular
+Requires: 	okular-ooo
+Requires: 	okular-chm
+Requires: 	okular-pdf
 BuildRequires:	qt4-devel	>= 4.7.0
 BuildRequires:	kdelibs4-devel	>= 4.6.5
 
