@@ -75,7 +75,12 @@ QStringList KLookApp::urlsParam() const
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     QStringList urls;
     for (int i = 0; i < args->count(); i++) {
-        urls << args->arg(i);
+        KUrl url(args->arg(i));
+        if(url.isRelative()) {
+            url.setUrl(args->cwd());
+            url.addPath(args->arg(i));
+        }
+        urls << url.url();
     }
     return urls;
 }
