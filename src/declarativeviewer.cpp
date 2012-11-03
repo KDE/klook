@@ -169,7 +169,7 @@ void DeclarativeViewer::registerTypes()
     rootContext()->setContextProperty("previewGenerator", PreviewGenerator::instance());
     rootContext()->setContextProperty("mainWidget",  this);
     rootContext()->setContextProperty("actualSize", "off");
-    rootContext()->setContextProperty("openText", ki18n("Open in...").toString());
+    rootContext()->setContextProperty("openText", i18n("Open in..."));
     rootContext()->setContextProperty("fileName", "");
     rootContext()->setContextProperty("fileUrl", "");
     rootContext()->setContextProperty("fileType", "Undefined");
@@ -178,12 +178,12 @@ void DeclarativeViewer::registerTypes()
     rootContext()->setContextProperty("embeddedLayout", "null");
     rootContext()->setContextProperty("arrowX", .0);
     rootContext()->setContextProperty("arrowY", .0);
-    rootContext()->setContextProperty("artistStr", ki18n("Artist:").toString());
-    rootContext()->setContextProperty("totalTimeStr", ki18n("Total time:").toString());
-    rootContext()->setContextProperty("folderStr", ki18n("Folder").toString());
-    rootContext()->setContextProperty("lastModifiedStr", ki18n("Last Modified:").toString());
-    rootContext()->setContextProperty("sizeStr", ki18n("Size:").toString());
-    rootContext()->setContextProperty("elementsStr", ki18n("Elements:").toString());
+    rootContext()->setContextProperty("artistStr", i18n("Artist:"));
+    rootContext()->setContextProperty("totalTimeStr", i18n("Total time:"));
+    rootContext()->setContextProperty("folderStr", i18n("Folder"));
+    rootContext()->setContextProperty("lastModifiedStr", i18n("Last Modified:"));
+    rootContext()->setContextProperty("sizeStr", i18n("Size:"));
+    rootContext()->setContextProperty("elementsStr", i18n("Elements:"));
 }
 
 void DeclarativeViewer::setFullScreen()
@@ -400,8 +400,8 @@ void DeclarativeViewer::centerWidget(const QSize& sz)
 void DeclarativeViewer::updateMenu(int index)
 {
     if(index == -1) {
-        rootContext()->setContextProperty("openText",  ki18n("Open in...").toString());
-        rootContext()->setContextProperty("fileName",  ki18n("Elements: ").toString() + QString::number(m_fileModel->rowCount()));
+        rootContext()->setContextProperty("openText",  i18n("Open in..."));
+        rootContext()->setContextProperty("fileName",  i18n("Elements: %1", m_fileModel->rowCount()));
         return;
     }
     m_currentFile = m_fileModel->file(index);
@@ -412,11 +412,11 @@ void DeclarativeViewer::updateMenu(int index)
         KService::Ptr ptr = KMimeTypeTrader::self()->preferredService(file->mime());
         KService *serv = ptr.data();
         if(!ptr.isNull())
-            openText = ki18n("Open in ").toString() + serv->name();
+            openText = i18n("Open in %1", serv->name());
     }
 
     if(openText.isEmpty())
-        openText = ki18n("Open").toString();
+        openText = i18n("Open");
 
     rootContext()->setContextProperty("openText", openText);
     rootContext()->setContextProperty("fileName", file->url().fileName());

@@ -28,7 +28,7 @@ QVariant ListItemFallbackContent::data(int role) const
 {
     if (role == ListItem::LastModifiedRole) {
         QString modificationDate = m_modificationTime.date().isNull()
-                ? ki18n("Unknown").toString()
+                ? i18nc("Unknown modification date", "Unknown")
                 : KGlobal::locale()->formatDate(m_modificationTime.date());
         return modificationDate;
     }
