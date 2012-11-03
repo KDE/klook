@@ -60,7 +60,9 @@ install( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/qml/images/
                  DESTINATION ${DATA_INSTALL_DIR}/${PROJECT_NAME}/images )
 
 #Translations
-find_package( Msgfmt REQUIRED )
-find_package( Gettext REQUIRED )
-add_subdirectory( locale )
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/locale)
+  find_package( Msgfmt REQUIRED )
+  find_package( Gettext REQUIRED )
+  add_subdirectory( locale )
+endif()
 
