@@ -337,7 +337,7 @@ Rectangle {
         }
     }
 
-    Rectangle{
+    Rectangle {
         id: drawerBorder
         smooth: true
         anchors.right: parent.right
@@ -416,14 +416,12 @@ Rectangle {
                         onMousePositionChanged:
                         {
                             var mouseIndex = galleryGridView.indexAt(mouseX + galleryGridView.contentX, mouseY + galleryGridView.contentY)
-                            if (mouseIndex !== -1)
-                            {
+                            if (mouseIndex !== -1) {
                                 if (openButton.state !== 'normal')
                                     openButton.state = 'normal'
                                 galleryGridView.currentIndex = mouseIndex
                             }
-                            else
-                            {
+                            else {
                                 if (openButton.state !== 'disabled')
                                     openButton.state = 'disabled'
                                 galleryGridView.currentIndex = -1
@@ -432,10 +430,10 @@ Rectangle {
                         }
 
                         onClicked: {
-                            if ( ( albumWrapper.state == 'inGrid' ) && ( galleryGridView.currentIndex !== -1 ) ) {
+                            if (albumWrapper.state == 'inGrid' && galleryGridView.currentIndex !== -1) {
                                 albumWrapper.state = ""
                             }
-                            setGalleryView( albumWrapper.state === 'inGrid' )
+                            setGalleryView(albumWrapper.state === 'inGrid')
                             panel.state = mainWindow.updatePanelState()
                         }
 
@@ -471,8 +469,7 @@ Rectangle {
                     highlightMoveSpeed: 5000
                     preferredHighlightBegin: 0; preferredHighlightEnd: 0  //this line means that the currently highlighted item will be central in the view
 
-                    onCurrentIndexChanged:
-                    {
+                    onCurrentIndexChanged: {
                         fileModel.load(currentIndex)
                         updateMenuButtons()
                         updatePanel()
@@ -505,6 +502,7 @@ Rectangle {
                         }
                     }
                 }
+
                 states: [
                     State {
                         name: "inGrid"
@@ -512,7 +510,7 @@ Rectangle {
                         PropertyChanges { target: galleryGridView; visible: true }
                         PropertyChanges { target: galleryGridView; focus: true }
                         PropertyChanges { target: photosListView; visible: false }
-                        PropertyChanges { target: photosListView; focus: false  }                        
+                        PropertyChanges { target: photosListView; focus: false  }
                     }
                 ]
 
@@ -593,20 +591,22 @@ Rectangle {
     states: [
         State {
             name: "windowed"
-            PropertyChanges {
-                target: mainWindow;
-                border.width: 2
-                color: "transparent"
-            }
+
+            PropertyChanges { target: mainWindow; border.width: 2; color: "transparent" }
+
             PropertyChanges { target: menu; visible: true }
+
             PropertyChanges { target: photosListView; highlightMoveSpeed: 5000 }
+
             PropertyChanges {
                 target: panel
                 opacity: 1
                 state: "videoPanel"
                 y: albumWrapper.height - panel.height - 10
             }
+
             ParentChange { target: drawer; parent: drawerBorder }
+
             PropertyChanges {
                 target: drawer
                 anchors.margins: 1
@@ -627,16 +627,17 @@ Rectangle {
                 state: updatePanelState()
                 y: albumWrapper.height - panel.height - 32
             }
-
         },
         State {
             name: "fullscreen"
+
             PropertyChanges { target: mainWindow; border.width: 0 }
 
             // this is just for a case when okular delegate was displayed in windowed mode
             PropertyChanges { target: mouseControl; enabled: true }
 
             PropertyChanges { target: photosListView; highlightMoveSpeed: 7000 }
+
             PropertyChanges {
                 target: panel;
                 state: updatePanelState()
@@ -644,7 +645,9 @@ Rectangle {
             }
 
             PropertyChanges { target: menu; visible: false }
+
             ParentChange { target: drawer; parent: mainWindow }
+
             PropertyChanges {
                 target: drawer
                 anchors.rightMargin: 0
@@ -657,13 +660,17 @@ Rectangle {
         },
         State {
             name: "embedded"
-            PropertyChanges {target: mainWindow;  border.width: 0; }
+
+            PropertyChanges { target: mainWindow;  border.width: 0; }
 
             PropertyChanges { target: menu; visible: false  }
 
             AnchorChanges   { target: drawerBorder; anchors.top: parent.top }
+
             PropertyChanges { target: drawerBorder; anchors.topMargin: 0 }
+
             PropertyChanges { target: drawer; anchors.topMargin: 1 }
+
             PropertyChanges {
                 target: drawerBorder
                 color: "#537492"
@@ -671,6 +678,7 @@ Rectangle {
                 anchors.leftMargin: ( embeddedLayout === "right" ) ? 16 : 0
                 anchors.bottomMargin : ( embeddedLayout === "top" ) ? 16 : 0
             }
+
             PropertyChanges {
                 target: arrow
                 source: (embeddedLayout === "top") ?
@@ -679,6 +687,7 @@ Rectangle {
                 visible : true
                 x : arrowX; y: arrowY
             }
+
             PropertyChanges {
                 target: drawer
                 anchors.margins: 1
