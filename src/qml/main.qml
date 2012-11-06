@@ -162,19 +162,17 @@ Rectangle {
     }
 
     Keys.onEscapePressed: {
-        if ( mainWindow.state === 'fullscreen' )
+        if (mainWindow.state === 'fullscreen' )
             setFullScreen();
         else
             quit()
     }
 
-    Keys.onSpacePressed:
-    {
+    Keys.onSpacePressed: {
         quit()
     }
 
-    Keys.onReturnPressed:
-    {
+    Keys.onReturnPressed: {
         if (galleryGridView.currentIndex !== -1)
             albumWrapper.state = ""
 
@@ -183,7 +181,7 @@ Rectangle {
 
     Component.onCompleted:
     {
-        if ( embedded )
+        if (embedded)
             mainWindow.state = 'embedded'
         else
             mainWindow.state = 'windowed'
@@ -397,12 +395,11 @@ Rectangle {
                     snapMode: GridView.SnapToRow
                     clip: true
                     visible: false
+                    cacheBuffer: 0
 
-                    onCurrentIndexChanged:
-                    {
+                    onCurrentIndexChanged: {
                         mainWidget.updateMenu(currentIndex)
                     }
-
 
                     MouseArea {
                         id: mouseAreaGrid
@@ -654,6 +651,7 @@ Rectangle {
                 anchors.topMargin: 0
                 color: "#333333"
             }
+
             PropertyChanges { target: drawerBorder; visible: false }
         },
         State {
@@ -672,9 +670,9 @@ Rectangle {
             PropertyChanges {
                 target: drawerBorder
                 color: "#537492"
-                anchors.rightMargin: ( embeddedLayout === "left" ) ? 16 : 0
-                anchors.leftMargin: ( embeddedLayout === "right" ) ? 16 : 0
-                anchors.bottomMargin : ( embeddedLayout === "top" ) ? 16 : 0
+                anchors.rightMargin: (embeddedLayout === "left") ? 16 : 0
+                anchors.leftMargin: (embeddedLayout === "right") ? 16 : 0
+                anchors.bottomMargin : (embeddedLayout === "top") ? 16 : 0
             }
 
             PropertyChanges {

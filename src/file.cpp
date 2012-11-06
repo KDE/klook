@@ -209,7 +209,6 @@ void File::resultMimetypeJob(KJob *job)
             m_isLoaded = true;
         }
     }
-
     else {
         setType(File::Error);
         m_error = job->errorString();
