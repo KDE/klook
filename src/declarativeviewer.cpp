@@ -188,7 +188,7 @@ void DeclarativeViewer::registerTypes()
 
 void DeclarativeViewer::setFullScreen()
 {
-    if (m_isGallery) {
+    if (m_isGallery && !isFullScreen()) {
         showFullScreen();
         emit setFullScreenState();
         return;
