@@ -19,60 +19,14 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-
 import QtQuick 1.1
-import Widgets 1.0
 
 Item {
-    id: gridDelegate;
     width: galleryGridView.cellWidth
     height: galleryGridView.cellHeight
 
-    Component {
-        id: imgVideoDelegate
-
-        Item {
-            id: imageItem
-            anchors.centerIn: parent
-
-            Preview {
-                id: emptyBox
-            }
-        }
-    }
-
-    Component {
-        id: txtDelegate
-
-        Item {
-            id: txtItem
-
-            DefaultImage {
-                id: emptyBox
-            }
-
-            signal ready()
-
-            PlainText {
-                id: txt
-                source: filePath
-                anchors.fill: parent
-                preview: true
-            }
-            onReady: { emptyBox.visible = false }
-        }
-    }
-
-    // function for getting delegate of loader element
-    function bestDelegate( t ) {
-            return imgVideoDelegate;
-    }
-
-    Loader {
-        id: originalImage
+    Preview {
         anchors.centerIn: parent
-        width: gridDelegate.width - 20
-        height: gridDelegate.height - 20
-        sourceComponent: bestDelegate( type )
     }
 }
+

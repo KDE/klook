@@ -107,6 +107,11 @@ int FileModel::rowFromFile(const File *file) const
     return -1;
 }
 
+void FileModel::previewReady(const QString &path)
+{
+    emit gotPreview(path);
+}
+
 void FileModel::load(int row)
 {
     if(row >= rowCount() || row < 0) {

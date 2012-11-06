@@ -22,8 +22,7 @@
 #ifndef PREVIEWIMAGEPROVIDER_H
 #define PREVIEWIMAGEPROVIDER_H
 
-#include <QtDeclarative>
-#include <QtCore>
+#include <QtDeclarative/QDeclarativeImageProvider>
 
 class PreviewGenerator;
 
@@ -34,7 +33,8 @@ public:
     QPixmap requestPixmap(const QString& id, QSize* size, const QSize& requestedSize);
 
 private:
-    PreviewGenerator* previewGenerator;
+    QPixmap m_defaultPreview;
+    PreviewGenerator *m_previewGenerator;
 };
 
 #endif // PREVIEWIMAGEPROVIDER_H

@@ -19,31 +19,34 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <KUrl>
-
 #include "previewprovider.h"
 #include "previewgenerator.h"
 
 PreviewProvider::PreviewProvider()
     : QDeclarativeImageProvider(Pixmap)
-    , previewGenerator(PreviewGenerator::instance())
+    , m_defaultPreview(":images/pla-empty-box.png")
+    , m_previewGenerator(PreviewGenerator::instance())
 {
 }
 
 QPixmap PreviewProvider::requestPixmap(const QString& id, QSize* size, const QSize &requestedSize)
 {
     QString str = id.left(id.lastIndexOf('%'));
+    QPixmap pixmap = m_previewGenerator->takePreviewPixmap(str);
 
-    KUrl url(str);
-    QPixmap pixmap = previewGenerator->getPreviewPixmap(url.url());
-    
-    if (requestedSize.isValid()) {
-        pixmap = pixmap.scaled(requestedSize, Qt::KeepAspectRatio);
+    if(pixmap.isNull()) {
+        QSize size = requestedSize.isValid() ? requestedSize : QSize();
+        m_previewGenerator->request(str, size);
+        return m_defaultPreview.scaled(size);
     }
 
-    if(size) {
+    // only scale down
+    if (requestedSize.isValid() && (requestedSize.width() < pixmap.width() || requestedSize.height() < pixmap.height())) {
+        pixmap = pixmap.scaled(requestedSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    }
+
+    if (size)
         *size = pixmap.size();
-    }
 
     return pixmap;
 }

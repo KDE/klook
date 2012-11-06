@@ -389,10 +389,9 @@ Rectangle {
                     width: drawer.width;
                     height: drawer.height
                     anchors.fill: parent ; anchors.margins: 10
-                    model: fileModel
-                    delegate: Delegate{}
-                    cellWidth: getCellSize( galleryGridView.count ).width
-                    cellHeight: getCellSize( galleryGridView.count ).height
+                    delegate: Delegate {}
+                    cellWidth: getCellSize(galleryGridView.count).width
+                    cellHeight: getCellSize(galleryGridView.count).height
                     highlight:  highlight
                     highlightFollowsCurrentItem: false
                     snapMode: GridView.SnapToRow
@@ -509,6 +508,7 @@ Rectangle {
                         PropertyChanges { target: albumsShade; opacity: 1 }
                         PropertyChanges { target: galleryGridView; visible: true }
                         PropertyChanges { target: galleryGridView; focus: true }
+                        PropertyChanges { target: galleryGridView; model: fileModel }
                         PropertyChanges { target: photosListView; visible: false }
                         PropertyChanges { target: photosListView; focus: false  }
                     }
@@ -522,13 +522,11 @@ Rectangle {
                 ]
 
                 onStateChanged:
-                {                    
+                {
                     if (albumWrapper.state === "inGrid") {
-                        previewGenerator.start()
                         prevButton.state = 'disabled'
                         nextButton.state = 'disabled'
                     } else {
-                        previewGenerator.stop()
                         photosListView.currentIndex = galleryGridView.currentIndex
                         photosListView.positionViewAtIndex( photosListView.currentIndex, ListView.Contain )
                         updateMenuButtons()

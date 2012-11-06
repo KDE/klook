@@ -137,7 +137,6 @@ private:
     bool            m_isActualSize;
     WidgetRegion    m_region;
 
-    PreviewGenerator*   m_previewGenerator;
     FileModel*          m_fileModel;
     ArrowPosition       m_posArrow;
 

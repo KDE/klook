@@ -80,8 +80,6 @@ DeclarativeViewer::DeclarativeViewer(QWidget* parent)
 
     setMinimumSize(min_width, min_height);
 
-    m_previewGenerator = PreviewGenerator::instance();
-
     m_fileModel = new FileModel(this);
     m_fileModel->setRoleNames(ListItem::roleNames());
 
@@ -122,18 +120,13 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
     rootContext()->setContextProperty("embedded", m_isEmbedded);
     setEmbedded(embedded);
 
-    KUrl::List lst;
-    for(int i = 0; i < urls.size(); i++) {
-        lst.append(KUrl(urls[i]));
-    }
-    m_previewGenerator->setFiles(lst);
-    m_previewGenerator->start();
 
     m_currentFile = m_fileModel->file(indexToShow);
 
-    QSize startingSize = m_currentFile->url().isLocalFile() ?
-                getPreferredSize(m_currentFile->url().toLocalFile(), File::Progress) :
-                QSize();
+    QSize startingSize = m_currentFile->url().isLocalFile()
+            ? getPreferredSize(m_currentFile->url().toLocalFile(), File::Progress)
+            : QSize();
+
     KWindowSystem::setState(winId(), NET::SkipTaskbar);
     centerWidget(startingSize.isValid() ? startingSize : QSize(min_width, min_height));
     emit setStartWindow();
@@ -166,7 +159,6 @@ void DeclarativeViewer::registerTypes()
     rootContext()->setContextProperty("DWigth", r.width());
     rootContext()->setContextProperty("DHeight", r.height());
     rootContext()->setContextProperty("fileModel", m_fileModel);
-    rootContext()->setContextProperty("previewGenerator", PreviewGenerator::instance());
     rootContext()->setContextProperty("mainWidget",  this);
     rootContext()->setContextProperty("actualSize", "off");
     rootContext()->setContextProperty("openText", i18n("Open in..."));
@@ -176,6 +168,7 @@ void DeclarativeViewer::registerTypes()
     rootContext()->setContextProperty("viewMode", "single");
     rootContext()->setContextProperty("embedded", m_isEmbedded);
     rootContext()->setContextProperty("embeddedLayout", "null");
+    rootContext()->setContextProperty("previewGenerator", PreviewGenerator::instance());
     rootContext()->setContextProperty("arrowX", .0);
     rootContext()->setContextProperty("arrowY", .0);
     rootContext()->setContextProperty("artistStr", i18n("Artist:"));

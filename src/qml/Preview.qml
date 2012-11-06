@@ -19,29 +19,27 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import QtQuick 1.0
-
-// This compoment has few ugly workarounds because of Qt QTBUG-14900
-// because of this bug it's very hard to update image using image provider
-// so we add some random symbols to file name every time we are interested in image
-// update
+import QtQuick 1.1
 
 Image {
-    source: "image://preview/" + fileUrl + "%" + Math.random( 10 )
-    width: Math.min( sourceSize.width, parent.width )
-    height: Math.min( sourceSize.height, parent.height )
-    fillMode: Image.PreserveAspectFit
-    anchors.centerIn: parent
-    smooth: true
-    asynchronous: true
-    visible: albumWrapper.state === "inGrid"
+    source: "image://preview/" + fileUrl + "%"
+    sourceSize.width: parent.width - 20
+    sourceSize.height: parent.height - 20
 
-    Connections
-    {
+    cache: false
+
+    Connections {
         target: fileModel
-        onDataChanged:
-        {
-            source = "image://preview/" + fileUrl + "%" + Math.random( 10 )
+        onGotPreview: {
+            // refresh only picture we got preview for
+            if(path === fileUrl) {
+                source += "1"
+            }
         }
     }
+
+    Component.onDestruction: {
+        previewGenerator.cancel(fileUrl)
+    }
 }
+

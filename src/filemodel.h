@@ -56,12 +56,17 @@ public:
 
     int rowFromFile(const File *file) const;
 
+    void previewReady(const QString &path);
+
     Q_INVOKABLE void load(int row);
     Q_INVOKABLE File *file(int index);
     Q_INVOKABLE int count() const;
 
 private slots:
     void handleItemChange();
+
+signals:
+    void gotPreview(QString path);
 
 private:
     QModelIndex indexFromItem(ListItem *item);

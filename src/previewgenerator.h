@@ -22,52 +22,51 @@
 #ifndef PREVIEWGENERATOR_H
 #define PREVIEWGENERATOR_H
 
-#include <QtCore/QObject>
 #include <QtCore/QHash>
+#include <QtCore/QObject>
 
-#include <kio/previewjob.h>
-#include <kfileitem.h>
-#include <QDeclarativeEngine>
-#include <QtCore/QPair>
+#include <KIO/PreviewJob>
 
-class Image;
 class FileModel;
 
 class PreviewGenerator : public QObject
 {
     Q_OBJECT
-
 public:
-    static PreviewGenerator *instance();
-    void setFiles(KUrl::List list);
-
-    QPixmap getPreviewPixmap(QString filePath);
     void setModel(FileModel *model);
 
-public slots:
-    void start();
-    void stop();
+    QPixmap takePreviewPixmap(QString filePath);
+
+    /**
+     * @brief modelShown is called in QML after "cloud" is loaded. It generates
+     *        previews and notifies model when previews are generated
+     * @param dayModel
+     */
+    Q_INVOKABLE void request(const QString &path, const QSize &size);
+
+    /**
+     * @brief modelHidden is in QML when cloud component gets destroyed. It removes
+     *        unused  images generated for model
+     * @param dayModel
+     */
+    Q_INVOKABLE void cancel(const QString &path);
+
+    static PreviewGenerator *instance();
 
 private slots:
-    void setPreview(const KFileItem&, const QPixmap&);
-    void previewFailed(KFileItem);
+    void previewJobResult(const KFileItem&, const QPixmap&);
+    void previewJobFailed(const KFileItem &item);
 
 private:
-    explicit PreviewGenerator(QObject *parent = 0);
+    friend PreviewGenerator *previewGenerator(const QString &type);
 
-    void notifyModel(KUrl url);
+    explicit PreviewGenerator();
+    void notifyModelAboutPreview(const QString &url);
 
-    static PreviewGenerator* m_instance;
+    QHash<QString, QPixmap> m_previews;
 
-    QHash<KUrl, QPixmap> previews;
-
-    QPixmap             defaultPreview;
-    QPixmap             videoPixmap;
-
-    FileModel*          m_model;
-    KIO::PreviewJob*    m_job;
-    QStringList         m_plugins;
-    KFileItemList       m_fileList;
+    QPixmap videoPixmap;
+    QStringList m_plugins;
+    FileModel *m_model;
 };
-
 #endif // PREVIEWGENERATOR_H
