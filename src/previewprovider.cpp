@@ -37,7 +37,7 @@ QPixmap PreviewProvider::requestPixmap(const QString& id, QSize* size, const QSi
     if(pixmap.isNull()) {
         QSize size = requestedSize.isValid() ? requestedSize : QSize();
         m_previewGenerator->request(str, size);
-        return m_defaultPreview.scaled(size);
+        return m_defaultPreview.scaled(size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     }
 
     // only scale down
