@@ -26,37 +26,40 @@ Component {
     Item {
         Image {
             id: folderIcon
-            anchors.left: parent.left
-            anchors.leftMargin: leftItemMargin
-            anchors.top: parent.top
-            anchors.topMargin: iconHeightMargin
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: iconHeightMargin + panel.height
+
+            function getMaxTextWidth()
+            {
+                var w = name.paintedWidth
+                if ( w < itemType.paintedWidth )
+                    w = itemType.paintedWidth
+                if ( w < modified.paintedWidth )
+                    w = modified.paintedWidth
+                if ( w < size.paintedWidth )
+                    w = size.paintedWidth
+                if ( w < content.paintedWidth )
+                    w = content.paintedWidth
+
+                return w
+            }
+
+            anchors {
+                left: parent.left
+                leftMargin: leftItemMargin
+                top: parent.top
+                topMargin: iconHeightMargin
+                bottom: parent.bottom
+                bottomMargin: iconHeightMargin + panel.height
+            }
+
             source: "image://mime/" + filePath
             clip: true
             fillMode: Image.PreserveAspectFit
             asynchronous: true
-            smooth: true;
+            smooth: true
             visible: albumWrapper.state === ""
             width: getIconWidth( paintedWidth, paintedHeight, getMaxTextWidth() )
 
             Behavior on opacity { NumberAnimation { duration: 500 } }
-        }
-
-        function getMaxTextWidth()
-        {
-            var w = name.paintedWidth
-
-            if ( w < itemType.paintedWidth )
-                w = itemType.paintedWidth
-            if ( w < modified.paintedWidth )
-                w = modified.paintedWidth
-            if ( w < size.paintedWidth )
-                w = size.paintedWidth
-            if ( w < content.paintedWidth )
-                w = content.paintedWidth
-
-            return w
         }
 
         InfoItem {
