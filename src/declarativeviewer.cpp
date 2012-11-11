@@ -283,7 +283,7 @@ void DeclarativeViewer::initModel(QStringList urls)
     m_fileModel->reset();
 
     QList<ListItem *> items;
-    foreach(QString str, urls) {
+    foreach(const QString &str, urls) {
         File *file = new File(KUrl(str));
         items.append(new ListItem(file, m_fileModel));
     }
