@@ -51,7 +51,7 @@ void PreviewGenerator::notifyModelAboutPreview(const QString &url)
 void PreviewGenerator::previewJobResult(const KFileItem &item, const QPixmap &pixmap)
 {
     QPixmap pict = pixmap;
-    if (item.mimetype().startsWith("video/")) {
+    if (item.mimetype().startsWith(QLatin1String("video/"))) {
         QPainter p(&pict);
         QPixmap scaledPixmap = videoPixmap.scaled(pict.width() / 2, pict.height() / 2,  Qt::KeepAspectRatio, Qt::SmoothTransformation);
         p.drawPixmap(pict.width() / 2 - scaledPixmap.width() / 2, pict.height() / 2 - scaledPixmap.height() / 2 ,  scaledPixmap);

@@ -126,5 +126,5 @@ int KLookApp::newInstance()
 bool KLookApp::isLocal() const
 {
     const QString appPath = applicationFilePath();
-    return !(appPath.startsWith("/usr/bin") || appPath.startsWith("/usr/local/bin"));
+    return !(appPath.startsWith(QLatin1String("/usr/bin")) || appPath.startsWith(QLatin1String("/usr/local/bin")));
 }
