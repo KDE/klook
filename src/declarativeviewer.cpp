@@ -565,11 +565,7 @@ void DeclarativeViewer::mousePressEvent(QMouseEvent* event)
 void DeclarativeViewer::mouseMoveEvent(QMouseEvent* event)
 {
     QDeclarativeView::mouseMoveEvent(event);
-    if (isFullScreen()) {
-        return;
-    }
-
-    if (m_isEmbedded) {
+    if (isFullScreen() || m_isEmbedded) {
         return;
     }
 
