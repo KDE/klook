@@ -43,8 +43,9 @@ void PreviewGenerator::setModel(FileModel *model)
 
 void PreviewGenerator::notifyModelAboutPreview(const QString &url)
 {
-    if (m_model)
+    if (m_model) {
         m_model->previewReady(url);
+    }
 }
 
 void PreviewGenerator::previewJobResult(const KFileItem &item, const QPixmap &pixmap)
@@ -103,7 +104,8 @@ void PreviewGenerator::cancel(const QString &path)
 PreviewGenerator *PreviewGenerator::instance()
 {
     static PreviewGenerator* previewGenerator = 0;
-    if(!previewGenerator)
+    if(!previewGenerator) {
         previewGenerator = new PreviewGenerator;
+    }
     return previewGenerator;
 }

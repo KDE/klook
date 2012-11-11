@@ -94,10 +94,12 @@ void File::setMime(const QString &mime)
 void File::load()
 {
     if(type() == Progress) {
-        if(!m_mimeJobStarted)
+        if(!m_mimeJobStarted) {
             loadType();
-        else
+        }
+        else {
             return;
+        }
     }
     else if(needDownload() && m_isCurrent) {
         download();
@@ -259,12 +261,13 @@ File::FileType getFileType(const QString& mime, const QString& name)
                 type = File::Video;
             }
 
-            if (type == File::MimetypeFallback)
+            if (type == File::MimetypeFallback) {
                 if (right == QLatin1String("3gpp") ||
                         right == QLatin1String("mp4") ||
                         right == QLatin1String("x-theora+ogg")) {
                     type = File::Video;
                 }
+            }
         }
         else if (left == QLatin1String("audio")) {
             QString right = mime.mid(delimiter + 1);

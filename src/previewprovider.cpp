@@ -45,8 +45,9 @@ QPixmap PreviewProvider::requestPixmap(const QString& id, QSize* size, const QSi
         pixmap = pixmap.scaled(requestedSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     }
 
-    if (size)
+    if (size) {
         *size = pixmap.size();
+    }
 
     return pixmap;
 }

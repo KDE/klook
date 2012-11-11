@@ -58,8 +58,7 @@ QRect KLookApp::rectParam() const
     KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     QRect rc;
     if (args->isSet("x") && args->isSet("y") &&
-         args->isSet("w") && args->isSet("h"))
-    {
+         args->isSet("w") && args->isSet("h")) {
         int x, y, w, h;
         x = args->getOption("x").toInt();
         y = args->getOption("y").toInt();
