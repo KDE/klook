@@ -162,7 +162,7 @@ Rectangle {
     }
 
     Keys.onEscapePressed: {
-        if (mainWindow.state === 'fullscreen' )
+        if (mainWindow.state === 'fullscreen')
             setFullScreen();
         else
             quit()
