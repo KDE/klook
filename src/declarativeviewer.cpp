@@ -694,8 +694,9 @@ void DeclarativeViewer::onSetGallery(bool isGallery)
 QSize DeclarativeViewer::getTextWindowSize(QString url) const
 {
     QFile f(url);
-    if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return QSize();
+    }
 
     QString text = f.readAll();
     QTextDocument* doc = new QTextDocument(text);
