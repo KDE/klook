@@ -269,14 +269,15 @@ QSize DeclarativeViewer::getPreferredSize(const QString &path, int type) const
 void DeclarativeViewer::initModel(QStringList urls)
 {
     // leave only unique entries
-    QSet<QString>  set;
+    QSet<QString> set;
     for(int i = 0; i < urls.size(); i++) {
         if(set.contains(urls[i])) {
             urls.removeAt(i);
             i--;
         }
-        else
+        else {
             set.insert(urls[i]);
+        }
     }
 
     m_fileModel->reset();
@@ -404,12 +405,14 @@ void DeclarativeViewer::updateMenu(int index)
     if (!file->mime().isEmpty()) {
         KService::Ptr ptr = KMimeTypeTrader::self()->preferredService(file->mime());
         KService *serv = ptr.data();
-        if(!ptr.isNull())
+        if(!ptr.isNull()) {
             openText = i18n("Open in %1", serv->name());
+        }
     }
 
-    if(openText.isEmpty())
+    if(openText.isEmpty()) {
         openText = i18n("Open");
+    }
 
     rootContext()->setContextProperty("openText", openText);
     rootContext()->setContextProperty("fileName", file->url().fileName());
@@ -428,8 +431,9 @@ void DeclarativeViewer::resizeToPreferredSize(int index)
         preferredSize = minimumSize();
     }
 
-    if (preferredSize != geometry().size())
+    if (preferredSize != geometry().size()) {
         centerWidget(preferredSize);
+    }
 }
 
 void DeclarativeViewer::setVideoSizeHint(int width, int height, int index)
