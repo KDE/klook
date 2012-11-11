@@ -23,8 +23,8 @@
 #define MIMEPROVIDER_H
 
 
-#include <QtDeclarative>
-#include <QtCore>
+#include <QtDeclarative/QtDeclarative>
+#include <Qt/QtCore>
 
 class MimeProvider
         : public QDeclarativeImageProvider
