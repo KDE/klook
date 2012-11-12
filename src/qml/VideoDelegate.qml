@@ -57,7 +57,7 @@ Component {
 
                     // this is duplicated from SingleDelegate because video size can'be known
                     // until now
-                    if(!mainWindow.firstFileLoaded) {
+                    if(!mainWindow.firstFileLoaded && mainWindow.wrapperState !== 'inGrid') {
                         mainWidget.resizeToPreferredSize(photosListView.currentIndex)
                         mainWindow.firstFileLoaded = true
                     }

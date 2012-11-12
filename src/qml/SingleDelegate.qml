@@ -141,6 +141,10 @@ Item {
 
             // we need to resize klook to preferred size when opening file
             // it can't be done on startup because file can be unavailable
+
+            if(mainWindow.wrapperState === 'inGrid')
+                return
+
             if(!mainWindow.firstFileLoaded && index === photosListView.currentIndex && type != File.Progress) {
                 // size hint for video is known after loading
                 // so video delegate will have to do resize by itself
