@@ -24,8 +24,6 @@ import Widgets 1.0
 
 Rectangle {
     id: mainWindow
-    width: 600
-    height: 400
     color: "transparent"
     border.width: 2
     clip: true
@@ -362,7 +360,7 @@ Rectangle {
             border.color: "#000000"
 
             Rectangle {
-                id: albumsShade; color: mainWindow.color;  width: parent.width; height: parent.height; opacity: 0.0
+                id: albumsShade; color: "#333333";  width: parent.width; height: parent.height; opacity: 0.0
             }
 
             Item {
@@ -384,9 +382,8 @@ Rectangle {
 
                 GridView {
                     id: galleryGridView
-                    width: drawer.width;
-                    height: drawer.height
                     anchors.fill: parent ; anchors.margins: 10
+                    model: fileModel
                     delegate: Delegate {}
                     cellWidth: getCellSize(galleryGridView.count).width
                     cellHeight: getCellSize(galleryGridView.count).height
@@ -505,7 +502,6 @@ Rectangle {
                         PropertyChanges { target: albumsShade; opacity: 1 }
                         PropertyChanges { target: galleryGridView; visible: true }
                         PropertyChanges { target: galleryGridView; focus: true }
-                        PropertyChanges { target: galleryGridView; model: fileModel }
                         PropertyChanges { target: photosListView; visible: false }
                         PropertyChanges { target: photosListView; focus: false  }
                     }
