@@ -1,0 +1,104 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: klook\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-04-06 14:51+0400\n"
+"PO-Revision-Date: 2012-03-23 15:10+0400\n"
+"Last-Translator: Julia Mineeva <julia.mineeva@osinit.ru>\n"
+"Language-Team: Russian <support@rosalab.ru>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/declarativeviewer.cpp:164 src/declarativeviewer.cpp:508
+msgid "Open in..."
+msgstr "Открыть в..."
+
+#: src/declarativeviewer.cpp:175
+msgid "Artist:"
+msgstr "Исполнитель:"
+
+#: src/declarativeviewer.cpp:176
+msgid "Total time:"
+msgstr "Длительность:"
+
+#: src/declarativeviewer.cpp:177
+msgid "Folder"
+msgstr "Папка"
+
+#: src/declarativeviewer.cpp:178
+msgid "Last Modified:"
+msgstr "Дата изменения:"
+
+#: src/declarativeviewer.cpp:179
+msgid "Size:"
+msgstr "Размер:"
+
+#: src/declarativeviewer.cpp:180
+msgid "Elements:"
+msgstr "Элементы:"
+
+#: src/declarativeviewer.cpp:491
+msgid "Open"
+msgstr "Открыть"
+
+#: src/declarativeviewer.cpp:495
+msgid "Open in "
+msgstr "Открыть в "
+
+#: src/declarativeviewer.cpp:509
+msgid "Elements: "
+msgstr "Элементы: "
+
+#: src/main.cpp:30
+msgid "KLook is a quick preview feature"
+msgstr "KLook - утилита предварительного просмотра файлов"
+
+#: src/main.cpp:45
+msgid "KLook"
+msgstr ""
+
+#: src/main.cpp:47
+msgid "(c) ROSA 2011-2012"
+msgstr ""
+
+#: src/main.cpp:49
+msgid "Julia Mineeva"
+msgstr "Юлия Минеева"
+
+#: src/main.cpp:50 src/main.cpp:54 src/main.cpp:58
+msgid "Developer"
+msgstr "Разработчик"
+
+#: src/main.cpp:53
+msgid "Evgeniy Auzhin"
+msgstr "Евгений Аужин"
+
+#: src/main.cpp:57
+msgid "Sergey Borovkov"
+msgstr "Сергей Боровков"
+
+#: src/main.cpp:64
+msgid "Turn on embedded mode"
+msgstr "выключить встроенный режим"
+
+#: src/main.cpp:65
+msgid "X position of the icon"
+msgstr "Координата X пиктограммы"
+
+#: src/main.cpp:66
+msgid "Y position of the icon"
+msgstr "Координата Y пиктограммы"
+
+#: src/main.cpp:67
+msgid "Width of the icon"
+msgstr "Ширина пиктограммы"
+
+#: src/main.cpp:68
+msgid "Height of the icon"
+msgstr "Высота пиктограммы"
+
+#: src/main.cpp:69
+msgid "A required argument 'file'"
+msgstr "Требуется параметр 'file'"
