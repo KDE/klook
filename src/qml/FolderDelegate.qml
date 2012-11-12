@@ -51,7 +51,7 @@ Component {
                 bottomMargin: iconHeightMargin + panel.height
             }
 
-            source: "image://mime/" + filePath
+            source: "image://mime/" + fileUrl
             clip: true
             fillMode: Image.PreserveAspectFit
             asynchronous: true
