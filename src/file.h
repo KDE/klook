@@ -53,7 +53,7 @@ public:
     KUrl url() const;
     void setUrl(QUrl url);
 
-    File::FileType type();
+    File::FileType type() const;
     void setType(FileType type);
 
     void setCurrent(bool isCurrent)
@@ -61,7 +61,7 @@ public:
         m_isCurrent = isCurrent;
     }
 
-    QString mime();
+    QString mime() const;
     void setMime(const QString &mime);
 
     void load();
