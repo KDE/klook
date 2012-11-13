@@ -77,6 +77,7 @@ public:
      * @param index
      */
     Q_INVOKABLE void setVideoSizeHint(int width, int height, int index);
+    Q_INVOKABLE void setFullScreen();
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -92,7 +93,6 @@ signals:
     void setStartWindow();
 
 public slots:
-    void setFullScreen();
     void onSetGallery(bool);
 
 private slots:
