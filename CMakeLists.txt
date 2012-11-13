@@ -1,8 +1,5 @@
 project( klook )
 cmake_minimum_required( VERSION 2.6 )
-if(COMMAND cmake_policy)
-  cmake_policy(SET CMP0017 NEW)
-endif(COMMAND cmake_policy)
 
 find_package( KDE4 REQUIRED )
 include( KDE4Defaults )
