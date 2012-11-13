@@ -27,6 +27,9 @@
 #include <KMimeTypeTrader>
 #include <KWindowSystem>
 
+#include <plasma/windoweffects.h>
+#include <kdeclarative.h>
+
 #include "video.h"
 #include "audio.h"
 #include "text.h"
@@ -38,9 +41,6 @@
 #include "filemodel.h"
 #include "kpartsdeclarativeitem.h"
 #include "kpartswidget.h"
-
-#include "plasma/windoweffects.h"
-
 
 #include <QX11Info>
 
@@ -67,9 +67,13 @@ DeclarativeViewer::DeclarativeViewer(QWidget* parent)
     , m_currentFile(0)
     , m_region(FRAME_REGION)
 {
+    KDeclarative kdeclarative;
+    kdeclarative.setDeclarativeEngine(engine());
+    kdeclarative.initialize();
+    kdeclarative.setupBindings();
+
     setOptimizationFlags(QGraphicsView::DontSavePainterState);
     setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-
 
     setMouseTracking(true);
 
@@ -171,12 +175,6 @@ void DeclarativeViewer::registerTypes()
     rootContext()->setContextProperty("previewGenerator", PreviewGenerator::instance());
     rootContext()->setContextProperty("arrowX", .0);
     rootContext()->setContextProperty("arrowY", .0);
-    rootContext()->setContextProperty("artistStr", i18n("Artist:"));
-    rootContext()->setContextProperty("totalTimeStr", i18n("Total time:"));
-    rootContext()->setContextProperty("folderStr", i18n("Folder"));
-    rootContext()->setContextProperty("lastModifiedStr", i18n("Last Modified:"));
-    rootContext()->setContextProperty("sizeStr", i18n("Size:"));
-    rootContext()->setContextProperty("elementsStr", i18n("Elements:"));
 }
 
 void DeclarativeViewer::setFullScreen()

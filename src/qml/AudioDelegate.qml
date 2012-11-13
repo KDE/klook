@@ -117,7 +117,7 @@ Component {
 
             onReady: {
                 title.text = "<b>" + audio.title + "</b>"
-                artist.text = artistStr + " <b>" + audio.artist + "</b>"
+                artist.text = i18n("Artist:") + " <b>" + audio.artist + "</b>"
                 artist.visible = ( audio.artist !== "" )
                 updateDuration()
             }
@@ -130,7 +130,7 @@ Component {
                 var h = audio.totalTime / ( 1000 * 3600 )
                 var strFmt = ( h >= 1 ) ? "hh:mm:ss" : "m:ss"
 
-                totalTime.text = totalTimeStr + " <b>" + Qt.formatTime( audio.duration, strFmt ) + "</b>"
+                totalTime.text = i18n("Total time:") + " <b>" + Qt.formatTime( audio.duration, strFmt ) + "</b>"
             }
         }
 

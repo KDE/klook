@@ -76,7 +76,7 @@ Component {
             id: modified
             anchors.top: itemType.bottom
             anchors.left: mimeIcon.right
-            text: (statComplete)? lastModifiedStr + " " + lastModified : lastModifiedStr
+            text: (statComplete)? i18n("Last Modified:") + " " + lastModified : i18n("Last Modified:")
             elide: Text.ElideNone
             wrapMode: Text.NoWrap
         }
@@ -94,8 +94,8 @@ Component {
             id: size
             anchors.top: modified.bottom
             anchors.left: mimeIcon.right
-            text:  (statComplete)? sizeStr + " " + contentSize : sizeStr
-        }        
+            text:  (statComplete)? i18n("Size:") + " " + contentSize : i18n("Size:")
+        }
 
         AnimatedImage {
             id: sizeWaitAnimation

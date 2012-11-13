@@ -7,12 +7,14 @@ endif(COMMAND cmake_policy)
 find_package( KDE4 REQUIRED )
 include( KDE4Defaults )
 
+find_package(KDeclarative)
+
 find_package( Qt4 REQUIRED QtCore QtGui QtDeclarative )
 include( ${QT_USE_FILE} )
 qt4_automoc( ${qtproject_SRCS} )
-add_definitions( ${QT_DEFINITIONS} )
+add_definitions( ${QT_DEFINITIONS})
 
-include_directories( ${KDE4_INCLUDES} ${QT_QDECLARATIVE_INCLUDE_DIR} )
+include_directories( ${KDE4_INCLUDES} ${QT_QDECLARATIVE_INCLUDE_DIR} ${KDECLARATIVE_INCLUDE_DIRS} )
 add_subdirectory( icons )
 
 set( RESOURCES src/resources.qrc )
@@ -43,10 +45,12 @@ kde4_add_app_icon( klook_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/icons/hi*-apps-klook.
 kde4_add_executable( klook ${klook_SRCS} ${QRC_SOURCES} )
 
 target_link_libraries( klook ${KDE4_KIO_LIBS}
+
                            ${KDE4_PHONON_LIBS}
                            ${KDE4_PLASMA_LIBS}
                            ${KDE4_KFILE_LIBS}
                            kparts
+                           ${KDECLARATIVE_LIBRARIES}
                            ${QT_LIBRARIES}
                            ${QT_QDECLARATIVE_LIBRARIES}
                       )

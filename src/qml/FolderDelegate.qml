@@ -74,14 +74,14 @@ Component {
             id: itemType
             anchors.top: name.bottom
             anchors.left: folderIcon.right
-            text: folderStr
+            text: i18n("Folder")
         }
 
         InfoItem {
             id: modified
             anchors.left: folderIcon.right
             anchors.top: itemType.bottom
-            text: (statComplete) ? lastModifiedStr + " " + lastModified : lastModifiedStr
+            text: (statComplete) ? i18n("Last Modified:") + " " + lastModified : i18n("Last Modified:")
             wrapMode: Text.NoWrap
         }
 
@@ -98,7 +98,7 @@ Component {
             id: size
             anchors.top: modified.bottom
             anchors.left: folderIcon.right
-            text: (dirSizeComplete)? sizeStr + " " + contentSize : sizeStr
+            text: (dirSizeComplete)? i18n("Size:") + " " + contentSize : i18n("Size:")
         }
 
         AnimatedImage {
@@ -114,7 +114,7 @@ Component {
             id: content
             anchors.top: size.bottom
             anchors.left: folderIcon.right
-            text: (dirSizeComplete)? elementsStr + " " + countElements : elementsStr
+            text: (dirSizeComplete)? i18n("Elements:") + " " + countElements : i18n("Elements:")
         }
 
         AnimatedImage {
