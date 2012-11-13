@@ -140,7 +140,17 @@ int FileModel::count() const
     return rowCount();
 }
 
-File *FileModel::file(int index)
+QUrl FileModel::url(int index) const
+{
+    return file(index)->url();
+}
+
+QString FileModel::fileName(int index) const
+{
+    return file(index)->url().fileName();
+}
+
+File *FileModel::file(int index) const
 {
     return m_list[index]->file();
 }

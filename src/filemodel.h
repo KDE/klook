@@ -59,8 +59,10 @@ public:
     void previewReady(const QString &path);
 
     Q_INVOKABLE void load(int row);
-    Q_INVOKABLE File *file(int index);
+    Q_INVOKABLE File *file(int index) const;
     Q_INVOKABLE int count() const;
+    Q_INVOKABLE QUrl url(int index) const;
+    Q_INVOKABLE QString fileName(int index) const;
 
 private slots:
     void handleItemChange();

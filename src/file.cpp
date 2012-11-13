@@ -71,7 +71,7 @@ void File::setUrl(QUrl url)
     m_isLoaded = url.isLocalFile();
 }
 
-File::FileType File::type() const
+File::FileType File::type()
 {
     return m_type;
 }
@@ -81,7 +81,7 @@ void File::setType(FileType type)
     m_type = type;
 }
 
-QString File::mime() const
+QString File::mime()
 {
     return m_mime;
 }

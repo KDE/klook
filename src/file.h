@@ -50,10 +50,10 @@ public:
     File(KUrl url = KUrl(), QObject* parent = 0);
     ~File();
 
-    Q_INVOKABLE KUrl url() const;
+    KUrl url() const;
     void setUrl(QUrl url);
 
-    File::FileType type() const;
+    File::FileType type();
     void setType(FileType type);
 
     void setCurrent(bool isCurrent)
@@ -61,7 +61,7 @@ public:
         m_isCurrent = isCurrent;
     }
 
-    QString mime() const;
+    QString mime();
     void setMime(const QString &mime);
 
     void load();
