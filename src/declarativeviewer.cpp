@@ -42,11 +42,6 @@
 #include "kpartsdeclarativeitem.h"
 #include "kpartswidget.h"
 
-#include <QX11Info>
-
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
-
 static int header_height = 27;
 static int border_width = 2;
 static int height_offset = 27;
@@ -124,7 +119,6 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
     rootContext()->setContextProperty("embedded", m_isEmbedded);
     setEmbedded(embedded);
 
-
     m_currentFile = m_fileModel->file(indexToShow);
 
     QSize startingSize = m_currentFile->url().isLocalFile()
@@ -157,14 +151,8 @@ void DeclarativeViewer::registerTypes()
 
     qmlRegisterUncreatableType<File>("Widgets", 1, 0, "File", "This type is registered only for its enums"); // to use File::FileType enum
 
-    QDesktopWidget dw;
-    QRect r = dw.screenGeometry(this);
-
-    rootContext()->setContextProperty("DWigth", r.width());
-    rootContext()->setContextProperty("DHeight", r.height());
     rootContext()->setContextProperty("fileModel", m_fileModel);
     rootContext()->setContextProperty("mainWidget",  this);
-    rootContext()->setContextProperty("actualSize", "off");
     rootContext()->setContextProperty("openText", i18n("Open in..."));
     rootContext()->setContextProperty("fileName", "");
     rootContext()->setContextProperty("fileUrl", "");

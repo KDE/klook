@@ -312,7 +312,7 @@ Rectangle {
             anchors.right: parent.right; anchors.rightMargin: 6; anchors.verticalCenter: parent.verticalCenter
             name: 'close'
 
-            onButtonClick: quit()//Qt.quit()
+            onButtonClick: quit()
         }
 
         Button {

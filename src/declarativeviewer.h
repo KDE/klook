@@ -134,7 +134,6 @@ private:
 
     File*     m_currentFile;
 
-    bool            m_isActualSize;
     WidgetRegion    m_region;
 
     FileModel*          m_fileModel;
