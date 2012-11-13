@@ -45,6 +45,11 @@ Rectangle {
     signal appendItem( string path, int type )
     signal setGalleryView( bool isGallery )
 
+    property string openText: i18n("Open in...")
+    property int currentIndex: -1
+    property url currentUrl: ""
+    property string currentFileName: ""
+
     function setFullScreen()
     {
         if ( mainWindow.state === 'fullscreen' )
@@ -110,6 +115,30 @@ Rectangle {
         if ( !mouseControl.containsMouse ) {
             controlPanelTimer.start()
         }
+    }
+
+    function updateMenubar(index)
+    {
+        var serviceName = ""
+        currentFileName = (index === -1)
+                ? i18n("Elements: %1", fileModel.count())
+                : fileModel.fileName(index)
+
+        // if we have information for current file don't try to change values again
+        if(index === currentIndex
+                && (openText !== i18n("Open") && openText !== i18n("Open in..."))) {
+            return
+        }
+
+        if(index !== -1) {
+            serviceName = mainWidget.serviceForFile(index)
+            currentUrl = fileModel.url(index)
+        }
+
+        openText = serviceName.length
+                ? openText = i18n("Open in ") + serviceName
+                : i18n("Open")
+        currentIndex = index
     }
 
     // calculates size of grid item
@@ -280,7 +309,7 @@ Rectangle {
         Text {
             id: fileNameLabel
             anchors.verticalCenter: nextButton.verticalCenter
-            text: fileName
+            text: currentFileName
             anchors.left: ( viewMode === "multi" ) ? galleryButton.right : parent.left
             anchors.leftMargin: 6
             anchors.right: openButton.left
@@ -327,8 +356,9 @@ Rectangle {
             label: openText
 
             onButtonClick: {
-                Qt.openUrlExternally( fileUrl )
+                Qt.openUrlExternally(currentUrl)
                 quit()
+
             }
         }
     }
@@ -395,7 +425,7 @@ Rectangle {
                     cacheBuffer: 0
 
                     onCurrentIndexChanged: {
-                        mainWidget.updateMenu(currentIndex)
+                        updateMenubar(currentIndex)
                     }
 
                     MouseArea {
@@ -419,7 +449,7 @@ Rectangle {
                                     openButton.state = 'disabled'
                                 galleryGridView.currentIndex = -1
                             }
-                            mainWidget.updateMenu(mouseIndex)
+                            updateMenubar(mouseIndex)
                         }
 
                         onClicked: {

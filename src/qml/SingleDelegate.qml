@@ -95,8 +95,6 @@ Item {
 
     // function for getting delegate of loader element
     function bestDelegate(t) {
-        mainWidget.updateMenu(photosListView.currentIndex)
-
         if(!isLoaded || t === File.Progress) {
             mainWindow.currentFileType = File.Progress
             return progressDelegate
@@ -136,6 +134,8 @@ Item {
         anchors.fill: parent
         sourceComponent: bestDelegate(type)
         onLoaded: {
+            mainWindow.updateMenubar(photosListView.currentIndex)
+
             if (index === photosListView.currentIndex)
                 mainWindow.updatePanel()
 

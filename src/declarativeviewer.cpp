@@ -150,10 +150,8 @@ void DeclarativeViewer::registerTypes()
     qmlRegisterType<KPartsDeclarativeItem>("Widgets", 1, 0, "KPart");
 
     qmlRegisterUncreatableType<File>("Widgets", 1, 0, "File", "This type is registered only for its enums"); // to use File::FileType enum
-
     rootContext()->setContextProperty("fileModel", m_fileModel);
     rootContext()->setContextProperty("mainWidget",  this);
-    rootContext()->setContextProperty("openText", i18n("Open in..."));
     rootContext()->setContextProperty("fileName", "");
     rootContext()->setContextProperty("fileUrl", "");
     rootContext()->setContextProperty("fileType", "Undefined");
@@ -377,32 +375,25 @@ void DeclarativeViewer::centerWidget(const QSize& sz)
     activateWindow();
 }
 
-void DeclarativeViewer::updateMenu(int index)
+void DeclarativeViewer::updateCurrentFile(int index)
 {
     if(index == -1) {
-        rootContext()->setContextProperty("openText",  i18n("Open in..."));
-        rootContext()->setContextProperty("fileName",  i18n("Elements: %1", m_fileModel->rowCount()));
         return;
     }
     m_currentFile = m_fileModel->file(index);
+}
 
-    File *file = m_fileModel->file(index);
-    QString openText;
+QString DeclarativeViewer::serviceForFile(int index) const
+{
+    const File *file = m_fileModel->file(index);
     if (!file->mime().isEmpty()) {
         KService::Ptr ptr = KMimeTypeTrader::self()->preferredService(file->mime());
         KService *serv = ptr.data();
         if(!ptr.isNull()) {
-            openText = i18n("Open in %1", serv->name());
+            return serv->name();
         }
     }
-
-    if(openText.isEmpty()) {
-        openText = i18n("Open");
-    }
-
-    rootContext()->setContextProperty("openText", openText);
-    rootContext()->setContextProperty("fileName", file->url().fileName());
-    rootContext()->setContextProperty("fileUrl", file->url().pathOrUrl());
+    return QString();
 }
 
 void DeclarativeViewer::resizeToPreferredSize(int index)
