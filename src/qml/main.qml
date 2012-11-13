@@ -119,6 +119,7 @@ Rectangle {
 
     function updateMenubar(index)
     {
+        mainWidget.updateCurrentFile(index)
         var serviceName = ""
         currentFileName = (index === -1)
                 ? i18n("Elements: %1", fileModel.count())
