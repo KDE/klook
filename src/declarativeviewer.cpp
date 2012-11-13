@@ -133,10 +133,9 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
 void DeclarativeViewer::resizeEvent(QResizeEvent *event)
 {
     if (KWindowSystem::compositingActive()) {
-        QRegion mask(QRect(QPoint(), size()));
-
-        Plasma::WindowEffects::enableBlurBehind(winId(), true, mask);
-        Plasma::WindowEffects::overrideShadow(winId(), true);
+        //QRegion mask(QRect(QPoint(), size()));
+        //Plasma::WindowEffects::enableBlurBehind(winId(), true, mask);
+        //Plasma::WindowEffects::overrideShadow(winId(), true);
     }
 
     QDeclarativeView::resizeEvent(event);
