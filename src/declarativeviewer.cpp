@@ -214,7 +214,7 @@ QSize DeclarativeViewer::getPreferredSize(const QString &path, int type) const
 {
     //TODO: use virtual functions for this
     if (type == File::Video) {
-        QHash<int, QSize>::const_iterator it = m_videoSizeHints.find(m_fileModel->rowFromFile(m_currentFile));
+        QHash<int, QSize>::const_iterator it = m_videoSizeHints.constFind(m_fileModel->rowFromFile(m_currentFile));
         if(it != m_videoSizeHints.constEnd()) {
             QDesktopWidget dw;
             QSize sz = calculateViewSize(it.value(), dw.screenGeometry(this));
