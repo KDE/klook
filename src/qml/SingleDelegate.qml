@@ -26,27 +26,10 @@ Item {
     id: listItem
     width: photosListView.width; height: photosListView.height
 
-    property int iconHeightMargin: ( height - panel.height ) / 10 // icon height is 4/5 of item height minus panel height
+    property int iconHeightMargin: (height - panel.height) / 10 // icon height is 4/5 of item height minus panel height
     property int leftItemMargin: 20    // before icon
     property int rightItemMargin: 10   // after text info
     property int middleItemMargin: 20  // middle icon and text info
-
-    // getting of icon width for audio, mime, folder delegate.
-    // width must be less 500.
-    function getIconWidth( iconWidth, iconHeight, textWidth )
-    {
-        var w = listItem.width - textWidth - ( leftItemMargin + rightItemMargin + middleItemMargin )
-        var h = listItem.height - iconHeightMargin * 2 - panel.height
-        if ( w > h ) {
-            w = h
-        }
-
-        if ( w > 500 ) {
-            w = 500
-        }
-
-        return w
-    }
 
     ImageDelegate {
         id: imgDelegate

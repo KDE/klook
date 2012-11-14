@@ -26,35 +26,16 @@ Component {
     Item {
         Image {
             id: mimeIcon
-            anchors.left: parent.left
-            anchors.leftMargin: leftItemMargin
-            anchors.top: parent.top
-            anchors.topMargin: iconHeightMargin
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: iconHeightMargin + panel.height
-            source: "image://mime/" + filePath
-            clip: true
-            fillMode: Image.PreserveAspectFit
-            asynchronous: true
-            smooth: true;
-            visible: albumWrapper.state === ""
-            width: getIconWidth( paintedWidth, paintedHeight, getMaxTextWidth() )
-
-            Behavior on opacity { NumberAnimation { duration: 500 } }
-        }
-
-        function getMaxTextWidth()
-        {
-            var w = name.paintedWidth
-
-            if ( w < itemType.paintedWidth )
-                w = itemType.paintedWidth
-            if ( w < modified.paintedWidth )
-                w = modified.paintedWidth
-            if ( w < size.paintedWidth )
-                w = size.paintedWidth
-
-            return w
+            anchors {
+                left: parent.left
+                leftMargin: leftItemMargin
+                top: parent.top
+                topMargin: iconHeightMargin
+                bottomMargin: iconHeightMargin + panel.height
+            }
+            source: "image://mime/" + fileUrl
+            sourceSize.width: Math.min(parent.width / 3, parent.height)
+            sourceSize.height: Math.min(parent.height - anchors.bottomMargin, parent.width)
         }
 
         InfoItem {

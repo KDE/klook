@@ -37,7 +37,6 @@ Component {
             anchors.leftMargin: leftItemMargin
             anchors.top: parent.top
             anchors.topMargin: iconHeightMargin
-            anchors.bottom: parent.bottom
             anchors.bottomMargin: iconHeightMargin + panel.height
             source: "images/audio.png"
             clip: true
@@ -46,7 +45,8 @@ Component {
             asynchronous: true
             smooth: true;
             visible: albumWrapper.state === ""
-            width: getIconWidth( paintedWidth, paintedHeight, getMaxTextWidth() )
+            width: Math.min(parent.width / 3, parent.height)
+            height: Math.min(parent.height - anchors.bottomMargin, parent.width)
 
             Behavior on opacity { NumberAnimation { duration: 500 } }
 

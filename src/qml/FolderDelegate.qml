@@ -27,39 +27,17 @@ Component {
         Image {
             id: folderIcon
 
-            function getMaxTextWidth()
-            {
-                var w = name.paintedWidth
-                if ( w < itemType.paintedWidth )
-                    w = itemType.paintedWidth
-                if ( w < modified.paintedWidth )
-                    w = modified.paintedWidth
-                if ( w < size.paintedWidth )
-                    w = size.paintedWidth
-                if ( w < content.paintedWidth )
-                    w = content.paintedWidth
-
-                return w
-            }
-
             anchors {
                 left: parent.left
                 leftMargin: leftItemMargin
                 top: parent.top
                 topMargin: iconHeightMargin
-                bottom: parent.bottom
                 bottomMargin: iconHeightMargin + panel.height
             }
 
             source: "image://mime/" + fileUrl
-            clip: true
-            fillMode: Image.PreserveAspectFit
-            asynchronous: true
-            smooth: true
-            visible: albumWrapper.state === ""
-            width: getIconWidth( paintedWidth, paintedHeight, getMaxTextWidth() )
-
-            Behavior on opacity { NumberAnimation { duration: 500 } }
+            sourceSize.width: Math.min(parent.width / 3, parent.height)
+            sourceSize.height: Math.min(parent.height - anchors.bottomMargin, parent.width)
         }
 
         InfoItem {
