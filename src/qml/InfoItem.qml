@@ -22,12 +22,11 @@
 import QtQuick 1.1
 
 Text {
-    wrapMode: Text.WordWrap
-    color: ( mainWindow.state != "fullscreen" ) ? "black" : "white"
-    font.pointSize: 12    
+    wrapMode: Text.WrapAnywhere
+    color: (mainWindow.state != "fullscreen") ? "black" : "white"
+    font.pointSize: 12
     anchors.leftMargin: middleItemMargin
     anchors.rightMargin: rightItemMargin
     anchors.topMargin: 10
     anchors.bottomMargin: 10
-
 }
