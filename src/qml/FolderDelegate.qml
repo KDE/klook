@@ -130,16 +130,6 @@ Component {
             visible: !dirSizeComplete
         }
 
-        Connections{
-            target: photosListView;
-            onCurrentIndexChanged: {
-                if ( listItem.ListView.isCurrentItem ) {
-                    folderIcon.opacity = 1
-                } else {
-                    folderIcon.opacity = 0
-                }
-            }
-        }
         states: [
             State {
                 name: "fullscreen"; when: mainWindow.state === 'fullscreen'
