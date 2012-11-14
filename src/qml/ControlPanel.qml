@@ -134,7 +134,7 @@ Rectangle{
             id: closeButton
             name: 'close'
 
-            onButtonClick: Qt.quit()
+            onButtonClick: mainWindow.quit()
         }
     }
 

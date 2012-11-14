@@ -44,7 +44,7 @@ Rectangle {
     state: 'Pause'
     anchors.verticalCenter: parent.verticalCenter
 
-    Image{
+    Image {
         id: buttonImage
         source: "images/play.png"
         anchors.fill: parent
@@ -55,11 +55,10 @@ Rectangle {
 
     signal buttonClick()
 
-    //define the clickable area to be the whole rectangle
     MouseArea{
         id: buttonMouseArea
         smooth: true
-        anchors.fill: parent    //stretch the area to the parent's dimension
+        anchors.fill: parent
 
         onClicked: buttonClick()
     }

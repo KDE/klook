@@ -25,8 +25,6 @@
 
 #include <KGlobal>
 #include <KLocale>
-#include <QtCore/QStack>
-#include <QtCore/QTimer>
 
 FileModel::FileModel(QObject *parent)
     : QAbstractListModel(parent)

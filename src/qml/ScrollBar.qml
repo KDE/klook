@@ -61,20 +61,20 @@ Item {
         onExited: {}
         onClicked:
         {
-            if ( vertical )
+            if (vertical)
             {
-                var cY = ( flickable.contentHeight * mouseY / height )
+                var cY = (flickable.contentHeight * mouseY / height)
                 var pagePsize = flickable.contentHeight * flickable.visibleArea.heightRatio
-                if ( cY > ( flickable.contentHeight - pagePsize ) )
+                if (cY > (flickable.contentHeight - pagePsize))
                 {
                     cY = flickable.contentHeight - pagePsize
                 }
-                var rowPsize = Math.round( flickable.contentHeight*flickable.visibleArea.heightRatio ) / 4
-                var numRow = Math.round( cY / rowPsize )
-                var curNumRow = Math.round( flickable.contentY / rowPsize )
-                if ( numRow === curNumRow )
+                var rowPsize = Math.round(flickable.contentHeight*flickable.visibleArea.heightRatio) / 4
+                var numRow = Math.round(cY / rowPsize)
+                var curNumRow = Math.round(flickable.contentY / rowPsize)
+                if (numRow === curNumRow)
                 {
-                    if ( mouseY > scrollBarHandle.Y )
+                    if (mouseY > scrollBarHandle.Y)
                         numRow++
                     else
                         numRow--
@@ -91,7 +91,7 @@ Item {
     Rectangle {
         id: scrollBarHandle
         color: "white"
-        radius: vertical ? (width/2 - 1) : (height / 2 - 1)
+        radius: vertical ? (width / 2 - 1) : (height / 2 - 1)
 
         function sbOpacity()
         {
@@ -105,16 +105,14 @@ Item {
         function returnX()
         {
             //Stop calculating x while handle is dragged
-            if( scrollHandleMouseArea.drag.active )
+            if(scrollHandleMouseArea.drag.active)
                 return scrollHandleMouseArea.drag.target.x
             var x
             x =  vertical ? parent.width - width : flickable.visibleArea.xPosition * parent.width
-            if ( x < 0 )
-            {
+            if (x < 0) {
                 x = 0
             }
-            else if ( !vertical && ( ( x + scrollBarHandle.width ) > flickable.widht ) )
-            {
+            else if (!vertical && ((x + scrollBarHandle.width) > flickable.widht)) {
                 x = flickable.widht - scrollBarHandle.width
             }
 
@@ -128,10 +126,9 @@ Item {
                 return scrollHandleMouseArea.drag.target.y
             var y
             y = vertical ? flickable.visibleArea.yPosition * parent.height : parent.height - height
-            if ( y < 0 )
+            if (y < 0)
                 y = 0
-            else if ( vertical && ( ( y + scrollBarHandle.height ) > flickable.height ) )
-            {
+            else if (vertical && ((y + scrollBarHandle.height) > flickable.height)) {
                 y = flickable.height - scrollBarHandle.height
             }
 
@@ -157,9 +154,9 @@ Item {
             function snapToRow()
             {
                 var y = flickable.contentY
-                var numRow = y / ( ( flickable.contentHeight*flickable.visibleArea.heightRatio ) / 4 )
-                numRow = Math.round( numRow )
-                return numRow * Math.round( ( flickable.contentHeight*flickable.visibleArea.heightRatio ) / 4 )
+                var numRow = y / ((flickable.contentHeight*flickable.visibleArea.heightRatio) / 4)
+                numRow = Math.round(numRow)
+                return numRow * Math.round((flickable.contentHeight * flickable.visibleArea.heightRatio) / 4)
             }
 
             anchors.fill: parent
@@ -172,8 +169,7 @@ Item {
 
             onMousePositionChanged:
             {
-                if ( drag.active )
-                {
+                if (drag.active) {
                     flickable.contentY = flickable.contentHeight * scrollBarHandle.y / scrollBar.height
                 }
             }

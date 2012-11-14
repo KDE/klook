@@ -23,9 +23,7 @@ import QtQuick 1.1
 import Widgets 1.0
 
 Component {
-
     Item {
-        id: t
         KPart {
             url: fileUrl
             width: parent.width

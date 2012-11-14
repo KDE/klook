@@ -27,7 +27,6 @@ Component {
 
     Item
     {
-
         id: audioItem
 
         signal ready()

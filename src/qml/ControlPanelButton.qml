@@ -50,17 +50,13 @@ Rectangle {
         opacity: 1
     }
 
-    //buttonClick() is callable and a signal handler, onButtonClick is automatically created
     signal buttonClick()
 
-    //define the clickable area to be the whole rectangle
     MouseArea{
         id: buttonMouseArea
         smooth: true
-        anchors.fill: parent    //stretch the area to the parent's dimension
+        anchors.fill: parent
         onClicked: buttonClick()
-        onEntered: {}
-        onExited: {}
     }
 
     states: [

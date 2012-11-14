@@ -217,24 +217,21 @@ Rectangle {
 
     function setGallery()
     {
-        if ( photosListView.currentIndex === -1 )
+        if (photosListView.currentIndex === -1)
             photosListView.currentIndex = 0
 
-        if ( albumWrapper.state === '' )
-        {
+        if (albumWrapper.state === '') {
             albumWrapper.state = 'inGrid'
             galleryGridView.currentIndex = photosListView.currentIndex
         }
-        else
-        {
-            if ( galleryGridView.currentIndex === -1 )
-            {
+        else {
+            if (galleryGridView.currentIndex === -1) {
                 galleryGridView.currentIndex = photosListView.currentIndex
             }
             albumWrapper.state = ""
         }
 
-        setGalleryView( albumWrapper.state === 'inGrid' )
+        setGalleryView(albumWrapper.state === 'inGrid')
     }
 
     Image {
@@ -268,8 +265,7 @@ Rectangle {
             name: 'prev'
             visible: viewMode === "multi"
             z: 1
-            onButtonClick:
-            {
+            onButtonClick: {
                 photosListView.decrementCurrentIndex()
                 updateMenuButtons()
             }
@@ -283,8 +279,7 @@ Rectangle {
             name: 'next'
             visible: viewMode === "multi"
 
-            onButtonClick:
-            {
+            onButtonClick: {
                 if ( photosListView.currentIndex === -1 )
                     photosListView.currentIndex = 0
                 photosListView.incrementCurrentIndex()
@@ -301,8 +296,7 @@ Rectangle {
             visible: viewMode === "multi"
             state: 'normal'
 
-            onButtonClick:
-            {
+            onButtonClick: {
                 setGallery()
             }
         }
@@ -359,7 +353,6 @@ Rectangle {
             onButtonClick: {
                 Qt.openUrlExternally(currentUrl)
                 quit()
-
             }
         }
     }
@@ -437,8 +430,7 @@ Rectangle {
                         hoverEnabled: true
                         z: 20
 
-                        onMousePositionChanged:
-                        {
+                        onMousePositionChanged: {
                             var mouseIndex = galleryGridView.indexAt(mouseX + galleryGridView.contentX, mouseY + galleryGridView.contentY)
                             if (mouseIndex !== -1) {
                                 if (openButton.state !== 'normal')
@@ -503,15 +495,15 @@ Rectangle {
 
                 Keys.onLeftPressed:
                 {
-                    if ( photosListView.focus === true )
+                    if (photosListView.focus === true)
                         photosListView.decrementCurrentIndex()
                 }
 
                 Keys.onRightPressed:
                 {
-                    if ( photosListView.focus === true )
+                    if (photosListView.focus === true)
                     {
-                        if ( photosListView.currentIndex === -1 )
+                        if (photosListView.currentIndex === -1)
                             photosListView.currentIndex = 0
                         photosListView.incrementCurrentIndex()
                     }
@@ -551,8 +543,8 @@ Rectangle {
                         prevButton.state = 'disabled'
                         nextButton.state = 'disabled'
                     } else {
-                        photosListView.currentIndex = galleryGridView.currentIndex
-                        photosListView.positionViewAtIndex( photosListView.currentIndex, ListView.Contain )
+                        photosListView.currentIndex = currentIndex
+                        photosListView.positionViewAtIndex(photosListView.currentIndex, ListView.Contain)
                         updateMenuButtons()
                     }
                 }
@@ -582,7 +574,6 @@ Rectangle {
                 id : controlPanelTimer
                 interval: 2000; running: false;
                 repeat: false
-
                 onTriggered: panel.opacity = 0
             }
 
@@ -655,7 +646,6 @@ Rectangle {
 
             PropertyChanges { target: mainWindow; border.width: 0 }
 
-            // this is just for a case when okular delegate was displayed in windowed mode
             PropertyChanges { target: mouseControl; enabled: true }
 
             PropertyChanges { target: photosListView; highlightMoveSpeed: 7000 }

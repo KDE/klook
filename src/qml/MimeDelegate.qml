@@ -106,16 +106,10 @@ Component {
             visible: !statComplete
         }
 
-        Connections{
+        Connections {
             target: photosListView;
             onCurrentIndexChanged: {
-                if ( listItem.ListView.isCurrentItem )
-                {
-                    mimeIcon.opacity = 1
-                } else
-                {
-                    mimeIcon.opacity = 0
-                }
+                mimeIcon.opacity = listItem.ListView.isCurrentItem ? 1 : 0
             }
         }
 

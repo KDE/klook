@@ -22,14 +22,11 @@
 import QtQuick 1.0
 
 Rectangle {
-
-    //identifier of the item
     id: button
 
-    // these properties act as constants, useable outside this QML file
     property int buttonHeight: 20
     property int buttonWidth: 100
-    
+
     // attaches to the Text element's text content
     property string label
     property string st: "normal"
@@ -66,26 +63,24 @@ Rectangle {
         fillMode: Image.PreserveAspectFit
     }
 
-    //buttonClick() is callable and a signal handler, onButtonClick is automatically created
     signal buttonClick()
 
-    //define the clickable area to be the whole rectangle
     MouseArea{
         id: buttonMouseArea
         smooth: true
-        anchors.fill: parent    //stretch the area to the parent's dimension
+        anchors.fill: parent
         onClicked: buttonClick()
         hoverEnabled: true
 
         onEntered:
         {
-            if ( ( button.state != 'disabled' ) && ( button.state != 'checked' ) )
+            if ((button.state != 'disabled') && (button.state != 'checked'))
                 button.state = "hover"
         }
 
         onExited:
         {
-            if ( ( button.state != 'disabled' ) && ( button.state != 'checked' ) )
+            if ((button.state != 'disabled') && (button.state != 'checked'))
                 button.state = "normal"
         }
     }

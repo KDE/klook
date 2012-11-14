@@ -78,20 +78,22 @@ QVariant ListItem::data(int role) const
 QHash<int, QByteArray> ListItem::roleNames()
 {
     QHash<int, QByteArray> names;
-    names[StatCompleteRole] = "statComplete";
-    names[DirSizeCompleteRole] = "dirSizeComplete";
     names[ErrorRole] = "error";
     names[FilePathRole] = "filePath";
     names[FileNameRole] = "fileName";
     names[UrlRole] = "fileUrl";
     names[TypeRole] = "type";
-    names[LastModifiedRole] = "lastModified";
-    names[ContentSizeRole] = "contentSize";
-    names[CountRole] = "countElements";
     names[MimeRole] = "mime";
     names[LoadedRole] = "isLoaded";
     names[LocalFileRole] = "isLocal";
     names[DownloadInProgress] = "downloadInProgress";
+
+    // dirs and fallback
+    names[StatCompleteRole] = "statComplete";
+    names[DirSizeCompleteRole] = "dirSizeComplete";
+    names[LastModifiedRole] = "lastModified";
+    names[ContentSizeRole] = "contentSize";
+    names[CountRole] = "countElements";
 
     return names;
 }
