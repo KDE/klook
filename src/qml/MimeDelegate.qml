@@ -59,10 +59,14 @@ Component {
 
         InfoItem {
             id: name
+            elide: Text.ElideRight
+            textFormat: Text.StyledText
+            maximumLineCount: 5
             anchors.left: mimeIcon.right
+            anchors.right: parent.right
             text: "<b>" + fileName +"</b>"
             font.pointSize: 15
-            y: ( mimeIcon.height - mimeIcon.paintedHeight ) / 2 + iconHeightMargin
+            y: (mimeIcon.height - mimeIcon.paintedHeight) / 2 + iconHeightMargin
         }
 
         InfoItem {
