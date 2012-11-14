@@ -64,10 +64,14 @@ Component {
 
         InfoItem {
             id: name
-            text: "<b>" + fileName +"</b>"
+            elide: Text.ElideRight
+            textFormat: Text.StyledText
+            maximumLineCount: 5
             anchors.left: folderIcon.right
+            anchors.right: parent.right
+            text: "<b>" + fileName +"</b>"
             font.pointSize: 15
-            y: ( folderIcon.height - folderIcon.paintedHeight ) / 2 + iconHeightMargin
+            y: (folderIcon.height - folderIcon.paintedHeight) / 2 + iconHeightMargin
         }
 
         InfoItem {
