@@ -52,21 +52,6 @@ Component {
 
         }
 
-        // getting of maximum width of text info
-        function getMaxTextWidth()
-        {
-            var w = title.paintedWidth
-
-            if ( w < artist.paintedWidth ) {
-                w = artist.paintedWidth
-            }
-            if ( w < totalTime.paintedWidth ) {
-                w = totalTime.paintedWidth
-            }
-
-            return w
-        }
-
         InfoItem {
             id : title
             font.pointSize: 15
