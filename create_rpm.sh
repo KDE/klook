@@ -1,7 +1,7 @@
 #!/bin/sh
 
 NAME=klook
-VER=1.1
+VER=2.0
 DIR_NAME=$NAME-$VER
 
 mkdir $DIR_NAME

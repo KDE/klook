@@ -2,7 +2,7 @@
 
 Summary:	Quick preview feature
 Name:		klook
-Version:	1.1
+Version:	2.0
 Release:	1
 License:	GPLv3
 Group:		Graphical desktop/KDE
@@ -11,8 +11,8 @@ Requires: 	okular
 Requires: 	okular-ooo
 Requires: 	okular-chm
 Requires: 	okular-pdf
-Requires:	gstreamer1.0-decoders
-Requires:	gstreamer1.0-vp8
+Requires:	gstreamer0.10-decoders
+Requires:	gstreamer0.10-vp8
 BuildRequires:	qt4-devel	>= 4.7.0
 BuildRequires:	kdelibs4-devel	>= 4.6.5
 
