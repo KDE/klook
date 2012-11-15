@@ -248,7 +248,7 @@ File::FileType getFileType(const QString& mime, const QString& name)
                  || right == QLatin1String("x-portable-pixmap") || right == QLatin1String("x-portable-graymap")
                  || right == "x-xbitmap")
                 type = File::Image;
-            else if (supportedImageFormats.contains(QLatin1String("svg"))
+            else if (supportedImageFormats.contains("svg")
                      && (right == QLatin1String("svg+xml") || right == QLatin1String("svg+xml-compressed")))
                 type = File::Image;
         }
