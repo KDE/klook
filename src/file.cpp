@@ -27,8 +27,10 @@
 
 #include <KMimeType>
 #include <kuiserverjobtracker.h>
+#include <KLocalizedString>
 #include <KIO/Job>
 #include <KIO/JobClasses>
+#include <KIO/NetAccess>
 #include <Phonon/BackendCapabilities>
 
 File::File(QObject* parent)
@@ -50,6 +52,8 @@ File::File(KUrl url, QObject* parent)
     , m_mimeJobStarted(false)
     , m_downloadInProgress(false)
     , m_isCurrent(false)
+    , m_checkedForExistance(false)
+    , m_fileExists(false)
 {
     m_isLoaded = m_url.isLocalFile();
 }
@@ -92,13 +96,24 @@ void File::setMime(const QString &mime)
 
 void File::load()
 {
+    // temporary solution - will need to use KIO::stat() instead of this blocking call
+    if(!m_checkedForExistance) {
+        m_fileExists = KIO::NetAccess::exists(url(), KIO::NetAccess::DestinationSide, NULL);
+        m_checkedForExistance = true;
+        if(!m_fileExists) {
+            m_isLoaded = true;
+            setType(Error);
+            m_error = i18n("File %1 does not exist", url().url());
+            emit dataChanged();
+        }
+    }
+
+    if(!m_fileExists)
+        return;
+
     if(type() == Progress) {
-        if(!m_mimeJobStarted) {
+        if(!m_mimeJobStarted)
             loadType();
-        }
-        else {
-            return;
-        }
     }
     else if(needDownload() && m_isCurrent) {
         download();

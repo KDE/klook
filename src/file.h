@@ -101,6 +101,8 @@ private:
     bool m_mimeJobStarted;
     bool m_downloadInProgress;
     bool m_isCurrent;
+    bool m_checkedForExistance;
+    bool m_fileExists;
 };
 
 File::FileType getFileType(const QString& mime, const QString& name);
