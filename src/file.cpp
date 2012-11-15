@@ -243,12 +243,13 @@ File::FileType getFileType(const QString& mime, const QString& name)
 
         if (left == QLatin1String("image")) {
             QString right = mime.mid(delimiter + 1);
-            if (supportedImageFormats.contains(right.toLatin1()) || right == "x-xpixmap"
-                 || right == "x-xpixmap" || right == "x-portable-bitmap"
-                 || right == "x-portable-pixmap" || right == "x-portable-graymap"
+            if (supportedImageFormats.contains(right.toLatin1()) || right == QLatin1String("x-xpixmap")
+                 || right == QLatin1String("x-xpixmap") || right == QLatin1String("x-portable-bitmap")
+                 || right == QLatin1String("x-portable-pixmap") || right == QLatin1String("x-portable-graymap")
                  || right == "x-xbitmap")
                 type = File::Image;
-            else if (supportedImageFormats.contains("svg") && (right == ("svg+xml") || right == ("svg+xml-compressed")))
+            else if (supportedImageFormats.contains(QLatin1String("svg"))
+                     && (right == QLatin1String("svg+xml") || right == QLatin1String("svg+xml-compressed")))
                 type = File::Image;
         }
         else if (left == QLatin1String("video")) {
@@ -262,9 +263,9 @@ File::FileType getFileType(const QString& mime, const QString& name)
             }
 
             if (type == File::MimetypeFallback) {
-                if (right == QLatin1String("3gpp") ||
-                        right == QLatin1String("mp4") ||
-                        right == QLatin1String("x-theora+ogg")) {
+                if (right == QLatin1String("3gpp")
+                        || right == QLatin1String("mp4")
+                        || right == QLatin1String("x-theora+ogg")) {
                     type = File::Video;
                 }
             }
@@ -277,18 +278,18 @@ File::FileType getFileType(const QString& mime, const QString& name)
             }
 
             if (type == File::MimetypeFallback) {
-                if (right == QLatin1String("ogg") ||
-                     right == QLatin1String("mpeg") ||
-                     right == QLatin1String("x-speex+ogg") ||
-                     right == QLatin1String("x-vorbis+ogg") ||
-                     right == QLatin1String("x-flac+ogg")) {
+                if (right == QLatin1String("ogg")
+                        || right == QLatin1String("mpeg")
+                        || right == QLatin1String("x-speex+ogg")
+                        || right == QLatin1String("x-vorbis+ogg")
+                        || right == QLatin1String("x-flac+ogg")) {
                     type = File::Audio;
                 }
             }
         }
-        else if (left == QLatin1String("text") ||
-                  mime == QLatin1String("application/x-zerosize") ||
-                  mime == QLatin1String("application/x-shellscript")) {
+        else if (left == QLatin1String("text")
+                 || mime == QLatin1String("application/x-zerosize")
+                 || mime == QLatin1String("application/x-shellscript")) {
             type = File::Txt;
         }
         else if(mime.mid(delimiter + 1) == QLatin1String("directory")) {
@@ -296,19 +297,18 @@ File::FileType getFileType(const QString& mime, const QString& name)
         }
     }
 
-    if(mime == "application/pdf" ||
-       mime == "application/vnd.oasis.opendocument.text" ||
-       mime == "application/x-vnd.oasis.opendocument.text" ||
-       /*mime == "image/x-djvu" || mime == "image/vnd.djvu" ||*/
-       mime == "application/x-chm" ||
-       mime == "application/x-fictionbook+xml" ||
-       mime == "application/xhtml+xml") {
+    if(mime == QLatin1String("application/pdf")
+            || mime == QLatin1String("application/vnd.oasis.opendocument.text")
+            || mime == QLatin1String("application/x-vnd.oasis.opendocument.text")
+            || mime == QLatin1String("application/x-chm")
+            || mime == QLatin1String("application/x-fictionbook+xml")
+            || mime == QLatin1String("application/xhtml+xml")) {
         type = File::OkularFile;
     }
 
     if (type == File::MimetypeFallback) {
-        if (mime == QLatin1String("application/x-matroska") ||
-             mime == QLatin1String("application/vnd.rn-realmedia")) {
+        if (mime == QLatin1String("application/x-matroska")
+                || mime == QLatin1String("application/vnd.rn-realmedia")) {
             type = File::Video;
         }
         else if (mime == QLatin1String("bmp")) {
@@ -316,8 +316,8 @@ File::FileType getFileType(const QString& mime, const QString& name)
         }
         else if (mime == QLatin1String("application/octet-stream")) {
             QFileInfo fi(name);
-            if (fi.suffix() == QLatin1String("mp3") ||
-                 fi.suffix() == QLatin1String("ogg"))
+            if (fi.suffix() == QLatin1String("mp3")
+                    || fi.suffix() == QLatin1String("ogg"))
                 type = File::Audio;
         }
     }
