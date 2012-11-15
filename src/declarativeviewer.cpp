@@ -161,9 +161,6 @@ void DeclarativeViewer::registerTypes()
     qmlRegisterUncreatableType<File>("Widgets", 1, 0, "File", "This type is registered only for its enums"); // to use File::FileType enum
     rootContext()->setContextProperty("fileModel", m_fileModel);
     rootContext()->setContextProperty("mainWidget",  this);
-    rootContext()->setContextProperty("fileName", "");
-    rootContext()->setContextProperty("fileUrl", "");
-    rootContext()->setContextProperty("fileType", "Undefined");
     rootContext()->setContextProperty("viewMode", "single");
     rootContext()->setContextProperty("embedded", m_isEmbedded);
     rootContext()->setContextProperty("embeddedLayout", "null");
