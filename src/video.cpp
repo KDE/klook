@@ -21,8 +21,8 @@
 
 #include "video.h"
 
-#include <QPainter>
-#include <QHBoxLayout>
+
+#include <QtGui/QHBoxLayout>
 
 #include <Phonon/MediaObject>
 #include <Phonon/VideoWidget>
@@ -171,7 +171,7 @@ void Video::play_or_pause()
     if (m_player->isPlaying()) {
         m_player->pause();
     }
-    else { 
+    else {
         m_player->play();
     }
 }

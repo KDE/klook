@@ -23,11 +23,11 @@
 #ifndef AUDIO_H
 #define AUDIO_H
 
-#include <QTime>
-
-#include <QDeclarativeItem>
+#include <QtCore/QTime>
+#include <QtDeclarative/QDeclarativeItem>
 #include <Phonon/MediaObject>
 #include <Phonon/AudioOutput>
+
 #include <KUrl>
 
 class QHBoxLayout;

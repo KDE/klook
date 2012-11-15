@@ -23,8 +23,6 @@
 #define DECLARATIVEVIEWER_H
 
 #include <QtDeclarative/QDeclarativeView>
-#include <QVariant>
-#include <QPair>
 
 class QRect;
 class PreviewGenerator;

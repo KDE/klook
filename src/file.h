@@ -23,11 +23,16 @@
 #define FILE_H
 
 #include <QtCore/QObject>
-#include <KIO/Job>
+
 #include <KUrl>
+
+namespace KIO {
+class FileCopyJob;
+}
 
 class QTemporaryFile;
 class FileTypeIdentifier;
+class KJob;
 
 class File : public QObject
 {

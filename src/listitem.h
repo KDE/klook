@@ -1,8 +1,9 @@
 #ifndef LISTITEM_H
 #define LISTITEM_H
 
-#include <QObject>
 #include "file.h"
+
+#include <QtCore/QObject>
 
 class ListItemContent;
 

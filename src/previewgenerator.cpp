@@ -25,6 +25,7 @@
 #include <QtCore/QStringList>
 #include <QtGui/QPainter>
 
+#include <KIO/PreviewJob>
 #include <KFile>
 #include <KIcon>
 

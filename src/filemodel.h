@@ -24,9 +24,6 @@
 
 #include <QtCore/QAbstractListModel>
 #include <QtCore/QList>
-#include <QtCore/QObject>
-#include <QtCore/QDir>
-#include <QtCore/QDateTime>
 
 class File;
 class ListItem;

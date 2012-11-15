@@ -1,8 +1,8 @@
 #ifndef LISTITEMCONTENT_H
 #define LISTITEMCONTENT_H
 
-#include <QObject>
-#include <QDateTime>
+#include <QtCore/QObject>
+#include <QtCore/QDateTime>
 
 class File;
 class KJob;
@@ -12,7 +12,6 @@ class ListItemContent : public QObject
     Q_OBJECT
 public:
     explicit ListItemContent(File *file, QObject *parent = 0);
-
     virtual QVariant data(int role) const = 0;
 
     File *file() const;

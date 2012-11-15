@@ -21,7 +21,7 @@
 
 #include "audio.h"
 
-#include <QFileInfo>
+#include <QtCore/QFileInfo>
 
 #include <Phonon/MediaObject>
 #include <Phonon/VideoWidget>
@@ -160,7 +160,7 @@ void Audio::setPreview(bool preview)
 }
 
 void Audio::stateChanged(Phonon::State newState, Phonon::State oldState)
-{    
+{
     Q_UNUSED(newState)
     if ((oldState == Phonon::LoadingState) || (oldState == Phonon::StoppedState)) {
         setReady(true);
@@ -193,7 +193,7 @@ QString Audio::title()
     QStringList listTitles = m_mediaObject->metaData("TITLE");
     if (!listTitles.empty()) {
         titles = listTitles.join(", ");
-    } 
+    }
 
     if (titles.isEmpty()) {
         QFileInfo fi(m_mediaObject->currentSource().url().path());

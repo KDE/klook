@@ -21,16 +21,15 @@
 
 #include "file.h"
 
-#include <KIO/JobClasses>
-#include <KIO/NetAccess>
-#include <Phonon/BackendCapabilities>
-#include <KMimeType>
 #include <QtCore/QTemporaryFile>
-#include <QtCore/QMetaType>
-#include <QtCore/QDir>
 #include <QtGui/QImageReader>
-#include <QtGui/QApplication>
+#include <QtCore/QFileInfo>
+
+#include <KMimeType>
 #include <kuiserverjobtracker.h>
+#include <KIO/Job>
+#include <KIO/JobClasses>
+#include <Phonon/BackendCapabilities>
 
 File::File(QObject* parent)
     : QObject(parent)

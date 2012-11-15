@@ -1,8 +1,8 @@
 #include "kpartswidget.h"
 
-#include <KToolBar>
 #include <QtGui/QDesktopWidget>
 
+#include <KToolBar>
 
 KPartsWidget::KPartsWidget(QWidget *parent)
     : KParts::MainWindow(parent, static_cast<Qt::WindowFlags>(KDE_DEFAULT_WINDOWFLAGS))

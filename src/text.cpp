@@ -21,11 +21,12 @@
 
 #include "text.h"
 
-#include <QPlainTextEdit>
-#include <QFile>
-#include <QTextCodec>
+#include <QtCore/QFile>
+#include <QtCore/QTextCodec>
+#include <QtGui/QPlainTextEdit>
+
 #include <KImageCache>
-#include <kencodingprober.h>
+#include <KEncodingProber>
 
 MyText::MyText(QGraphicsItem* parent)
     : QGraphicsProxyWidget(parent)
@@ -55,7 +56,7 @@ void MyText::setSource(const QString& source)
     }
     m_source = source;
 
-    QFile f(m_source); 
+    QFile f(m_source);
     if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return;
     }

@@ -24,10 +24,10 @@
 
 #include <QtCore/QHash>
 #include <QtCore/QObject>
-
-#include <KIO/PreviewJob>
+#include <QtGui/QPixmap>
 
 class FileModel;
+class KFileItem;
 
 class PreviewGenerator : public QObject
 {

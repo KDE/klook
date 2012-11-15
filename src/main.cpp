@@ -21,9 +21,9 @@
 
 #include <stdio.h>
 
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
-#include <klocale.h>
+#include <KAboutData>
+#include <KCmdLineArgs>
+#include <KLocale>
 
 #include "klookapp.h"
 

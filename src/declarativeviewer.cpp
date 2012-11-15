@@ -21,15 +21,6 @@
 
 #include "declarativeviewer.h"
 
-#include <QtDBus/QDBusInterface>
-#include <QtDBus/QDBusReply>
-
-#include <KMimeTypeTrader>
-#include <KWindowSystem>
-
-#include <plasma/windoweffects.h>
-#include <kdeclarative.h>
-
 #include "video.h"
 #include "audio.h"
 #include "text.h"
@@ -41,6 +32,25 @@
 #include "filemodel.h"
 #include "kpartsdeclarativeitem.h"
 #include "kpartswidget.h"
+
+#include <QtDeclarative/QDeclarativeEngine>
+#include <QtDeclarative/QDeclarativeContext>
+
+#include <QtDBus/QDBusInterface>
+#include <QtDBus/QDBusReply>
+
+#include <QtGui/QAbstractTextDocumentLayout>
+#include <QtGui/QApplication>
+#include <QtGui/QDesktopWidget>
+#include <QtGui/QImageReader>
+#include <QtGui/QTextDocument>
+
+#include <KMimeTypeTrader>
+#include <KWindowSystem>
+
+#include <plasma/windoweffects.h>
+#include <kdeclarative.h>
+
 
 static int header_height = 27;
 static int border_width = 2;

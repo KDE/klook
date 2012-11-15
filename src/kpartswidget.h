@@ -3,8 +3,9 @@
 
 #include <kparts/mainwindow.h>
 
-#include <QPointer>
-#include <kservice.h>
+#include <QtCore/QPointer>
+
+#include <KService>
 
 class KPartsWidget : public KParts::MainWindow
 {

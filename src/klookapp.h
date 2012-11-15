@@ -22,7 +22,7 @@
 #ifndef KLOOK_APP_H
 #define KLOOK_APP_H
 
-#include <kuniqueapplication.h>
+#include <KUniqueApplication>
 
 class DeclarativeViewer;
 
