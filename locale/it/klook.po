@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: klook\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-06 14:51+0400\n"
+"POT-Creation-Date: 2012-11-15 16:15+0400\n"
 "PO-Revision-Date: 2012-06-04 18:42+0200\n"
 "Last-Translator: Daniele Scasciafratte <mte90smanettator@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
@@ -11,98 +11,125 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<"
-"=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 1.4\n"
 
-#: src/declarativeviewer.cpp:164 src/declarativeviewer.cpp:508
-msgid "Open in..."
-msgstr "Apri in..."
+#: file.cpp:106
+msgid "File %1 does not exist"
+msgstr ""
 
-#: src/declarativeviewer.cpp:175
-msgid "Artist:"
-msgstr "Artista:"
+#: listitemcontent.cpp:31
+msgctxt "Unknown modification date"
+msgid "Unknown"
+msgstr ""
 
-#: src/declarativeviewer.cpp:176
-msgid "Total time:"
-msgstr "Durata totale:"
-
-#: src/declarativeviewer.cpp:177
-msgid "Folder"
-msgstr "Cartella"
-
-#: src/declarativeviewer.cpp:178
-msgid "Last Modified:"
-msgstr "Ultima Modifica:"
-
-#: src/declarativeviewer.cpp:179
-msgid "Size:"
-msgstr "Dimensioni:"
-
-#: src/declarativeviewer.cpp:180
-msgid "Elements:"
-msgstr "Elementi:"
-
-#: src/declarativeviewer.cpp:491
-msgid "Open"
-msgstr "Apri"
-
-#: src/declarativeviewer.cpp:495
-msgid "Open in "
-msgstr "Apri in"
-
-#: src/declarativeviewer.cpp:509
-msgid "Elements: "
-msgstr "Elementi: "
-
-#: src/main.cpp:30
-msgid "KLook is a quick preview feature"
+#: main.cpp:30
+#, fuzzy
+msgid "KLook is a quick file content preview program"
 msgstr "KLook è una feature di anteprima veloce"
 
-#: src/main.cpp:45
+#: main.cpp:35
 msgid "KLook"
 msgstr ""
 
-#: src/main.cpp:47
+#: main.cpp:37
 msgid "(c) ROSA 2011-2012"
 msgstr ""
 
-#: src/main.cpp:49
+#: main.cpp:39
 msgid "Julia Mineeva"
 msgstr "Julia Mineeva"
 
-#: src/main.cpp:50 src/main.cpp:54 src/main.cpp:58
+#: main.cpp:40 main.cpp:44 main.cpp:48
 msgid "Developer"
 msgstr "Sviluppatore"
 
-#: src/main.cpp:53
+#: main.cpp:43
 msgid "Evgeniy Auzhin"
 msgstr "Evgeniy Auzhin"
 
-#: src/main.cpp:57
+#: main.cpp:47
 msgid "Sergey Borovkov"
 msgstr "Sergey Borovkov"
 
-#: src/main.cpp:64
+#: main.cpp:56
+msgid "File index "
+msgstr ""
+
+#: main.cpp:57
 msgid "Turn on embedded mode"
 msgstr "Attiva modalità incorporata"
 
-#: src/main.cpp:65
+#: main.cpp:58
 msgid "X position of the icon"
 msgstr "Posizione X dell'icona"
 
-#: src/main.cpp:66
+#: main.cpp:59
 msgid "Y position of the icon"
 msgstr "Posizione Y dell'icona"
 
-#: src/main.cpp:67
+#: main.cpp:60
 msgid "Width of the icon"
 msgstr "Lunghezza dell'icona"
 
-#: src/main.cpp:68
+#: main.cpp:61
 msgid "Height of the icon"
 msgstr "Altezza dell'icona"
 
-#: src/main.cpp:69
+#: main.cpp:62
 msgid "A required argument 'file'"
 msgstr "Argomento 'file' richiesto"
+
+#: qml/AudioDelegate.qml:104
+msgid "Artist:"
+msgstr "Artista:"
+
+#: qml/AudioDelegate.qml:117
+msgid "Total time:"
+msgstr "Durata totale:"
+
+#: qml/FolderDelegate.qml:59
+msgid "Folder"
+msgstr "Cartella"
+
+#: qml/FolderDelegate.qml:66 qml/MimeDelegate.qml:64
+msgid "Last Modified:"
+msgstr "Ultima Modifica:"
+
+#: qml/FolderDelegate.qml:83 qml/MimeDelegate.qml:82
+msgid "Size:"
+msgstr "Dimensioni:"
+
+#: qml/FolderDelegate.qml:99
+msgid "Elements:"
+msgstr "Elementi:"
+
+#: qml/main.qml:48 qml/main.qml:130
+msgid "Open in..."
+msgstr "Apri in..."
+
+#: qml/main.qml:125
+#, fuzzy
+msgid "Elements: %1"
+msgstr "Elementi: "
+
+#: qml/main.qml:130 qml/main.qml:141
+msgid "Open"
+msgstr "Apri"
+
+#: qml/main.qml:140
+msgid "Open in "
+msgstr "Apri in"
+
+#: rc.cpp:1
+#, fuzzy
+msgctxt "Sergey Borovkov"
+msgid "Sergey Borovkov"
+msgstr "Sergey Borovkov"
+
+#: rc.cpp:2
+#, fuzzy
+msgctxt "sergey.borovkov@osinit.ru"
+msgid "sergey.borovkov@osinit.ru"
+msgstr "Sergey Borovkov"
