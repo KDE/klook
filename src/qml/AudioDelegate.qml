@@ -56,6 +56,7 @@ Component {
             id : title
             font.pointSize: 15
             anchors.left: audioIcon.right
+            anchors.right: parent.right
             y: ( audioIcon.height - audioIcon.paintedHeight ) / 2 + iconHeightMargin
         }
 
@@ -63,12 +64,14 @@ Component {
             id : artist
             anchors.top: title.bottom
             anchors.left: audioIcon.right
+            anchors.right: parent.right
         }
 
         InfoItem {
             id : totalTime
             anchors.top: artist.bottom
             anchors.left: audioIcon.right
+            anchors.right: parent.right
             wrapMode: Text.NoWrap
         }
 
