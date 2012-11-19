@@ -20,7 +20,7 @@ File *ListItemContent::file() const
 ListItemFallbackContent::ListItemFallbackContent(File *file, QObject *parent)
     : ListItemContent(file, parent), m_size(0), m_statComplete(false)
 {
-    KIO::StatJob *job = KIO::stat(file->url(),	KIO::StatJob::DestinationSide, 1, KIO::HideProgressInfo);
+    KIO::StatJob *job = KIO::stat(file->url(),	KIO::StatJob::DestinationSide, 3, KIO::HideProgressInfo);
     connect(job, SIGNAL(result(KJob*)), SLOT(handleStatJob(KJob*)));
 }
 
