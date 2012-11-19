@@ -24,6 +24,7 @@
 
 #include <QtCore/QAbstractListModel>
 #include <QtCore/QList>
+#include <QtCore/QUrl>
 
 class File;
 class ListItem;
