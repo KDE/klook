@@ -11,6 +11,7 @@ Requires: 	okular
 Requires: 	okular-ooo
 Requires: 	okular-chm
 Requires: 	okular-pdf
+Requires:       okular-fb
 Requires:	gstreamer0.10-decoders
 Requires:	gstreamer0.10-vp8
 BuildRequires:	qt4-devel	>= 4.7.0
