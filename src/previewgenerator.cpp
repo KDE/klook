@@ -64,8 +64,8 @@ void PreviewGenerator::previewJobResult(const KFileItem &item, const QPixmap &pi
 
 void PreviewGenerator::previewJobFailed(const KFileItem &item)
 {
-    KIcon icon(item.iconName(), 0, item.overlays());
-    QPixmap pixmap = icon.pixmap(500);
+    KIcon icon(KMimeType::iconNameForUrl(item.url()));
+    QPixmap pixmap = icon.isNull() ? QPixmap(":images/pla-empty-box.png") : icon.pixmap(500);
 
     m_previews.insert(item.url().url(), pixmap);
     notifyModelAboutPreview(item.url().url());
