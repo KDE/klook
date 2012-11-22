@@ -31,13 +31,12 @@ Component {
         signal ready()
         Video {
             id: video
-            opacity: 0
             source: filePath
             anchors.fill: parent
             visible: (albumWrapper.state === "") && video.ready
 
             Component.onCompleted: {
-                video.opacity = 1
+                source = filePath
                 if ( albumWrapper.state === "" )
                     video.play()
                 if ( video.playing )
