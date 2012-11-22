@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: klook\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-11-15 16:15+0400\n"
-"PO-Revision-Date: 2012-06-04 18:42+0200\n"
+"PO-Revision-Date: 2012-11-21 18:09+0100\n"
 "Last-Translator: Daniele Scasciafratte <mte90smanettator@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
 "Language: it\n"
@@ -13,21 +13,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 1.4\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: file.cpp:106
 msgid "File %1 does not exist"
-msgstr ""
+msgstr "Il File %1 non esiste"
 
 #: listitemcontent.cpp:31
 msgctxt "Unknown modification date"
 msgid "Unknown"
-msgstr ""
+msgstr "Sconosciuto"
 
 #: main.cpp:30
-#, fuzzy
 msgid "KLook is a quick file content preview program"
-msgstr "KLook è una feature di anteprima veloce"
+msgstr "KLook è una programma rapido per anteprima"
 
 #: main.cpp:35
 msgid "KLook"
@@ -55,7 +54,7 @@ msgstr "Sergey Borovkov"
 
 #: main.cpp:56
 msgid "File index "
-msgstr ""
+msgstr "Indice File"
 
 #: main.cpp:57
 msgid "Turn on embedded mode"
@@ -110,9 +109,8 @@ msgid "Open in..."
 msgstr "Apri in..."
 
 #: qml/main.qml:125
-#, fuzzy
 msgid "Elements: %1"
-msgstr "Elementi: "
+msgstr "Elementi: %1"
 
 #: qml/main.qml:130 qml/main.qml:141
 msgid "Open"
@@ -129,7 +127,6 @@ msgid "Sergey Borovkov"
 msgstr "Sergey Borovkov"
 
 #: rc.cpp:2
-#, fuzzy
 msgctxt "sergey.borovkov@osinit.ru"
 msgid "sergey.borovkov@osinit.ru"
-msgstr "Sergey Borovkov"
+msgstr "sergey.borovkov@osinit.ru"
