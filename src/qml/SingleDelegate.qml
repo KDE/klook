@@ -119,8 +119,10 @@ Item {
         onLoaded: {
             mainWindow.updateMenubar(photosListView.currentIndex)
 
-            if (index === photosListView.currentIndex)
+            if (index === photosListView.currentIndex) {
                 mainWindow.updatePanel()
+                mainWindow.updatePanelState()
+            }
 
             // we need to resize klook to preferred size when opening file
             // it can't be done on startup because file can be unavailable
