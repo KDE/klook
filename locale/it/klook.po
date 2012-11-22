@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: klook\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-11-15 16:15+0400\n"
-"PO-Revision-Date: 2012-11-21 18:09+0100\n"
+"PO-Revision-Date: 2012-11-22 10:46+0100\n"
 "Last-Translator: Daniele Scasciafratte <mte90smanettator@gmail.com>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
 "Language: it\n"
@@ -26,7 +26,7 @@ msgstr "Sconosciuto"
 
 #: main.cpp:30
 msgid "KLook is a quick file content preview program"
-msgstr "KLook è una programma rapido per anteprima"
+msgstr "KLook è una programma rapido per anteprime"
 
 #: main.cpp:35
 msgid "KLook"
