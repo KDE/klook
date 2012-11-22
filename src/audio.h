@@ -109,6 +109,8 @@ Q_SIGNALS:
     void genreChanged();
 
 private:
+    QString guessEncoding(const QByteArray &data);
+
     Phonon::MediaObject* m_mediaObject;
 
     bool m_isPreview;

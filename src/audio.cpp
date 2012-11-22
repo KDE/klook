@@ -21,7 +21,10 @@
 
 #include "audio.h"
 
+#include <QtCore/QTextCodec>
+#include <QtCore/QString>
 #include <QtCore/QFileInfo>
+#include <KEncodingProber>
 
 #include <Phonon/MediaObject>
 #include <Phonon/VideoWidget>
@@ -39,7 +42,7 @@ Audio::Audio(QDeclarativeItem* parent)
     QObject::connect(m_mediaObject, SIGNAL(totalTimeChanged(qint64)), SLOT(onTotalTimeChanged(qint64)));
     QObject::connect(m_mediaObject, SIGNAL(finished()), SLOT(onFinished()));
     QObject::connect(m_mediaObject, SIGNAL(stateChanged(Phonon::State, Phonon::State)),
-                      SLOT(stateChanged(Phonon::State, Phonon::State)));
+                     SLOT(stateChanged(Phonon::State, Phonon::State)));
 }
 
 Audio::~Audio()
@@ -172,7 +175,7 @@ QString Audio::artist()
     QString artists;
     QStringList listArtists = m_mediaObject->metaData("ARTIST");
     if (!listArtists.empty()) {
-        artists = listArtists.join(", ");
+        artists = guessEncoding(listArtists.join(", ").toAscii());
     }
     return artists;
 }
@@ -182,7 +185,7 @@ QString Audio::album()
     QString albums;
     QStringList listAlbums = m_mediaObject->metaData("ALBUM");
     if (!listAlbums.empty()) {
-        albums = listAlbums.join(", ");
+        albums = guessEncoding(listAlbums.join(", ").toAscii());
     }
     return albums;
 }
@@ -191,10 +194,8 @@ QString Audio::title()
 {
     QString titles;
     QStringList listTitles = m_mediaObject->metaData("TITLE");
-    if (!listTitles.empty()) {
-        titles = listTitles.join(", ");
-    }
 
+    titles = guessEncoding(listTitles.join(", ").toAscii());
     if (titles.isEmpty()) {
         QFileInfo fi(m_mediaObject->currentSource().url().path());
         titles = fi.fileName();
@@ -203,12 +204,23 @@ QString Audio::title()
     return titles;
 }
 
+QString Audio::guessEncoding(const QByteArray &data)
+{
+    KEncodingProber prober(KEncodingProber::Universal);
+    prober.feed(data);
+    QString str = prober.confidence() > 0.7
+            ? QTextCodec::codecForName(prober.encoding())->toUnicode(data)
+            : QString::fromUtf8(data);
+
+    return str;
+}
+
 QString Audio::composer()
 {
     QString composers;
     QStringList listcomposers = m_mediaObject->metaData("COMPOSER");
     if (!listcomposers.empty()) {
-        composers = listcomposers.join(", ");
+        composers = guessEncoding(listcomposers.join(", ").toAscii());
     }
 
     return composers.toUtf8();
@@ -219,7 +231,7 @@ QString Audio::genre()
     QString genres;
     QStringList listgenres = m_mediaObject->metaData("GENRE");
     if (!listgenres.empty()) {
-        genres = listgenres.join(", ");
+        genres = guessEncoding(listgenres.join(", ").toAscii());
     }
 
     return genres;
