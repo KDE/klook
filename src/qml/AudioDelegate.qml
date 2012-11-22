@@ -81,7 +81,7 @@ Component {
             id: audio
 
             Component.onCompleted: {
-                audio.source = fileUrl
+                audio.source = filePath
                 //audioIcon.opacity = 1
                 if ( albumWrapper.state === "" )
                     audio.play()

@@ -123,20 +123,19 @@ void File::download()
     emit dataChanged();
 }
 
-bool File:: needDownload()
+bool File::needDownload()
 {
-    bool r = true;
-    FileType t = type();
-    if(t == File::Image || t == File::Txt) {
-        r = true;
-    }
-    else if(t != File::Directory) {
+    const FileType t = type();
+
+    if(url().isLocalFile())
         return false;
+
+    if(t == File::Image || t == File::Txt
+            || t == File::Audio || t == File::Video) {
+        return true;
     }
-    else {
-        r = false;
-    }
-    return !url().isLocalFile() && r;
+
+    return false;
 }
 
 bool File::isLoaded() const
