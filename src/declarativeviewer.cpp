@@ -96,8 +96,7 @@ DeclarativeViewer::DeclarativeViewer(QWidget* parent)
 
     registerTypes();
 
-    //Remove standard KDE title
-    setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
+    setWindowFlags(Qt::WindowStaysOnTopHint | Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
 
     setAttribute(Qt::WA_TranslucentBackground);
     setStyleSheet("background:transparent;");
