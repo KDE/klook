@@ -33,6 +33,8 @@
 #include "kpartsdeclarativeitem.h"
 #include "kpartswidget.h"
 
+#include <QtCore/QTimer>
+
 #include <QtDeclarative/QDeclarativeEngine>
 #include <QtDeclarative/QDeclarativeContext>
 
@@ -130,12 +132,11 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
 
     m_currentFile = m_fileModel->file(indexToShow);
 
-    QSize startingSize = m_currentFile->url().isLocalFile()
-            ? getPreferredSize(m_currentFile->url().toLocalFile(), File::Progress)
-            : QSize();
-
     KWindowSystem::setState(winId(), NET::SkipTaskbar);
-    centerWidget(startingSize.isValid() ? startingSize : QSize(min_width, min_height));
+
+    if(!isVisible())
+        QTimer::singleShot(200, this, SLOT(showWindow()));
+
     emit setStartWindow();
 }
 
@@ -667,6 +668,17 @@ void DeclarativeViewer::setViewMode(DeclarativeViewer::ViewMode mode)
 void DeclarativeViewer::onSetGallery(bool isGallery)
 {
     m_isGallery = isGallery;
+}
+
+void DeclarativeViewer::showBusy()
+{
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    centerWidget(QSize(min_width, min_height));
+}
+
+void DeclarativeViewer::showWindow()
+{
+    QApplication::restoreOverrideCursor();
 }
 
 QSize DeclarativeViewer::getTextWindowSize(QString url) const

@@ -96,6 +96,13 @@ signals:
 public slots:
     void onSetGallery(bool);
 
+    // called after startup when we can't determine ensured file size quickly
+    void showBusy();
+
+    // Called when file size can't be determined reasonably fast - we will have to show window
+    // anyway
+    void showWindow();
+
 private slots:
     void focusChanged(QWidget*, QWidget*);
 
