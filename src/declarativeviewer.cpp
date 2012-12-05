@@ -723,9 +723,6 @@ void DeclarativeViewer::focusChanged(QWidget*, QWidget* now)
 
 void DeclarativeViewer::setEmbedded(bool state)
 {
-    if (state) {
-        setWindowFlags(windowFlags() | Qt::ToolTip);
-    }
     QSize minSize = state ? QSize(50, 50) : QSize(min_width, min_height);
     setMinimumSize(minSize);
     m_isEmbedded = state;
