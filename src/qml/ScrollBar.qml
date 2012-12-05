@@ -19,8 +19,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import QtQuick 1.0
-import Qt 4.7
+import QtQuick 1.1
 
 Item {
     id: scrollBar;
