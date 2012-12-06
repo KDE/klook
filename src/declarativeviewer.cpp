@@ -417,6 +417,10 @@ void DeclarativeViewer::resizeToPreferredSize(int index)
     if (preferredSize != geometry().size()) {
         centerWidget(preferredSize);
     }
+    else {
+        if(!isVisible())
+            show();
+    }
 }
 
 void DeclarativeViewer::setVideoSizeHint(int width, int height, int index)
