@@ -16,6 +16,7 @@ Requires:	gstreamer0.10-decoders
 Requires:	gstreamer0.10-vp8
 BuildRequires:	qt4-devel	>= 4.7.0
 BuildRequires:	kdelibs4-devel	>= 4.6.5
+BuildRequires:	%{_lib}exiv2-devel
 
 %description
 Klook is a quick preview feature based on Qt and Qt Quick

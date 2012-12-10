@@ -14,6 +14,10 @@ add_definitions( ${QT_DEFINITIONS})
 include_directories( ${KDE4_INCLUDES} ${QT_QDECLARATIVE_INCLUDE_DIR} ${KDECLARATIVE_INCLUDE_DIRS} )
 add_subdirectory( icons )
 
+set(EXIV2_MIN_VERSION "0.19")
+find_package(Exiv2)
+macro_log_feature(EXIV2_FOUND "Exiv2" "Provides image metadata support" "http://www.exiv2.org" TRUE ${EXIV2_MIN_VERSION} "")
+
 set( RESOURCES src/resources.qrc )
 QT4_ADD_RESOURCES( QRC_SOURCES ${RESOURCES} )
 
@@ -34,6 +38,8 @@ set( klook_SRCS src/main.cpp
                 src/kpartsdeclarativeitem.cpp
                 src/kpartswidget.cpp
                 src/listitemcontent.cpp
+                src/exifimageprovider.cpp
+                src/rotatedimage.cpp
                 ${qml_files} )
 
 #set( KDE4_ICON_DIR  ${CMAKE_INSTALL_PREFIX}/share/icons )
@@ -42,7 +48,7 @@ kde4_add_app_icon( klook_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/icons/hi*-apps-klook.
 kde4_add_executable( klook ${klook_SRCS} ${QRC_SOURCES} )
 
 target_link_libraries( klook ${KDE4_KIO_LIBS}
-
+                           ${EXIV2_LIBRARIES}
                            ${KDE4_PHONON_LIBS}
                            ${KDE4_PLASMA_LIBS}
                            ${KDE4_KFILE_LIBS}

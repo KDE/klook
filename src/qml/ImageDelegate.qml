@@ -29,19 +29,20 @@ Component {
 
         Image {
             id: img
-            opacity: 0
             anchors.centerIn: parent
-            source: filePath
-            fillMode: Image.PreserveAspectFit
-            asynchronous: true
-            smooth: true;
-            visible: albumWrapper.state === ""
-            width: Math.min( sourceSize.width, parent.width )
-            height: Math.min( sourceSize.height, parent.height )
+            sourceSize.width: parent.width
+            sourceSize.height: parent.height
 
             signal ready()
 
-            onStatusChanged: if ( img.status === Image.Ready ) { ready(); opacity = 1; }
+            onStatusChanged: if (img.status === Image.Ready) { ready(); opacity = 1; }
+
+            source: "image://exif/" + filePath
+            fillMode: Image.PreserveAspectFit
+            asynchronous: true
+            smooth: true
+            opacity: 0
+            visible: albumWrapper.state === ""
 
             Behavior on opacity { NumberAnimation { duration: 500 } }
         }
@@ -49,13 +50,7 @@ Component {
         Connections{
             target: photosListView;
             onCurrentIndexChanged: {
-                if ( listItem.ListView.isCurrentItem )
-                {
-                    img.opacity = 1
-                } else
-                {
-                    img.opacity = 0
-                }
+                img.opacity = listItem.ListView.isCurrentItem ? 1 : 0
             }
         }
     }

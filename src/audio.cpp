@@ -21,14 +21,14 @@
 
 #include "audio.h"
 
-#include <QtCore/QTextCodec>
-#include <QtCore/QString>
-#include <QtCore/QFileInfo>
 #include <KEncodingProber>
+#include <QtCore/QFileInfo>
+#include <QtCore/QString>
+#include <QtCore/QTextCodec>
 
+#include <Phonon/AudioOutput>
 #include <Phonon/MediaObject>
 #include <Phonon/VideoWidget>
-#include <Phonon/AudioOutput>
 
 Audio::Audio(QDeclarativeItem* parent)
     : QDeclarativeItem(parent)

@@ -21,38 +21,34 @@
 
 #include "declarativeviewer.h"
 
-#include "video.h"
 #include "audio.h"
-#include "text.h"
+#include "exifimageprovider.h"
 #include "file.h"
-#include "listitem.h"
-#include "previewgenerator.h"
-#include "previewprovider.h"
-#include "mimeprovider.h"
 #include "filemodel.h"
 #include "kpartsdeclarativeitem.h"
 #include "kpartswidget.h"
+#include "listitem.h"
+#include "mimeprovider.h"
+#include "previewgenerator.h"
+#include "previewprovider.h"
+#include "text.h"
+#include "video.h"
 
 #include <QtCore/QTimer>
-
-#include <QtDeclarative/QDeclarativeEngine>
-#include <QtDeclarative/QDeclarativeContext>
-
 #include <QtDBus/QDBusInterface>
 #include <QtDBus/QDBusReply>
-
+#include <QtDeclarative/QDeclarativeContext>
+#include <QtDeclarative/QDeclarativeEngine>
 #include <QtGui/QAbstractTextDocumentLayout>
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopWidget>
 #include <QtGui/QImageReader>
 #include <QtGui/QTextDocument>
 
+#include <kdeclarative.h>
 #include <KMimeTypeTrader>
 #include <KWindowSystem>
-
 #include <plasma/windoweffects.h>
-#include <kdeclarative.h>
-
 
 static int header_height = 27;
 static int border_width = 2;
@@ -86,6 +82,7 @@ DeclarativeViewer::DeclarativeViewer(QWidget* parent)
 
     engine()->addImageProvider("preview", new PreviewProvider);
     engine()->addImageProvider("mime", new MimeProvider);
+    engine()->addImageProvider("exif", new ExifImageProvider);
 
     setResizeMode(QDeclarativeView::SizeRootObjectToView);
 

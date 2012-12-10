@@ -242,9 +242,9 @@ File::FileType getFileType(const QString& mime, const QString& name)
         if (left == QLatin1String("image")) {
             QString right = mime.mid(delimiter + 1);
             if (supportedImageFormats.contains(right.toLatin1()) || right == QLatin1String("x-xpixmap")
-                 || right == QLatin1String("x-xpixmap") || right == QLatin1String("x-portable-bitmap")
-                 || right == QLatin1String("x-portable-pixmap") || right == QLatin1String("x-portable-graymap")
-                 || right == "x-xbitmap")
+                    || right == QLatin1String("x-xpixmap") || right == QLatin1String("x-portable-bitmap")
+                    || right == QLatin1String("x-portable-pixmap") || right == QLatin1String("x-portable-graymap")
+                    || right == "x-xbitmap")
                 type = File::Image;
             else if (supportedImageFormats.contains("svg")
                      && (right == QLatin1String("svg+xml") || right == QLatin1String("svg+xml-compressed")))
@@ -256,7 +256,7 @@ File::FileType getFileType(const QString& mime, const QString& name)
             // does not always correct - but documentation lists it as a
             // preferred method to check it mimetype can bdecoded
             if (Phonon::BackendCapabilities::isMimeTypeAvailable(mime)
-                || Phonon::BackendCapabilities::availableMimeTypes().contains(mime)) {
+                    || Phonon::BackendCapabilities::availableMimeTypes().contains(mime)) {
                 type = File::Video;
             }
 
