@@ -21,16 +21,16 @@
 
 #include "file.h"
 
+#include <QtCore/QFileInfo>
 #include <QtCore/QTemporaryFile>
 #include <QtGui/QImageReader>
-#include <QtCore/QFileInfo>
 
-#include <KMimeType>
-#include <kuiserverjobtracker.h>
-#include <KLocalizedString>
 #include <KIO/Job>
 #include <KIO/JobClasses>
 #include <KIO/NetAccess>
+#include <KLocalizedString>
+#include <KMimeType>
+#include <kuiserverjobtracker.h>
 #include <Phonon/BackendCapabilities>
 
 File::File(QObject* parent)

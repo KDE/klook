@@ -21,16 +21,16 @@
 
 #include "klookapp.h"
 
-#include <QFileInfo>
-#include <QFile>
-#include <QDir>
 #include <QDebug>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
 #include <QGraphicsObject>
 
-#include <kcmdlineargs.h>
-#include <kurl.h>
-#include <kicon.h>
+#include <KCmdLineArgs>
+#include <KIcon>
 #include <KStandardDirs>
+#include <KUrl>
 
 #include "declarativeviewer.h"
 #include "filemodel.h"

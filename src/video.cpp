@@ -24,9 +24,9 @@
 
 #include <QtGui/QHBoxLayout>
 
+#include <Phonon/AudioOutput>
 #include <Phonon/MediaObject>
 #include <Phonon/VideoWidget>
-#include <Phonon/AudioOutput>
 
 Video::Video(QGraphicsItem* parent)
     : QGraphicsProxyWidget(parent)
@@ -54,6 +54,11 @@ Video::Video(QGraphicsItem* parent)
     QObject::connect(m_player->mediaObject(), SIGNAL(finished()), SLOT(onFinished()));
     QObject::connect(m_player->mediaObject(), SIGNAL(metaDataChanged()), SLOT(onMetaDataChanged()));
     QObject::connect(m_player->mediaObject(), SIGNAL(stateChanged(Phonon::State, Phonon::State)),
+    connect(m_player->mediaObject(), SIGNAL(tick(qint64)), SLOT(onTicked(qint64)));
+    connect(m_player->mediaObject(), SIGNAL(totalTimeChanged(qint64)), SLOT(onTotalTimeChanged(qint64)));
+    connect(m_player->mediaObject(), SIGNAL(finished()), SLOT(onFinished()));
+    connect(m_player->mediaObject(), SIGNAL(metaDataChanged()), SLOT(onMetaDataChanged()));
+    connect(m_player->mediaObject(), SIGNAL(stateChanged(Phonon::State, Phonon::State)),
                       SLOT(stateChanged(Phonon::State,Phonon::State)));
 }
 

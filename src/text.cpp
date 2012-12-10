@@ -25,8 +25,8 @@
 #include <QtCore/QTextCodec>
 #include <QtGui/QPlainTextEdit>
 
-#include <KImageCache>
 #include <KEncodingProber>
+#include <KImageCache>
 
 MyText::MyText(QGraphicsItem* parent)
     : QGraphicsProxyWidget(parent)
