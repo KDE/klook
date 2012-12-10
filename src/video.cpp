@@ -49,11 +49,6 @@ Video::Video(QGraphicsItem* parent)
     m_wid->setLayout(m_layout);
     setWidget(m_wid);
 
-    QObject::connect(m_player->mediaObject(), SIGNAL(tick(qint64)), SLOT(onTicked(qint64)));
-    QObject::connect(m_player->mediaObject(), SIGNAL(totalTimeChanged(qint64)), SLOT(onTotalTimeChanged(qint64)));
-    QObject::connect(m_player->mediaObject(), SIGNAL(finished()), SLOT(onFinished()));
-    QObject::connect(m_player->mediaObject(), SIGNAL(metaDataChanged()), SLOT(onMetaDataChanged()));
-    QObject::connect(m_player->mediaObject(), SIGNAL(stateChanged(Phonon::State, Phonon::State)),
     connect(m_player->mediaObject(), SIGNAL(tick(qint64)), SLOT(onTicked(qint64)));
     connect(m_player->mediaObject(), SIGNAL(totalTimeChanged(qint64)), SLOT(onTotalTimeChanged(qint64)));
     connect(m_player->mediaObject(), SIGNAL(finished()), SLOT(onFinished()));
