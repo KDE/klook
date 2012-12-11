@@ -34,54 +34,62 @@ RotatedImage::RotatedImage(const QString& path)
 
 void RotatedImage::rotateImage()
 {
-    Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(qPrintable(m_path));
-    image->readMetadata();
+    try {
+        Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(qPrintable(m_path));
+        image->readMetadata();
 
-    Exiv2::ExifData &exifData = image->exifData();
-    if (exifData.empty())
-        return;
+        Exiv2::ExifData &exifData = image->exifData();
+        if (exifData.empty())
+            return;
 
-    int orientation = 0;
-    Exiv2::ExifKey key("Exif.Image.Orientation");
-    Exiv2::ExifData::iterator it = exifData.findKey(key);
+        int orientation = 0;
+        Exiv2::ExifKey key("Exif.Image.Orientation");
+        Exiv2::ExifData::iterator it = exifData.findKey(key);
 
-    if (it == exifData.end())
-        return;
+        if (it == exifData.end())
+            return;
 
-    orientation = it->toLong();
+        orientation = it->toLong();
 
-    QMatrix rot90 = createRotMatrix(90);
-    QMatrix hflip = createScaleMatrix(-1, 1);
-    QMatrix vflip = createScaleMatrix(1, -1);
+        QMatrix rot90 = createRotMatrix(90);
+        QMatrix hflip = createScaleMatrix(-1, 1);
+        QMatrix vflip = createScaleMatrix(1, -1);
 
-    switch(orientation)
-    {
-    case NOT_AVAILABLE :
-    case NORMAL :
-        m_matrix = QMatrix();
-        break;
-    case HFLIP :
-        m_matrix = hflip;
-        break;
-    case ROT_180:
-        m_matrix = createRotMatrix(180);
-        break;
-    case VFLIP:
-        m_matrix = vflip;
-        break;
-    case TRANSPOSE:
-        m_matrix = hflip * rot90;
-        break;
-    case ROT_90:
-        m_matrix = rot90;
-        break;
-    case TRANSVERSE:
-        m_matrix = vflip * rot90;
-        break;
-    case ROT_270:
-        m_matrix = createRotMatrix(270);
-        break;
+        switch(orientation)
+        {
+        case NOT_AVAILABLE :
+        case NORMAL :
+            m_matrix = QMatrix();
+            break;
+        case HFLIP :
+            m_matrix = hflip;
+            break;
+        case ROT_180:
+            m_matrix = createRotMatrix(180);
+            break;
+        case VFLIP:
+            m_matrix = vflip;
+            break;
+        case TRANSPOSE:
+            m_matrix = hflip * rot90;
+            break;
+        case ROT_90:
+            m_matrix = rot90;
+            break;
+        case TRANSVERSE:
+            m_matrix = vflip * rot90;
+            break;
+        case ROT_270:
+            m_matrix = createRotMatrix(270);
+            break;
+        }
     }
+    catch(...) {
+        // we don't really care about this
+        // let's just return
+        return;
+    }
+
 }
 
 QMatrix RotatedImage::createRotMatrix(int angle)

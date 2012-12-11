@@ -42,7 +42,7 @@ set( klook_SRCS src/main.cpp
                 src/rotatedimage.cpp
                 ${qml_files} )
 
-#set( KDE4_ICON_DIR  ${CMAKE_INSTALL_PREFIX}/share/icons )
+set_source_files_properties(src/rotatedimage.cpp PROPERTIES COMPILE_FLAGS ${KDE4_ENABLE_EXCEPTIONS})
 
 kde4_add_app_icon( klook_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/icons/hi*-apps-klook.png" )
 kde4_add_executable( klook ${klook_SRCS} ${QRC_SOURCES} )
