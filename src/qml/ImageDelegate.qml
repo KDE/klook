@@ -30,12 +30,12 @@ Component {
         Image {
             id: img
             anchors.centerIn: parent
-            sourceSize.width: parent.width
-            sourceSize.height: parent.height
-
             signal ready()
 
-            onStatusChanged: if (img.status === Image.Ready) { ready(); opacity = 1; }
+            sourceSize {
+                width: parent.width
+                height: parent.height
+            }
 
             source: "image://exif/" + filePath
             fillMode: Image.PreserveAspectFit
@@ -43,6 +43,8 @@ Component {
             smooth: true
             opacity: 0
             visible: albumWrapper.state === ""
+
+            onStatusChanged: if (img.status === Image.Ready) { ready(); opacity = 1; }
 
             Behavior on opacity { NumberAnimation { duration: 500 } }
         }

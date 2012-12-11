@@ -34,8 +34,12 @@ QImage ExifImageProvider::requestImage(const QString& id, QSize* size, const QSi
     RotatedImage rt(id);
     QImage image(id);
     image = image.transformed(rt.rotationMatrix());
-    if (requestedSize.isValid())
+
+    if (requestedSize.isValid() && (requestedSize.width() < image.width()
+                                    || requestedSize.height() < image.height())) {
         image = image.scaled(requestedSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    }
+
     *size = image.size();
 
     return image;
