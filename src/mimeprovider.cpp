@@ -25,7 +25,7 @@
 #include <KMimeType>
 
 MimeProvider::MimeProvider()
-    : QDeclarativeImageProvider(Pixmap)
+    : QQuickImageProvider(Pixmap)
 {
 }
 

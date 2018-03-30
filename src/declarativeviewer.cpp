@@ -37,18 +37,16 @@
 #include <QtCore/QTimer>
 #include <QtDBus/QDBusInterface>
 #include <QtDBus/QDBusReply>
-#include <QtDeclarative/QDeclarativeContext>
-#include <QtDeclarative/QDeclarativeEngine>
 #include <QtGui/QAbstractTextDocumentLayout>
-#include <QtGui/QApplication>
-#include <QtGui/QDesktopWidget>
+#include <QApplication>
+#include <QDesktopWidget>
 #include <QtGui/QImageReader>
 #include <QtGui/QTextDocument>
+#include <QtQml/QQmlContext>
 
-#include <kdeclarative.h>
+#include <KDeclarative/KDeclarative>
 #include <KMimeTypeTrader>
 #include <KWindowSystem>
-#include <plasma/windoweffects.h>
 
 static int header_height = 27;
 static int border_width = 2;
@@ -59,8 +57,8 @@ static int arrowIconHeight = 16;
 static int min_width = 600;
 static int min_height = 427;
 
-DeclarativeViewer::DeclarativeViewer(QWidget* parent)
-    : QDeclarativeView(parent)
+DeclarativeViewer::DeclarativeViewer(QWindow* parent)
+    : QQuickView(parent)
     , m_lastMousePosition(0, 0)
     , m_isSingleMode(true)
     , m_moving(false)
@@ -70,23 +68,18 @@ DeclarativeViewer::DeclarativeViewer(QWidget* parent)
     , m_currentFile(0)
     , m_region(FRAME_REGION)
 {
-    KDeclarative kdeclarative;
+    KDeclarative::KDeclarative kdeclarative;
     kdeclarative.setDeclarativeEngine(engine());
     kdeclarative.initialize();
     kdeclarative.setupBindings();
-
-    setOptimizationFlags(QGraphicsView::DontSavePainterState);
-    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-
-    setMouseTracking(true);
 
     engine()->addImageProvider("preview", new PreviewProvider);
     engine()->addImageProvider("mime", new MimeProvider);
     engine()->addImageProvider("exif", new ExifImageProvider);
 
-    setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    setResizeMode(QQuickView::SizeRootObjectToView);
 
-    setMinimumSize(min_width, min_height);
+    //setMinimumSize(min_width, min_height); TODO: fixme
 
     m_fileModel = new FileModel(this);
     m_fileModel->setRoleNames(ListItem::roleNames());
@@ -95,10 +88,10 @@ DeclarativeViewer::DeclarativeViewer(QWidget* parent)
 
     registerTypes();
 
-    setWindowFlags(Qt::WindowStaysOnTopHint | Qt::CustomizeWindowHint | Qt::FramelessWindowHint);
+    //setWindowFlags(Qt::WindowStaysOnTopHint | Qt::CustomizeWindowHint | Qt::FramelessWindowHint); FIXME
 
-    setAttribute(Qt::WA_TranslucentBackground);
-    setStyleSheet("background:transparent;");
+    //setAttribute(Qt::WA_TranslucentBackground); FIXME
+    //setStyleSheet("background:transparent;"); FIXME
 
     connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), SLOT(focusChanged(QWidget*, QWidget*)));
     connect(engine(), SIGNAL(quit()), qApp, SLOT(quit()));
@@ -137,17 +130,6 @@ void DeclarativeViewer::init(QStringList urls, bool embedded, const QRect& rc, i
     emit setStartWindow();
 }
 
-void DeclarativeViewer::resizeEvent(QResizeEvent *event)
-{
-    if (KWindowSystem::compositingActive()) {
-        //QRegion mask(QRect(QPoint(), size()));
-        //Plasma::WindowEffects::enableBlurBehind(winId(), true, mask);
-        //Plasma::WindowEffects::overrideShadow(winId(), true);
-    }
-
-    QDeclarativeView::resizeEvent(event);
-}
-
 void DeclarativeViewer::registerTypes()
 {
     qmlRegisterType<Video>("Widgets", 1, 0, "Video");
@@ -156,19 +138,20 @@ void DeclarativeViewer::registerTypes()
     qmlRegisterType<KPartsDeclarativeItem>("Widgets", 1, 0, "KPart");
 
     qmlRegisterUncreatableType<File>("Widgets", 1, 0, "File", "This type is registered only for its enums"); // to use File::FileType enum
-    rootContext()->setContextProperty("fileModel", m_fileModel);
-    rootContext()->setContextProperty("mainWidget",  this);
-    rootContext()->setContextProperty("viewMode", "single");
-    rootContext()->setContextProperty("embedded", m_isEmbedded);
-    rootContext()->setContextProperty("embeddedLayout", "null");
-    rootContext()->setContextProperty("previewGenerator", PreviewGenerator::instance());
-    rootContext()->setContextProperty("arrowX", .0);
-    rootContext()->setContextProperty("arrowY", .0);
+    QQmlContext* context = engine()->rootContext();
+    context->setContextProperty("fileModel", m_fileModel);
+    context->setContextProperty("mainWidget",  this);
+    context->setContextProperty("viewMode", "single");
+    context->setContextProperty("embedded", m_isEmbedded);
+    context->setContextProperty("embeddedLayout", "null");
+    context->setContextProperty("previewGenerator", PreviewGenerator::instance());
+    context->setContextProperty("arrowX", .0);
+    context->setContextProperty("arrowY", .0);
 }
 
 void DeclarativeViewer::setFullScreen()
 {
-    if (m_isGallery && !isFullScreen()) {
+    if (m_isGallery && windowState() != Qt::WindowFullScreen) {
         showFullScreen();
         emit setFullScreenState();
         return;
@@ -196,7 +179,7 @@ void DeclarativeViewer::setFullScreen()
         preferredSize = minimumSize();
     }
 
-    if (isFullScreen()) {
+    if (windowState() != Qt::WindowFullScreen) {
         showNormal();
         centerWidget(preferredSize);
         return;
@@ -218,7 +201,7 @@ QSize DeclarativeViewer::getPreferredSize(const QString &path, int type) const
         QHash<int, QSize>::const_iterator it = m_videoSizeHints.constFind(m_fileModel->rowFromFile(m_currentFile));
         if(it != m_videoSizeHints.constEnd()) {
             QDesktopWidget dw;
-            QSize sz = calculateViewSize(it.value(), dw.screenGeometry(this));
+            QSize sz = calculateViewSize(it.value(), dw.screenGeometry(/*FIXME: was this*/));
 
             // + margins values in windowed mode
             sz.setWidth(sz.width() + (m_isEmbedded ? 0 : 6)) ;
@@ -230,7 +213,7 @@ QSize DeclarativeViewer::getPreferredSize(const QString &path, int type) const
     else if (type == File::Image) {
         QImageReader imgReader(path);
         QDesktopWidget dw;
-        QSize sz = calculateViewSize(imgReader.size(), dw.screenGeometry(this));
+        QSize sz = calculateViewSize(imgReader.size(), dw.screenGeometry(/*FIXME: was this*/));
         sz.setWidth(sz.width() + (m_isEmbedded ? 0 : 6)) ;
         sz.setHeight(sz.height() + (m_isEmbedded ? 0 : height_offset +4));
         return sz;
@@ -280,7 +263,7 @@ void DeclarativeViewer::initModel(QStringList urls)
 void DeclarativeViewer::centerWidget(const QSize& sz)
 {
     QDesktopWidget dw;
-    QRect rectDesktop = dw.screenGeometry(this);
+    QRect rectDesktop = dw.screenGeometry(/*FIXME: was this*/);
     QSize sz1 = sz;
 
     if (m_isEmbedded) {
@@ -375,7 +358,7 @@ void DeclarativeViewer::centerWidget(const QSize& sz)
     if (!isVisible()) {
         show();
     }
-    activateWindow();
+    //activateWindow(); FIXME
 }
 
 void DeclarativeViewer::updateCurrentFile(int index)
@@ -392,7 +375,7 @@ QString DeclarativeViewer::serviceForFile(int index) const
     if (!file->mime().isEmpty()) {
         KService::Ptr ptr = KMimeTypeTrader::self()->preferredService(file->mime());
         KService *serv = ptr.data();
-        if(!ptr.isNull()) {
+        if(ptr) { // NOTE: weird checking here
             return serv->name();
         }
     }
@@ -427,6 +410,9 @@ void DeclarativeViewer::setVideoSizeHint(int width, int height, int index)
 
 WidgetRegion DeclarativeViewer::calculateWindowRegion(const QPoint& mousePos)
 {
+    return ARROW_NULL_REGION; // FIXME
+
+#if 0
     QPointF pos;
     pos = mousePos;
     if (m_isEmbedded) {
@@ -516,6 +502,7 @@ WidgetRegion DeclarativeViewer::calculateWindowRegion(const QPoint& mousePos)
     }
 
     return FRAME_REGION;
+#endif
 }
 
 void DeclarativeViewer::mousePressEvent(QMouseEvent* event)
@@ -543,16 +530,17 @@ void DeclarativeViewer::mousePressEvent(QMouseEvent* event)
         }
     }
 
-    QDeclarativeView::mousePressEvent(event);
+    QQuickView::mousePressEvent(event);
 }
 
 void DeclarativeViewer::mouseMoveEvent(QMouseEvent* event)
 {
-    QDeclarativeView::mouseMoveEvent(event);
+    QQuickView::mouseMoveEvent(event);
     if (isFullScreen() || m_isEmbedded) {
         return;
     }
 
+#if 0
     if (event->buttons().testFlag(Qt::LeftButton) && m_moving) {
         if (viewport()->cursor().shape() != (Qt::SizeAllCursor))
             viewport()->setCursor(QCursor(Qt::SizeAllCursor));
@@ -641,10 +629,12 @@ void DeclarativeViewer::mouseMoveEvent(QMouseEvent* event)
             viewport()->setCursor(QCursor(Qt::ArrowCursor));
         }
     }
+#endif
 }
 
 void DeclarativeViewer::mouseReleaseEvent(QMouseEvent* event)
 {
+#if 0
     if (!isFullScreen()) {
         if (m_moving) {
             m_moving = false;
@@ -657,7 +647,8 @@ void DeclarativeViewer::mouseReleaseEvent(QMouseEvent* event)
         }
         event->accept();
     }
-    QDeclarativeView::mouseReleaseEvent(event);
+#endif
+    QQuickView::mouseReleaseEvent(event);
 }
 
 void DeclarativeViewer::setViewMode(DeclarativeViewer::ViewMode mode)
@@ -698,7 +689,7 @@ QSize DeclarativeViewer::getTextWindowSize(QString url) const
     size.setHeight(size.height() + 10);
 
     QDesktopWidget dw;
-    QSize desktopSize = dw.screenGeometry(this).size();
+    QSize desktopSize = dw.screenGeometry(/*FIXME: was this*/).size();
 
     if (size.width() > desktopSize.width() * 0.8) {
         size.setWidth(desktopSize.width() * 0.8);

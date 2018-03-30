@@ -25,7 +25,7 @@
 #include "rotatedimage.h"
 
 ExifImageProvider::ExifImageProvider()
-    : QDeclarativeImageProvider(Image)
+    : QQuickImageProvider(Image)
 {
 }
 

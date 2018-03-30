@@ -23,7 +23,7 @@
 #include "previewgenerator.h"
 
 PreviewProvider::PreviewProvider()
-    : QDeclarativeImageProvider(Pixmap)
+    : QQuickImageProvider(Pixmap)
     , m_defaultPreview(":images/pla-empty-box.png")
     , m_previewGenerator(PreviewGenerator::instance())
 {

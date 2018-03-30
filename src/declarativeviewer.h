@@ -22,13 +22,14 @@
 #ifndef DECLARATIVEVIEWER_H
 #define DECLARATIVEVIEWER_H
 
-#include <QtDeclarative/QDeclarativeView>
+#include <QtQuick/QQuickView>
 
 class QRect;
 class PreviewGenerator;
 class File;
 class FileModel;
 class QPoint;
+class QWindow;
 
 enum WidgetRegion
 {
@@ -54,11 +55,11 @@ typedef enum ArrowPosition
 
 } ArrowPosition;
 
-class DeclarativeViewer : public QDeclarativeView
+class DeclarativeViewer : public QQuickView
 {
     Q_OBJECT
 public:
-    explicit DeclarativeViewer(QWidget *parent = 0);
+    explicit DeclarativeViewer(QWindow *parent = 0);
     virtual ~DeclarativeViewer();
 
     void init(QStringList urls, bool embedded = false, const QRect& rc = QRect(0, 0, 0, 0), int indexToShow = 0);
@@ -79,9 +80,6 @@ public:
     Q_INVOKABLE QString serviceForFile(int index) const;
 
     Q_INVOKABLE void updateCurrentFile(int index);
-
-protected:
-    void resizeEvent(QResizeEvent *event);
 
 signals:
     void sizeChanged();
@@ -122,6 +120,8 @@ private:
     QSize getPreferredSize(const QString &path, int type) const;
     WidgetRegion calculateWindowRegion(const QPoint& mousePos);
     void setEmbedded(bool);
+
+    bool isFullScreen(){return windowState() == Qt::WindowFullScreen;}
 
     void initModel(QStringList urls);
     void setViewMode(ViewMode mode);

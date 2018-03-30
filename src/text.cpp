@@ -23,7 +23,7 @@
 
 #include <QtCore/QFile>
 #include <QtCore/QTextCodec>
-#include <QtGui/QPlainTextEdit>
+#include <QtWidgets/QPlainTextEdit>
 
 #include <KEncodingProber>
 #include <KImageCache>

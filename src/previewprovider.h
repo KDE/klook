@@ -22,11 +22,11 @@
 #ifndef PREVIEWPROVIDER_H
 #define PREVIEWPROVIDER_H
 
-#include <QtDeclarative/QDeclarativeImageProvider>
+#include <QtQuick/QQuickImageProvider>
 
 class PreviewGenerator;
 
-class PreviewProvider : public QDeclarativeImageProvider
+class PreviewProvider : public QQuickImageProvider
 {
 public:
     PreviewProvider();

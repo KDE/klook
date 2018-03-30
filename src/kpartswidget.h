@@ -1,7 +1,8 @@
 #ifndef KPARTSWIDGET_H
 #define KPARTSWIDGET_H
 
-#include <kparts/mainwindow.h>
+#include <KParts/MainWindow>
+#include <KParts/ReadOnlyPart>
 
 #include <QtCore/QPointer>
 

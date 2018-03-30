@@ -26,12 +26,12 @@
 #include <QtCore/QString>
 #include <QtCore/QTextCodec>
 
-#include <Phonon/AudioOutput>
-#include <Phonon/MediaObject>
-#include <Phonon/VideoWidget>
+#include <KDE/Phonon/AudioOutput>
+#include <KDE/Phonon/MediaObject>
+#include <KDE/Phonon/VideoWidget>
 
-Audio::Audio(QDeclarativeItem* parent)
-    : QDeclarativeItem(parent)
+Audio::Audio(QQuickItem* parent)
+    : QQuickItem(parent)
     , m_isPreview(false)
     , m_isReady(false)
 {

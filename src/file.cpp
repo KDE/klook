@@ -31,7 +31,7 @@
 #include <KLocalizedString>
 #include <KMimeType>
 #include <kuiserverjobtracker.h>
-#include <Phonon/BackendCapabilities>
+#include <KDE/Phonon/BackendCapabilities>
 
 File::File(QObject* parent)
     : QObject(parent)

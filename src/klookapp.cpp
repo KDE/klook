@@ -26,6 +26,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QGraphicsObject>
+#include <QtQuick/QQuickItem>
 
 #include <KCmdLineArgs>
 #include <KIcon>

@@ -22,9 +22,9 @@
 #ifndef EXIFIMAGEPROVIDER_H
 #define EXIFIMAGEPROVIDER_H
 
-#include <QtDeclarative/QDeclarativeImageProvider>
+#include <QtQuick/QQuickImageProvider>
 
-class ExifImageProvider : public QDeclarativeImageProvider
+class ExifImageProvider : public QQuickImageProvider
 {
 public:
     explicit ExifImageProvider();

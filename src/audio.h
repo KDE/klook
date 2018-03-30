@@ -24,15 +24,15 @@
 #define AUDIO_H
 
 #include <QtCore/QTime>
-#include <QtDeclarative/QDeclarativeItem>
-#include <Phonon/MediaObject>
-#include <Phonon/AudioOutput>
+#include <QtQuick/QQuickItem>
+#include <KDE/Phonon/MediaObject>
+#include <KDE/Phonon/AudioOutput>
 
 #include <KUrl>
 
 class QHBoxLayout;
 
-class Audio : public QDeclarativeItem
+class Audio : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
@@ -51,7 +51,7 @@ class Audio : public QDeclarativeItem
     Q_PROPERTY(QString genre READ genre  NOTIFY genreChanged)
 
 public:
-    Audio(QDeclarativeItem* parent = 0);
+    Audio(QQuickItem* parent = 0);
     ~Audio();
 
 public slots:
