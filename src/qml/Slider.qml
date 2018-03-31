@@ -20,7 +20,7 @@
  */
 
 
-import QtQuick 1.0
+import QtQuick 2.0
 
 Item {
     id: slider; width: 50; height: 10

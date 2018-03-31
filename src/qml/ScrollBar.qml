@@ -19,7 +19,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 
 Item {
     id: scrollBar;
@@ -166,7 +166,7 @@ Item {
             drag.minimumY: 0
             drag.maximumY: flickable.height - scrollBarHandle.height
 
-            onMousePositionChanged:
+            onPositionChanged:
             {
                 if (drag.active) {
                     flickable.contentY = flickable.contentHeight * scrollBarHandle.y / scrollBar.height

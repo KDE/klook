@@ -19,7 +19,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 import Widgets 1.0
 
 Rectangle {
@@ -430,7 +430,7 @@ Rectangle {
                         hoverEnabled: true
                         z: 20
 
-                        onMousePositionChanged: {
+                        onPositionChanged: {
                             var mouseIndex = galleryGridView.indexAt(mouseX + galleryGridView.contentX, mouseY + galleryGridView.contentY)
                             if (mouseIndex !== -1) {
                                 if (openButton.state !== 'normal')
@@ -482,7 +482,7 @@ Rectangle {
                     focus: true
                     highlightFollowsCurrentItem: true
                     highlightRangeMode: ListView.StrictlyEnforceRange;
-                    highlightMoveSpeed: 5000
+                    //highlightMoveSpeed: 5000 FIXME, porting
                     preferredHighlightBegin: 0; preferredHighlightEnd: 0  //this line means that the currently highlighted item will be central in the view
 
                     onCurrentIndexChanged: {
@@ -609,7 +609,7 @@ Rectangle {
 
             PropertyChanges { target: menu; visible: true }
 
-            PropertyChanges { target: photosListView; highlightMoveSpeed: 5000 }
+            //PropertyChanges { target: photosListView; highlightMoveSpeed: 5000 } FIXME: porting
 
             PropertyChanges {
                 target: panel

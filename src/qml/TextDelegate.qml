@@ -19,7 +19,7 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-import QtQuick 1.1
+import QtQuick 2.0
 import Widgets 1.0
 
 Component {
@@ -30,7 +30,7 @@ Component {
         PlainText {
             id: txt
             source: filePath
-            anchors.fill: parent
+            //anchors.fill: parent FIXME
             preview: false
         }
 
