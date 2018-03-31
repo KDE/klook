@@ -121,6 +121,7 @@ int KLookApp::newInstance()
 
     m_viewer->init(urls, embedded, rc, index);
     args->clear();
+    m_viewer->show();
     return 0;
 }
 
