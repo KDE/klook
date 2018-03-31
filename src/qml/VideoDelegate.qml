@@ -22,6 +22,8 @@
 import QtQuick 2.0
 import Widgets 1.0
 
+import QtMultimedia 5.8 as MultiMedia
+
 Component {
     id: videoDelegate
 
@@ -29,23 +31,55 @@ Component {
     {
         id: videoItem
         signal ready()
+
+        MultiMedia.Video {
+            id: videoPlayer
+            source: video.source
+            width: metaData.resolution  ? metaData.resolution.width  : 640
+            height: metaData.resolution ? metaData.resolution.height : 480
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    video.play()
+                }
+            }
+
+            focus: true
+            Keys.onSpacePressed: video.playbackState == MediaPlayer.PlayingState ? video.pause() : video.play()
+            Keys.onLeftPressed: video.seek(video.position - 5000)
+            Keys.onRightPressed: video.seek(video.position + 5000)
+
+            visible: (albumWrapper.state === "") && (status !== MultiMedia.MediaPlayer.Loading) && (status !== MultiMedia.MediaPlayer.NoMedia)
+
+            function doResize() {
+                console.log(videoPlayer.width)
+                video.setSizeHint(videoPlayer.width, videoPlayer.height);
+            }
+
+            onWidthChanged: {
+                doResize();
+            }
+
+            onHeightChanged: {
+                doResize();
+            }
+
+            Component.onCompleted: {
+                doResize();
+            }
+
+        }
+
         Video {
             id: video
             source: filePath
             //anchors.fill: parent FIXME, porting
-            visible: (albumWrapper.state === "") && video.ready
 
             Component.onCompleted: {
                 source = filePath
                 if ( albumWrapper.state === "" )
-                    video.play()
-                if ( video.playing )
-                    panel.playButtonState = 'Play'
-                else
-                    panel.playButtonState = 'Pause'
-
-                video.sizeHintReady.connect(setSizeHint)
-
+                    videoPlayer.play()
             }
 
             function setSizeHint(w, h)
@@ -61,50 +95,17 @@ Component {
                     }
                 }
             }
-
-            onTicked:
-            {
-                if (playing) {
-                    panel.videoSlider.value = tick * 1000 / video.totalTime; // tick and totalTime in msec
-                }
-            }
-
-            onPlayFinished:
-            {
-                panel.playButtonState = 'Play'
-                panel.videoSlider.value = 0
-            }
-            Behavior on opacity { NumberAnimation { duration: 500} }
         }
 
-        Connections{
-            target: panel.playItemBtn;
-            onButtonClick:
-            {
-                if ( listItem.ListView.isCurrentItem )
-                {
-                    if ( video.playing ) {
-                        video.pause()
-                        panel.playButtonState = 'Play'
-                    }
-                    else {
-                        video.play()
-                        panel.playButtonState = 'Pause'
-                    }
-                }
-            }
-        }
-
-        Connections{ target: panel.videoSlider; onPosChanged: video.setPosition( panel.videoSlider.value * video.totalTime / 1000 ) }
         Connections
         {
             target: albumWrapper
             onStateChanged:
             {
                 if ( albumWrapper.state === "inGrid" )
-                    video.pause()
+                    videoPlayer.pause()
                 else
-                    video.play()
+                    videoPlayer.play()
             }
         }
 
