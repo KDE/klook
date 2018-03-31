@@ -23,21 +23,14 @@
 
 #include <QtCore/QFile>
 #include <QtCore/QTextCodec>
-#include <QtWidgets/QPlainTextEdit>
 
 #include <KEncodingProber>
 #include <KImageCache>
 
-MyText::MyText(QGraphicsItem* parent)
-    : QGraphicsProxyWidget(parent)
+MyText::MyText(QObject* parent)
+    : QObject(parent)
     , m_isPreview(false)
 {
-    m_viewer = new QPlainTextEdit();
-    m_viewer->setReadOnly(true);
-    m_viewer->viewport()->setCursor(Qt::ArrowCursor);
-    m_viewer->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    setWidget(m_viewer);
 }
 
 MyText::~MyText()
@@ -65,17 +58,16 @@ void MyText::setSource(const QString& source)
     KEncodingProber prober(KEncodingProber::Universal);
     prober.feed(data);
 
-    QString str;
     if (prober.confidence() > 0.7) {
-        str = QTextCodec::codecForName(prober.encoding())->toUnicode(data);
+        m_sourceContent = QTextCodec::codecForName(prober.encoding())->toUnicode(data);
     }
     else {
-        str = QString::fromUtf8(data);
+        m_sourceContent = QString::fromUtf8(data);
     }
 
-    m_viewer->setPlainText(str);
 
     emit sourceChanged();
+    emit contentChanged();
     emit ready();
 }
 
@@ -88,6 +80,6 @@ void MyText::setPreview(bool preview)
 {
     m_isPreview = preview;
     Qt::ScrollBarPolicy policy = m_isPreview ? Qt::ScrollBarAlwaysOff : Qt::ScrollBarAsNeeded;
-    m_viewer->setVerticalScrollBarPolicy(policy);
-    m_viewer->setHorizontalScrollBarPolicy(policy);
+    //m_viewer->setVerticalScrollBarPolicy(policy);
+    //m_viewer->setHorizontalScrollBarPolicy(policy); TODO, FIXME: change those things in the delegate on the TextEdit
 }

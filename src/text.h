@@ -22,18 +22,19 @@
 #ifndef MYTEXT_H
 #define MYTEXT_H
 
-#include <QGraphicsProxyWidget>
+#include <QObject>
 
 class QPlainTextEdit;
 
-class MyText : public QGraphicsProxyWidget
+class MyText : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QString content MEMBER m_sourceContent NOTIFY contentChanged)
     Q_PROPERTY(bool preview READ isPreview WRITE setPreview)
 
 public:
-    MyText(QGraphicsItem* parent = 0);
+    MyText(QObject* parent = 0);
     ~MyText();
 
 public slots:
@@ -45,13 +46,13 @@ public slots:
 
 Q_SIGNALS:
     void sourceChanged();
+    void contentChanged();
     void ready();
 
 private:
-    QPlainTextEdit* m_viewer;
     QString         m_source;
+    QString         m_sourceContent;
     bool            m_isPreview;
-
 };
 
 
