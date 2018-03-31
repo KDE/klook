@@ -1,0 +1,50 @@
+--- a/dolphin/src/dolphinmainwindow.h
++++ b/dolphin/src/dolphinmainwindow.h
+@@ -36,6 +36,7 @@
+ 
+ typedef KIO::FileUndoManager::CommandType CommandType;
+ 
++class DolphinDockWidget;
+ class DolphinViewActionHandler;
+ class DolphinApplication;
+ class DolphinSettingsDialog;
+@@ -51,6 +52,7 @@ class KUrl;
+ class QSplitter;
+ class QToolButton;
+ class QVBoxLayout;
++class Panel;
+ 
+ /**
+  * @short Main window for Dolphin.
+@@ -102,6 +104,8 @@ public:
+      */
+     KNewFileMenu* newFileMenu() const;
+ 
++    void focusChanged(QWidget *old, QWidget *now);
++
+ public slots:
+     /**
+      * Pastes the clipboard data into the currently selected folder
+@@ -367,6 +371,12 @@ private slots:
+     void openInNewTab();
+ 
+     /**
++     * Opens the selected files in KLook.
++     */
++
++    void previewItem();
++
++    /**
+      * Opens the selected folder in a new window.
+      */
+     void openInNewWindow();
+@@ -588,6 +598,7 @@ private:
+     QTimer* m_updateToolBarTimer;
+ 
+     KIO::Job* m_lastHandleUrlStatJob;
++    bool m_isFocusOnTerminal;
+ };
+ 
+ inline DolphinViewContainer* DolphinMainWindow::activeViewContainer() const
+diff --git a/dolphin/src/kitemviews/kfileitemlistwidget.cpp b/dolphin/src/kitemviews/kfileitemlistwidget.cpp
+index 3a77241..b816fb8 100644

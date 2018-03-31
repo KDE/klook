@@ -1,0 +1,112 @@
+--- /dev/null
++++ b/dolphin/src/kitemviews/kitemlistklooktoggle.cpp
+@@ -0,0 +1,106 @@
++/***************************************************************************
++ *   Copyright (C) 2011 by Peter Penz <peter.penz19@gmail.com>             *
++ *                                                                         *
++ *   This program is free software; you can redistribute it and/or modify  *
++ *   it under the terms of the GNU General Public License as published by  *
++ *   the Free Software Foundation; either version 2 of the License, or     *
++ *   (at your option) any later version.                                   *
++ *                                                                         *
++ *   This program is distributed in the hope that it will be useful,       *
++ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
++ *   GNU General Public License for more details.                          *
++ *                                                                         *
++ *   You should have received a copy of the GNU General Public License     *
++ *   along with this program; if not, write to the                         *
++ *   Free Software Foundation, Inc.,                                       *
++ *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA            *
++ ***************************************************************************/
++
++#include "kitemlistklooktoggle_p.h"
++
++#include <KIconEffect>
++#include <KIconLoader>
++#include <QPainter>
++
++#include <KDebug>
++
++KItemListKlookToggle::KItemListKlookToggle(QGraphicsItem* parent) :
++    QGraphicsWidget(parent, 0),    
++    m_hovered(false)
++{
++    setAcceptHoverEvents(true);
++}
++
++KItemListKlookToggle::~KItemListKlookToggle()
++{
++}
++/*
++void KItemListKlookToggle::setChecked(bool checked)
++{
++    if (m_checked != checked) {
++        m_checked = checked;
++        m_pixmap = QPixmap();
++        update();
++    }
++}
++*/
++/*
++bool KItemListKlookToggle::isChecked() const
++{
++    return m_checked;
++}
++*/
++void KItemListKlookToggle::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
++{
++    Q_UNUSED(option);
++    Q_UNUSED(widget);
++
++    if (m_pixmap.isNull()) {
++        updatePixmap();
++    }
++
++    const qreal x = (size().width()  - qreal(m_pixmap.width()))  / 2;
++    const qreal y = (size().height() - qreal(m_pixmap.height())) / 2;
++    painter->drawPixmap(x, y, m_pixmap);
++}
++
++void KItemListKlookToggle::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
++{
++    QGraphicsWidget::hoverEnterEvent(event);
++    m_hovered = true;
++    m_pixmap = QPixmap();
++}
++
++void KItemListKlookToggle::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
++{
++    QGraphicsWidget::hoverLeaveEvent(event);
++    m_hovered = false;
++    m_pixmap = QPixmap();
++}
++
++void KItemListKlookToggle::updatePixmap()
++{
++    const char* icon = "klook";
++
++    int iconSize = qMin(size().width(), size().height());
++    if (iconSize < KIconLoader::SizeSmallMedium) {
++        iconSize = KIconLoader::SizeSmall;
++    } else if (iconSize < KIconLoader::SizeMedium) {
++        iconSize = KIconLoader::SizeSmallMedium;
++    } else if (iconSize < KIconLoader::SizeLarge) {
++        iconSize = KIconLoader::SizeMedium;
++    } else if (iconSize < KIconLoader::SizeHuge) {
++        iconSize = KIconLoader::SizeLarge;
++    } else if (iconSize < KIconLoader::SizeEnormous) {
++        iconSize = KIconLoader::SizeHuge;
++    }
++
++    m_pixmap = KIconLoader::global()->loadIcon(QLatin1String(icon), KIconLoader::NoGroup, iconSize);
++
++    if (m_hovered) {
++        KIconLoader::global()->iconEffect()->apply(m_pixmap, KIconLoader::Desktop, KIconLoader::ActiveState);
++    }
++}
++
++#include "kitemlistklooktoggle_p.moc"
+diff --git a/dolphin/src/kitemviews/kitemlistklooktoggle_p.h b/dolphin/src/kitemviews/kitemlistklooktoggle_p.h
+new file mode 100644
+index 0000000..bf5923e

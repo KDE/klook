@@ -1,0 +1,12 @@
+--- a/dolphin/src/CMakeLists.txt
++++ b/dolphin/src/CMakeLists.txt
+@@ -27,6 +27,7 @@ set(dolphinprivate_LIB_SRCS
+     kitemviews/kitemlistgroupheader.cpp
+     kitemviews/kitemlistheader.cpp
+     kitemviews/kitemlistselectionmanager.cpp
++    kitemviews/kitemlistklooktoggle.cpp
+     kitemviews/kitemliststyleoption.cpp
+     kitemviews/kitemlistview.cpp
+     kitemviews/kitemlistwidget.cpp
+diff --git a/dolphin/src/dolphinmainwindow.cpp b/dolphin/src/dolphinmainwindow.cpp
+index d83c9de..9921d9f 100644

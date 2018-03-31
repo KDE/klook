@@ -1,0 +1,122 @@
+--- a/dolphin/src/kitemviews/kitemlistwidget.cpp
++++ b/dolphin/src/kitemviews/kitemlistwidget.cpp
+@@ -22,6 +22,7 @@
+ 
+ #include "kitemlistwidget.h"
+ 
++#include "kitemlistklooktoggle_p.h"
+ #include "kitemlistview.h"
+ #include "kitemmodelbase.h"
+ 
+@@ -52,6 +53,7 @@ KItemListWidget::KItemListWidget(KItemListWidgetInformant* informant, QGraphicsI
+     m_hovered(false),
+     m_alternateBackground(false),
+     m_enabledSelectionToggle(false),
++    m_enabledKlookToggle(false),
+     m_data(),
+     m_visibleRoles(),
+     m_columnWidths(),
+@@ -61,7 +63,8 @@ KItemListWidget::KItemListWidget(KItemListWidgetInformant* informant, QGraphicsI
+     m_hoverCache(0),
+     m_hoverAnimation(0),
+     m_selectionToggle(0),
+-    m_editedRole()
++    m_editedRole(),
++    m_klookToggle(0)
+ {
+ }
+ 
+@@ -76,6 +79,9 @@ void KItemListWidget::setIndex(int index)
+         delete m_selectionToggle;
+         m_selectionToggle = 0;
+ 
++        delete m_klookToggle;
++        m_klookToggle = 0;
++
+         if (m_hoverAnimation) {
+             m_hoverAnimation->stop();
+             m_hoverOpacity = 0;
+@@ -263,6 +269,9 @@ void KItemListWidget::setHovered(bool hovered)
+         if (m_enabledSelectionToggle && !(QApplication::mouseButtons() & Qt::LeftButton)) {
+             initializeSelectionToggle();
+         }
++        if (m_enabledKlookToggle && !(QApplication::mouseButtons() & Qt::LeftButton)) {
++            initializeKlookToggle();
++        }
+     } else {
+         m_hoverAnimation->setStartValue(hoverOpacity());
+         m_hoverAnimation->setEndValue(0.0);
+@@ -306,6 +315,19 @@ bool KItemListWidget::enabledSelectionToggle() const
+     return m_enabledSelectionToggle;
+ }
+ 
++void KItemListWidget::setEnabledKlookToggle(bool enable)
++{
++    if (m_enabledKlookToggle != enable) {
++        m_enabledKlookToggle = enable;
++        update();
++    }
++}
++
++bool KItemListWidget::enabledKlookToggle() const
++{
++    return m_enabledKlookToggle;
++}
++
+ void KItemListWidget::setSiblingsInformation(const QBitArray& siblings)
+ {
+     const QBitArray previous = m_siblingsInfo;
+@@ -355,6 +377,12 @@ QRectF KItemListWidget::selectionToggleRect() const
+     return QRectF();
+ }
+ 
++QRectF KItemListWidget::klookToggleRect() const
++{
++    return QRectF();
++}
++
++
+ QRectF KItemListWidget::expansionToggleRect() const
+ {
+     return QRectF();
+@@ -463,6 +491,8 @@ void KItemListWidget::slotHoverAnimationFinished()
+     if (!m_hovered) {
+         delete m_selectionToggle;
+         m_selectionToggle = 0;
++        delete m_klookToggle;
++        m_klookToggle = 0;
+     }
+ }
+ 
+@@ -481,12 +511,29 @@ void KItemListWidget::initializeSelectionToggle()
+     m_selectionToggle->setChecked(isSelected());
+ }
+ 
++void KItemListWidget::initializeKlookToggle()
++{
++    Q_ASSERT(m_enabledKlookToggle);
++
++    if (!m_klookToggle) {
++        m_klookToggle = new KItemListKlookToggle(this);
++    }
++
++    const QRectF toggleRect = klookToggleRect();;
++    m_klookToggle->setPos(toggleRect.topLeft());
++    m_klookToggle->resize(toggleRect.size());
++
++}
++
+ void KItemListWidget::setHoverOpacity(qreal opacity)
+ {
+     m_hoverOpacity = opacity;
+     if (m_selectionToggle) {
+         m_selectionToggle->setOpacity(opacity);
+     }
++    if (m_klookToggle) {
++        m_klookToggle->setOpacity(opacity);
++    }
+ 
+     if (m_hoverOpacity <= 0.0) {
+         delete m_hoverCache;
+diff --git a/dolphin/src/kitemviews/kitemlistwidget.h b/dolphin/src/kitemviews/kitemlistwidget.h
+index 55181fa..7fd593c 100644

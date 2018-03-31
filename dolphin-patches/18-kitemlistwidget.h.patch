@@ -1,0 +1,60 @@
+--- a/dolphin/src/kitemviews/kitemlistwidget.h
++++ b/dolphin/src/kitemviews/kitemlistwidget.h
+@@ -33,6 +33,7 @@
+ 
+ class KItemListSelectionToggle;
+ class KItemListView;
++class KItemListKlookToggle;
+ class QPropertyAnimation;
+ 
+ /**
+@@ -114,6 +115,9 @@ public:
+     void setEnabledSelectionToggle(bool enabled);
+     bool enabledSelectionToggle() const;
+ 
++    void setEnabledKlookToggle(bool enable);
++    bool enabledKlookToggle() const;
++
+     /**
+      * Sets the sibling information for the item and all of its parents.
+      * The sibling information of the upper most parent is represented by
+@@ -181,6 +185,12 @@ public:
+      */
+     virtual QPixmap createDragPixmap(const QStyleOptionGraphicsItem* option, QWidget* widget = 0);
+ 
++     /**
++     * @return Rectangle for the klook-toggle that is used for item preview.
++     */
++    virtual QRectF klookToggleRect() const;
++
++
+ signals:
+     void roleEditingCanceled(int index, const QByteArray& role, const QVariant& value);
+     void roleEditingFinished(int index, const QByteArray& role, const QVariant& value);
+@@ -211,6 +221,7 @@ private slots:
+ 
+ private:
+     void initializeSelectionToggle();
++    void initializeKlookToggle();
+     void setHoverOpacity(qreal opacity);
+     void clearHoverCache();
+     void drawItemStyleOption(QPainter* painter, QWidget* widget, QStyle::State styleState);
+@@ -225,6 +236,7 @@ private:
+     bool m_hovered;
+     bool m_alternateBackground;
+     bool m_enabledSelectionToggle;
++    bool m_enabledKlookToggle;
+     QHash<QByteArray, QVariant> m_data;
+     QList<QByteArray> m_visibleRoles;
+     QHash<QByteArray, qreal> m_columnWidths;
+@@ -238,6 +250,8 @@ private:
+     KItemListSelectionToggle* m_selectionToggle;
+ 
+     QByteArray m_editedRole;
++    
++    KItemListKlookToggle* m_klookToggle;
+ };
+ 
+ inline const KItemListWidgetInformant* KItemListWidget::informant() const
+diff --git a/dolphin/src/kitemviews/kstandarditemlistwidget.h b/dolphin/src/kitemviews/kstandarditemlistwidget.h
+index 787722d..3bc9228 100644

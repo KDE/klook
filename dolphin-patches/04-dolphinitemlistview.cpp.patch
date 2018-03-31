@@ -1,0 +1,20 @@
+--- a/dolphin/src/views/dolphinitemlistview.cpp
++++ b/dolphin/src/views/dolphinitemlistview.cpp
+@@ -41,6 +41,7 @@ DolphinItemListView::DolphinItemListView(QGraphicsWidget* parent) :
+     KFileItemListView(parent),
+     m_zoomLevel(0)
+ {
++    setEnabledKlookToggles(GeneralSettings::showKlookToggle());
+     updateFont();
+     updateGridSize();
+ }
+@@ -89,6 +90,7 @@ void DolphinItemListView::readSettings()
+     beginTransaction();
+ 
+     setEnabledSelectionToggles(GeneralSettings::showSelectionToggle());
++    setEnabledKlookToggles(GeneralSettings::showKlookToggle());
+ 
+     const bool expandableFolders = (itemLayout() == KFileItemListView::DetailsLayout) &&
+                                    DetailsModeSettings::expandableFolders();
+diff --git a/dolphin/src/views/dolphinview.cpp b/dolphin/src/views/dolphinview.cpp
+index 8050415..86dff91 100644

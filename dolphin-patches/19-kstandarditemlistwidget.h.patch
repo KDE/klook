@@ -1,0 +1,20 @@
+--- a/dolphin/src/kitemviews/kstandarditemlistwidget.h
++++ b/dolphin/src/kitemviews/kstandarditemlistwidget.h
+@@ -157,6 +157,7 @@ protected:
+     virtual void resizeEvent(QGraphicsSceneResizeEvent* event);
+     virtual void showEvent(QShowEvent* event);
+     virtual void hideEvent(QHideEvent* event);
++    void triggerCacheRefreshing();
+ 
+ private slots:
+     void slotCutItemsChanged();
+@@ -164,7 +165,6 @@ private slots:
+     void slotRoleEditingFinished(int index, const QByteArray& role, const QVariant& value);
+ 
+ private:
+-    void triggerCacheRefreshing();
+     void updateExpansionArea();
+     void updatePixmapCache();
+ 
+diff --git a/dolphin/src/settings/dolphin_generalsettings.kcfg b/dolphin/src/settings/dolphin_generalsettings.kcfg
+index 9f261dc..67d9c30 100644

@@ -1,0 +1,12 @@
+--- a/dolphin/src/kitemviews/kfileitemlistwidget.h
++++ b/dolphin/src/kitemviews/kfileitemlistwidget.h
+@@ -43,6 +43,7 @@ public:
+     virtual ~KFileItemListWidget();
+ 
+     static KItemListWidgetInformant* createInformant();
++    virtual QRectF klookToggleRect() const;
+ 
+ protected:
+     virtual bool isRoleRightAligned(const QByteArray& role) const;
+diff --git a/dolphin/src/kitemviews/kitemlistcontroller.cpp b/dolphin/src/kitemviews/kitemlistcontroller.cpp
+index 88f5d9f..c3c1d3d 100644

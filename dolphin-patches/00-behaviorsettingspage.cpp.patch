@@ -1,0 +1,52 @@
+--- a/dolphin/src/settings/general/behaviorsettingspage.cpp
++++ b/dolphin/src/settings/general/behaviorsettingspage.cpp
+@@ -42,7 +42,8 @@ BehaviorSettingsPage::BehaviorSettingsPage(const KUrl& url, QWidget* parent) :
+     m_globalViewProps(0),
+     m_showToolTips(0),
+     m_showSelectionToggle(0),
+-    m_naturalSorting(0)
++    m_naturalSorting(0),
++    m_showKlookToggle(0)
+ {
+     QVBoxLayout* topLayout = new QVBoxLayout(this);
+ 
+@@ -67,8 +68,13 @@ BehaviorSettingsPage::BehaviorSettingsPage(const KUrl& url, QWidget* parent) :
+     m_naturalSorting = new QCheckBox(i18nc("option:check", "Natural sorting of items"), this);
+ 
+     topLayout->addWidget(viewPropsBox);
++ 
++       // 'Show klook toggle'
++     m_showKlookToggle = new QCheckBox(i18nc("@option:check", "Show preview marker"), this);
++
+     topLayout->addWidget(m_showToolTips);
+     topLayout->addWidget(m_showSelectionToggle);
++    topLayout->addWidget(m_showKlookToggle);
+     topLayout->addWidget(m_naturalSorting);
+     topLayout->addStretch();
+ 
+@@ -78,6 +84,7 @@ BehaviorSettingsPage::BehaviorSettingsPage(const KUrl& url, QWidget* parent) :
+     connect(m_globalViewProps, SIGNAL(toggled(bool)), this, SIGNAL(changed()));
+     connect(m_showToolTips, SIGNAL(toggled(bool)), this, SIGNAL(changed()));
+     connect(m_showSelectionToggle, SIGNAL(toggled(bool)), this, SIGNAL(changed()));
++    connect(m_showKlookToggle, SIGNAL(toggled(bool)), this, SIGNAL(changed()));
+     connect(m_naturalSorting, SIGNAL(toggled(bool)), this, SIGNAL(changed()));
+ }
+ 
+@@ -106,6 +113,7 @@ void BehaviorSettingsPage::applySettings()
+         globalProps.setDirProperties(props);
+     }
+ 
++    settings->setShowKlookToggle(m_showKlookToggle->isChecked());
+     const bool naturalSorting = m_naturalSorting->isChecked();
+     if (KGlobalSettings::naturalSorting() != naturalSorting) {
+         KConfigGroup group(KGlobal::config(), "KDE");
+@@ -130,6 +138,7 @@ void BehaviorSettingsPage::loadSettings()
+ 
+     m_showToolTips->setChecked(GeneralSettings::showToolTips());
+     m_showSelectionToggle->setChecked(GeneralSettings::showSelectionToggle());
++    m_showKlookToggle->setChecked(GeneralSettings::showKlookToggle());
+     m_naturalSorting->setChecked(KGlobalSettings::naturalSorting());
+ }
+ 
+diff --git a/dolphin/src/settings/general/behaviorsettingspage.h b/dolphin/src/settings/general/behaviorsettingspage.h
+index 3989862..8e810fe 100644

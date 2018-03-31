@@ -1,0 +1,12 @@
+--- a/dolphin/src/settings/general/behaviorsettingspage.h
++++ b/dolphin/src/settings/general/behaviorsettingspage.h
+@@ -58,6 +58,7 @@ private:
+     QLabel* m_configureToolTips;
+     QCheckBox* m_showSelectionToggle;
+     QCheckBox* m_naturalSorting;
++    QCheckBox* m_showKlookToggle;
+ };
+ 
+ #endif
+diff --git a/dolphin/src/views/dolphinitemlistview.cpp b/dolphin/src/views/dolphinitemlistview.cpp
+index 039b5f2..81694dc 100644
