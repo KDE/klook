@@ -11,10 +11,10 @@ index 263b3ff0c..def9b031d 100644
      kitemviews/kitemlistview.cpp
      kitemviews/kitemlistviewaccessible.cpp
 diff --git a/src/dolphinmainwindow.cpp b/src/dolphinmainwindow.cpp
-index d112007bc..14760fccb 100644
+index d112007bc..d5a0932b9 100644
 --- a/src/dolphinmainwindow.cpp
 +++ b/src/dolphinmainwindow.cpp
-@@ -76,6 +76,7 @@
+@@ -76,9 +76,11 @@
  #include <QMenu>
  #include <QMenuBar>
  #include <QPushButton>
@@ -22,7 +22,11 @@ index d112007bc..14760fccb 100644
  #include <QShowEvent>
  #include <QStandardPaths>
  #include <QTimer>
-@@ -101,7 +102,8 @@ DolphinMainWindow::DolphinMainWindow() :
++#include <QtGlobal>
+ #include <QToolButton>
+ #include <kdualaction.h>
+ 
+@@ -101,7 +103,8 @@ DolphinMainWindow::DolphinMainWindow() :
      m_lastHandleUrlStatJob(nullptr),
      m_terminalPanel(nullptr),
      m_placesPanel(nullptr),
@@ -32,7 +36,7 @@ index d112007bc..14760fccb 100644
  {
      Q_INIT_RESOURCE(dolphin);
  
-@@ -175,6 +177,8 @@ DolphinMainWindow::DolphinMainWindow() :
+@@ -175,6 +178,8 @@ DolphinMainWindow::DolphinMainWindow() :
          createControlButton();
      }
  
@@ -41,7 +45,7 @@ index d112007bc..14760fccb 100644
      // enable middle-click on back/forward/up to open in a new tab
      auto *middleClickEventFilter = new MiddleClickActionEventFilter(this);
      connect(middleClickEventFilter, &MiddleClickActionEventFilter::actionMiddleClicked, this, &DolphinMainWindow::slotToolBarActionMiddleClicked);
-@@ -279,6 +283,15 @@ void DolphinMainWindow::slotSelectionChanged(const KFileItemList& selection)
+@@ -279,6 +284,15 @@ void DolphinMainWindow::slotSelectionChanged(const KFileItemList& selection)
          compareFilesAction->setEnabled(false);
      }
  
@@ -57,7 +61,7 @@ index d112007bc..14760fccb 100644
      emit selectionChanged(selection);
  }
  
-@@ -1251,6 +1264,15 @@ void DolphinMainWindow::setupActions()
+@@ -1251,6 +1265,15 @@ void DolphinMainWindow::setupActions()
      openInNewWindow->setText(i18nc("@action:inmenu", "Open in New Window"));
      openInNewWindow->setIcon(QIcon::fromTheme(QStringLiteral("window-new")));
      connect(openInNewWindow, &QAction::triggered, this, &DolphinMainWindow::openInNewWindow);
@@ -66,14 +70,14 @@ index d112007bc..14760fccb 100644
 +    // KLook
 +    QAction* openInKLook = actionCollection()->addAction("open_in_KLook");
 +    openInKLook->setText(i18nc("@action:inmenu", "Preview"));
-+    openInKLook->setShortcut(Qt::Key_Space);
++    actionCollection()->setDefaultShortcut(openInKLook, Qt::Key_Space);
 +    openInKLook->setIcon(QIcon("klook"));
 +    openInKLook->setEnabled(false);
 +    connect(openInKLook, &QAction::triggered, this, &DolphinMainWindow::previewItem);
  }
  
  void DolphinMainWindow::setupDockWidgets()
-@@ -1542,6 +1564,8 @@ void DolphinMainWindow::connectViewSignals(DolphinViewContainer* container)
+@@ -1542,6 +1565,8 @@ void DolphinMainWindow::connectViewSignals(DolphinViewContainer* container)
              this, static_cast<void(DolphinMainWindow::*)()>(&DolphinMainWindow::goBack));
      connect(view, &DolphinView::goForwardRequested,
              this, static_cast<void(DolphinMainWindow::*)()>(&DolphinMainWindow::goForward));
@@ -82,7 +86,7 @@ index d112007bc..14760fccb 100644
      connect(view, &DolphinView::urlActivated,
              this, &DolphinMainWindow::handleUrl);
  
-@@ -1626,3 +1650,51 @@ void DolphinMainWindow::UndoUiInterface::jobError(KIO::Job* job)
+@@ -1626,3 +1651,51 @@ void DolphinMainWindow::UndoUiInterface::jobError(KIO::Job* job)
      }
  }
  
@@ -106,7 +110,7 @@ index d112007bc..14760fccb 100644
 +    if (!list.isEmpty())
 +    {
 +        QProcess* process = new QProcess();
-+        connect(process,SIGNAL(finished(int)),process,SLOT(deleteLater()));
++        connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), process, &QProcess::deleteLater);
 +        process->start(QString("klook"), urlList);
 +    }
 +}
