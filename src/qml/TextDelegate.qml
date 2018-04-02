@@ -20,6 +20,7 @@
  */
 
 import QtQuick 2.7
+import QtQuick.Controls 2.3
 import Widgets 1.0
 
 Component {
@@ -34,9 +35,18 @@ Component {
             preview: false
         }
 
-        TextEdit {
-            id: textViewer
-            text:txt.content
+        ScrollView {
+            clip: true
+            anchors.fill: parent
+            ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+            ScrollBar.vertical.policy: txt.preview ? ScrollBar.AsNeeded : ScrollBar.AlwaysOff
+
+            TextArea {
+                id: textViewer
+                anchors.fill: parent
+                text:txt.content
+                readOnly: true
+            }
         }
 
         Connections{
