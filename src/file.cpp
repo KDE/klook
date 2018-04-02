@@ -21,6 +21,7 @@
 
 #include "file.h"
 
+#include <QMediaPlayer>
 #include <QtCore/QFileInfo>
 #include <QtCore/QTemporaryFile>
 #include <QtGui/QImageReader>
@@ -30,8 +31,8 @@
 #include <KIO/NetAccess>
 #include <KLocalizedString>
 #include <KMimeType>
-#include <kuiserverjobtracker.h>
 #include <KDE/Phonon/BackendCapabilities>
+#include <kuiserverjobtracker.h>
 
 File::File(QObject* parent)
     : QObject(parent)
@@ -251,21 +252,8 @@ File::FileType getFileType(const QString& mime, const QString& name)
                 type = File::Image;
         }
         else if (left == QLatin1String("video")) {
-            QString right = mime.mid(delimiter + 1);
-            // make a double check - for some reason isMimeTypeAvailable
-            // does not always correct - but documentation lists it as a
-            // preferred method to check it mimetype can bdecoded
-            if (Phonon::BackendCapabilities::isMimeTypeAvailable(mime)
-                    || Phonon::BackendCapabilities::availableMimeTypes().contains(mime)) {
+            if (QMediaPlayer::hasSupport(mime) != QMultimedia::NotSupported) {
                 type = File::Video;
-            }
-
-            if (type == File::MimetypeFallback) {
-                if (right == QLatin1String("3gpp")
-                        || right == QLatin1String("mp4")
-                        || right == QLatin1String("x-theora+ogg")) {
-                    type = File::Video;
-                }
             }
         }
         else if (left == QLatin1String("audio")) {
