@@ -35,10 +35,11 @@ Component {
         MultiMedia.Video {
             id: videoPlayer
             source: video.source
-            width: metaData.resolution  ? metaData.resolution.width  : 640
-            height: metaData.resolution ? metaData.resolution.height : 480
+            anchors.fill: parent
+            //width: metaData.resolution  ? metaData.resolution.width  : 640
+            //height: metaData.resolution ? metaData.resolution.height : 480
 
-            MouseArea {
+            /*MouseArea {
                 anchors.fill: parent
                 onClicked: {
                     video.play()
@@ -48,25 +49,19 @@ Component {
             focus: true
             Keys.onSpacePressed: video.playbackState == MediaPlayer.PlayingState ? video.pause() : video.play()
             Keys.onLeftPressed: video.seek(video.position - 5000)
-            Keys.onRightPressed: video.seek(video.position + 5000)
+            Keys.onRightPressed: video.seek(video.position + 5000)*/
 
             visible: (albumWrapper.state === "") && (status !== MultiMedia.MediaPlayer.Loading) && (status !== MultiMedia.MediaPlayer.NoMedia)
 
             function doResize() {
-                console.log(videoPlayer.width)
-                video.setSizeHint(videoPlayer.width, videoPlayer.height);
+                var resolution = videoPlayer.metaData.resolution;
+                video.setSizeHint(resolution.width, resolution.height);
             }
 
-            onWidthChanged: {
-                doResize();
-            }
-
-            onHeightChanged: {
-                doResize();
-            }
-
-            Component.onCompleted: {
-                doResize();
+            onStatusChanged: {
+                if(status === MultiMedia.MediaPlayer.Loaded || status === MultiMedia.MediaPlayer.Buffered) {
+                    doResize();
+                }
             }
 
         }
