@@ -81,7 +81,7 @@ public:
 
 public slots:
     void slotDownloadResult(KJob *job);
-    void resultMimetypeJob(KJob *job);
+    void resultMimetypeJob(KJob *job, const QString& type);
 
 signals:
     void dataChanged();

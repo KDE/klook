@@ -192,10 +192,10 @@ void File::slotDownloadResult(KJob *job)
     emit dataChanged();
 }
 
-void File::resultMimetypeJob(KJob *job)
+void File::resultMimetypeJob(KJob *job, const QString& type )
 {
     if (!job->error()) {
-        setMime(dynamic_cast<KIO::MimetypeJob *>(job)->mimetype());
+        setMime(type);
         FileType t = getFileType(mime(), url().fileName());
         setType(t);
 
@@ -221,7 +221,8 @@ void File::resultMimetypeJob(KJob *job)
 void File::loadType()
 {
     if(!m_mimeJobStarted) {
-        KIO::MimetypeJob *job = KIO::mimetype(url(), KIO::HideProgressInfo);
+        auto *job = KIO::mimetype(url(), KIO::HideProgressInfo);
+        connect(job, QOverload<KIO::Job*, const QString&>::of(&KIO::TransferJob::mimetype), this, &File::resultMimetypeJob);
         connect(job, SIGNAL(result(KJob *)), SLOT(resultMimetypeJob(KJob*)));
         m_mimeJobStarted = true;
     }
