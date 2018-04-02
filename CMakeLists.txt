@@ -26,6 +26,7 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     Parts
     Declarative
     Plasma
+    DBusAddons
 )
 
 find_package(Phonon4Qt5 REQUIRED)
@@ -79,6 +80,7 @@ target_link_libraries(klook KF5::KIOCore KF5::KIOFileWidgets KF5::KIOWidgets KF5
                             KF5::Parts
                             KF5::Declarative
                             KF5::KDELibs4Support
+                            KF5::DBusAddons
                             Qt5::Core Qt5::Gui Qt5::Qml Qt5::Quick
                      )
 

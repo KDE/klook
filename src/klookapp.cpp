@@ -21,12 +21,14 @@
 
 #include "klookapp.h"
 
+#include <QCommandLineParser>
 #include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QGraphicsObject>
 #include <QtQuick/QQuickItem>
+#include <QUrl>
 
 #include <KCmdLineArgs>
 #include <KIcon>
@@ -37,9 +39,10 @@
 #include "filemodel.h"
 
 
-KLookApp::KLookApp()
-    : KUniqueApplication()
+KLookApp::KLookApp(QCommandLineParser& parser, QObject* parent)
+    : QObject(parent)
     , m_viewer(0)
+    , parser(parser)
 {
 }
 
@@ -50,51 +53,41 @@ KLookApp::~KLookApp()
 
 bool KLookApp::isEmbeddedParam() const
 {
-    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-    return args->isSet("embedded");
+    return parser.isSet("embedded");
 }
 
 QRect KLookApp::rectParam() const
 {
-    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     QRect rc;
-    if (args->isSet("x") && args->isSet("y") &&
-         args->isSet("w") && args->isSet("h")) {
+    if (parser.isSet("x") && parser.isSet("y") &&
+         parser.isSet("w") && parser.isSet("h")) {
         int x, y, w, h;
-        x = args->getOption("x").toInt();
-        y = args->getOption("y").toInt();
-        w = args->getOption("w").toInt();
-        h = args->getOption("h").toInt();
+        x = parser.value("x").toInt();
+        y = parser.value("y").toInt();
+        w = parser.value("w").toInt();
+        h = parser.value("h").toInt();
         rc = QRect(x, y, w, h);
     }
     return rc;
 }
 
-QStringList KLookApp::urlsParam() const
+QStringList KLookApp::urlsParam(const QString& workingDirectory) const
 {
-    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
     QStringList urls;
-    for (int i = 0; i < args->count(); i++) {
-        KUrl url(args->arg(i));
-        if(url.isRelative()) {
-            url.setUrl(args->cwd());
-            url.addPath(args->arg(i));
-        }
-        urls << url.url();
+    urls.reserve(parser.positionalArguments().size());
+    for (const auto& positionalArgument: parser.positionalArguments()) { //TODO: std::transform?
+        urls << QUrl::fromUserInput(positionalArgument, workingDirectory).url();
     }
     return urls;
 }
 
-int KLookApp::newInstance()
+int KLookApp::handleCmdLIne(const QString& workingDirectory)
 {
-    KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
-    KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
-
-    QStringList urls = urlsParam();
+    QStringList urls = urlsParam(workingDirectory);
     QRect rc = rectParam();
     bool embedded = isEmbeddedParam();
 
-    int index = args->getOption("i").toInt();
+    int index = parser.value("i").toInt();
     if (index >= urls.count()) {
         index = 0;
     }
@@ -106,7 +99,7 @@ int KLookApp::newInstance()
 
         if(!QFile::exists(qmlPath)) {
             qDebug() << "QML file not found";
-            exit();
+            //exit(); FIXME
         }
 
         m_viewer->setSource(QUrl::fromLocalFile(qmlPath));
@@ -120,13 +113,14 @@ int KLookApp::newInstance()
     }
 
     m_viewer->init(urls, embedded, rc, index);
-    args->clear();
+
     m_viewer->show();
     return 0;
 }
 
 bool KLookApp::isLocal() const
 {
-    const QString appPath = applicationFilePath();
-    return !(appPath.startsWith(QLatin1String("/usr/bin")) || appPath.startsWith(QLatin1String("/usr/local/bin")));
+    return false; //FIXME
+    /*const QString appPath = applicationFilePath();
+    return !(appPath.startsWith(QLatin1String("/usr/bin")) || appPath.startsWith(QLatin1String("/usr/local/bin")));*/
 }

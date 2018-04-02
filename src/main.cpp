@@ -21,9 +21,17 @@
 
 #include <stdio.h>
 
-#include <KDE/K4AboutData>
+#include <KDE/KAboutData>
 #include <KDE/KCmdLineArgs>
 #include <KLocale>
+#include <KDBusService>
+
+#include <QCommandLineParser>
+#include <QCommandLineOption>
+#include <QDir>
+#include <QApplication>
+#include <QString>
+#include <QStringList>
 
 #include "klookapp.h"
 
@@ -32,41 +40,51 @@ static const char version[] = "1.1";
 
 int main(int argc, char *argv[])
 {
-    K4AboutData about("klook", "klook", ki18n("KLook"),
-                      version, ki18n(description),  K4AboutData::License_GPL_V3,
-                      ki18n("(c) ROSA 2011-2012"));
+    QApplication app {argc, argv};
+    KAboutData aboutData("klook", i18n("KLook"),
+                      version, i18n(description),  KAboutLicense::GPL_V3,
+                      i18n("(c) ROSA 2011-2012"));
 
-    about.addAuthor(ki18n("Julia Mineeva"),
-                     ki18n("Developer"),
+    aboutData.addAuthor(i18n("Julia Mineeva"),
+                     i18n("Developer"),
                      "julia.mineeva@osinit.ru");
 
-    about.addAuthor(ki18n("Evgeniy Auzhin"),
-                     ki18n("Developer"),
+    aboutData.addAuthor(i18n("Evgeniy Auzhin"),
+                     i18n("Developer"),
                      "evgeniy.augin@osinit.ru");
 
-    about.addAuthor(ki18n("Sergey Borovkov"),
-                     ki18n("Developer"),
+    aboutData.addAuthor(i18n("Sergey Borovkov"),
+                     i18n("Developer"),
                      "sergey.borovkov@osinit.ru");
 
-    about.setProgramIconName("klook");
+    aboutData.setProgramIconName("klook");
 
-    KCmdLineArgs::init(argc, argv, &about);
+    QCommandLineParser parser;
+    KAboutData::setApplicationData(aboutData);
+    parser.addVersionOption();
+    parser.addHelpOption();
+    aboutData.setupCommandLine(&parser);
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("i"), i18n("File index "), QLatin1String("i"), QLatin1String("0")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("embedded"), i18n("Turn on embedded mode"), QLatin1String("0")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("x"), i18n("X position of the icon"), QLatin1String("x"), QLatin1String("0")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("y"), i18n("Y position of the icon"), QLatin1String("y"), QLatin1String("0")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("w"), i18n("Width of the icon"), QLatin1String("width"), QLatin1String("0")));
+    parser.addOption(QCommandLineOption(QStringList() << QLatin1String("h"), i18n("Height of the icon"), QLatin1String("height"), QLatin1String("0")));
+    parser.addPositionalArgument(QLatin1String("file"), i18n("A required argument 'file'"), QLatin1String(0));
 
-    KCmdLineOptions options;
-    options.add("i <i>", ki18n("File index "), "0");
-    options.add("embedded", ki18n("Turn on embedded mode"), "0");
-    options.add("x <x>", ki18n("X position of the icon"), "0");
-    options.add("y <y>", ki18n("Y position of the icon"), "0");
-    options.add("w <width>", ki18n("Width of the icon"), "0");
-    options.add("h <height>", ki18n("Height of the icon"), "0");
-    options.add("+file", ki18n("A required argument 'file'"), 0);
+    parser.process(app); // PORTING SCRIPT: move this to after any parser.addOption
+    aboutData.processCommandLine(&parser);
 
-    KCmdLineArgs::addCmdLineOptions(options);
-    if (!KUniqueApplication::start()) {
-        fprintf(stderr, "KLook is already running!\n");
-        return 0;
-    }
+    KLookApp a {parser};
+    KDBusService service(KDBusService::Unique);
 
-    KLookApp a;
-    return a.exec();
+    QObject::connect(&service, &KDBusService::activateRequested, &a, [&parser, &a](const QStringList& arguments, const QString& workingDirectory){
+        if (!arguments.isEmpty()) {
+            parser.parse(arguments);
+        }
+        a.handleCmdLIne(workingDirectory);
+    });
+    a.handleCmdLIne(QDir::currentPath());
+
+    return app.exec();
 }

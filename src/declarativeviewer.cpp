@@ -39,6 +39,7 @@
 #include <QtDBus/QDBusReply>
 #include <QtGui/QAbstractTextDocumentLayout>
 #include <QApplication>
+#include <QGuiApplication>
 #include <QDesktopWidget>
 #include <QtGui/QImageReader>
 #include <QtGui/QTextDocument>
@@ -93,8 +94,8 @@ DeclarativeViewer::DeclarativeViewer(QWindow* parent)
     //setAttribute(Qt::WA_TranslucentBackground); FIXME
     //setStyleSheet("background:transparent;"); FIXME
 
-    connect(qApp, SIGNAL(focusChanged(QWidget*, QWidget*)), SLOT(focusChanged(QWidget*, QWidget*)));
-    connect(engine(), SIGNAL(quit()), qApp, SLOT(quit()));
+    connect(qApp, &QApplication::focusChanged, this, &DeclarativeViewer::focusChanged);
+    connect(engine(), &QQmlEngine::quit, qApp, &QApplication::quit);
 }
 
 DeclarativeViewer::~DeclarativeViewer()

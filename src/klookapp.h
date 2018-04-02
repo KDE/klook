@@ -22,27 +22,31 @@
 #ifndef KLOOK_APP_H
 #define KLOOK_APP_H
 
-#include <KUniqueApplication>
+#include <QObject>
+#include <QString>
 
 class DeclarativeViewer;
+class QCommandLineParser;
 
-class KLookApp : public KUniqueApplication
+class KLookApp : public QObject
 {
     Q_OBJECT
 
 public:
-    KLookApp();
+    KLookApp(QCommandLineParser& parser, QObject* parent = nullptr);
     ~KLookApp();
-    virtual int newInstance();
+    int handleCmdLIne(const QString& workingDirectory);
 
 private:
     bool isLocal() const;
     bool isEmbeddedParam() const;
 
-    QStringList urlsParam() const;
+    QStringList urlsParam(const QString& workingDirectory) const;
     QRect rectParam() const;
 
     DeclarativeViewer* m_viewer;
+
+    QCommandLineParser& parser;
 };
 
 #endif // KLOOK_APP_H
