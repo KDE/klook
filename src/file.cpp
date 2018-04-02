@@ -223,7 +223,6 @@ void File::loadType()
     if(!m_mimeJobStarted) {
         auto *job = KIO::mimetype(url(), KIO::HideProgressInfo);
         connect(job, QOverload<KIO::Job*, const QString&>::of(&KIO::TransferJob::mimetype), this, &File::resultMimetypeJob);
-        connect(job, SIGNAL(result(KJob *)), SLOT(resultMimetypeJob(KJob*)));
         m_mimeJobStarted = true;
     }
 }
