@@ -148,6 +148,7 @@ void DeclarativeViewer::registerTypes()
     context->setContextProperty("previewGenerator", PreviewGenerator::instance());
     context->setContextProperty("arrowX", .0);
     context->setContextProperty("arrowY", .0);
+    context->setContextProperty("indexToShow", 0);
 }
 
 void DeclarativeViewer::setFullScreen()

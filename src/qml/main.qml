@@ -490,7 +490,6 @@ Rectangle {
                         updateMenuButtons()
                         updatePanel()
                     }
-
                 }
 
                 Keys.onLeftPressed:
@@ -510,11 +509,13 @@ Rectangle {
                 }
 
                 Connections {
-                    target: fileModel
-                    onRowsInserted: {
+                    target: photosListView
+                    onCountChanged: {
                         if (fileModel.count() !== 0) {
-                            updateMenuButtons()
-                            photosListView.positionViewAtIndex(indexToShow, ListView.Contain)
+                            updateMenuButtons();
+                            photosListView.currentIndex = indexToShow; //porting, FIXME: positionViewAtIndex is not sufficiant to change the element, why?
+                            // FIXME: simply setting currentIndex causes an animation, so we call positionViewAtIndex
+                            photosListView.positionViewAtIndex(indexToShow, ListView.Beginning); // TODO: Why did it work with .Contains instead of Beginning before?
                         }
                     }
                 }
