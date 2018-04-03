@@ -194,7 +194,10 @@ void File::slotDownloadResult(KJob *job)
 
 void File::resultMimetypeJob(KJob *job, const QString& type )
 {
-    if (!job->error()) {
+    /* if url points to a directory (or a symlink to a directory) we don't use a KJob
+     * but instead call resultMimetypeJob directly. In that case, job is a nullptr
+     */
+    if (!job || !job->error()) {
         setMime(type);
         FileType t = getFileType(mime(), url().fileName());
         setType(t);
@@ -221,9 +224,16 @@ void File::resultMimetypeJob(KJob *job, const QString& type )
 void File::loadType()
 {
     if(!m_mimeJobStarted) {
+        m_mimeJobStarted = true;
+        const auto isDir = url().isLocalFile() && QFileInfo(url().toLocalFile()).isDir();
+        if (isDir) {
+            //KIO::TransferJob::mimetype returns an error for directories, as those don't really have one
+            // thus we call resultMimetypeJob directly
+            resultMimetypeJob(nullptr, "inode/directory");
+            return;
+        }
         auto *job = KIO::mimetype(url(), KIO::HideProgressInfo);
         connect(job, QOverload<KIO::Job*, const QString&>::of(&KIO::TransferJob::mimetype), this, &File::resultMimetypeJob);
-        m_mimeJobStarted = true;
     }
 }
 
